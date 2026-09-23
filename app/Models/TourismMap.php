@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class tourism_map extends Model
+class TourismMap extends Model
 {
     protected $fillable = [
         'map_title',
@@ -14,9 +15,9 @@ class tourism_map extends Model
         'map_description',
     ];
 
-    public function tourism_spots(): hasMany
+    public function tourism_locations(): HasMany
     {
-        return $this->hasMany(tourism_spot::class, 'map_id');
+        return $this->hasMany(TourismLocation::class, 'map_id');
     }
 
 }

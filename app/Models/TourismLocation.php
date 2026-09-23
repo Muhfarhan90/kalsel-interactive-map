@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class tourism_location extends Model
+class TourismLocation extends Model
 {
     protected $fillable = [
         'category_id',
@@ -19,13 +20,13 @@ class tourism_location extends Model
         'is_active',
     ];
 
-    public function tourism_category(): belongsTo
+    public function tourism_category(): BelongsTo
     {
-        return $this->belongsTo(tourism_category::class, 'category_id');
+        return $this->belongsTo(TourismCategory::class, 'category_id');
     }
 
-    public function tourism_map(): belongsTo
+    public function tourism_map(): BelongsTo
     {
-        return $this->belongsTo(tourism_map::class, 'map_id');
+        return $this->belongsTo(TourismMap::class, 'map_id');
     }
 }
