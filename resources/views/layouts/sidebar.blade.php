@@ -84,6 +84,31 @@
 
                 </a>
             </li>
+            <li>
+                <a href="{{ route('admin.locations.index') }}"
+                    class="menu-item group {{ request()->routeIs('admin.locations.*') ? 'menu-item-active' : 'menu-item-inactive' }}"
+                    :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'xl:justify-center' : 'xl:justify-start'">
+                    <span class="{{ request()->routeIs('admin.locations.*') ? 'menu-item-icon-active' : 'menu-item-icon-inactive' }}">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 21C12 21 19 15.5 19 9.5C19 5.36 15.87 2 12 2C8.13 2 5 5.36 5 9.5C5 15.5 12 21 12 21Z" fill="currentColor" opacity="0.35"/>
+                            <circle cx="12" cy="9.5" r="2.5" fill="currentColor"/>
+                        </svg>
+                    </span>
+                    <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen" class="menu-item-text">Data Wisata</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('admin.categories.index') }}"
+                    class="menu-item group {{ request()->routeIs('admin.categories.*') ? 'menu-item-active' : 'menu-item-inactive' }}"
+                    :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'xl:justify-center' : 'xl:justify-start'">
+                    <span class="{{ request()->routeIs('admin.categories.*') ? 'menu-item-icon-active' : 'menu-item-icon-inactive' }}">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 5.5C4 4.67 4.67 4 5.5 4H10V10H4V5.5ZM14 4H18.5C19.33 4 20 4.67 20 5.5V10H14V4ZM4 14H10V20H5.5C4.67 20 4 19.33 4 18.5V14ZM14 14H20V18.5C20 19.33 19.33 20 18.5 20H14V14Z" fill="currentColor"/>
+                        </svg>
+                    </span>
+                    <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen" class="menu-item-text">Kategori Wisata</span>
+                </a>
+            </li>
         </ul>
 
     </nav>

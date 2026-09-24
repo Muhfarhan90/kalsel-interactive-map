@@ -1,12 +1,17 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\TourismCategoryController;
+use App\Http\Controllers\Admin\TourismLocationController;
+use App\Http\Controllers\TourismController;
 use Illuminate\Support\Facades\Route;
 
-// dashboard pages
-Route::get('/', function () {
-    return view('pages.tourism');
-})->name('tourism');
+Route::get('/', TourismController::class)->name('tourism');
+Route::get('/admin', DashboardController::class)->name('dashboard');
 
-Route::get('/admin', function () {
-    return view('pages.admin.dashboard');
-})->name('dashboard');
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::delete('locations/{location}/media', [TourismLocationController::class, 'destroyMedia'])->name('locations.media.destroy');
+    Route::resource('categories', TourismCategoryController::class)->except('show');
+    Route::delete('locations/{location}/media', [TourismLocationController::class, 'destroyMedia'])->name('locations.media.destroy');
+    Route::resource('locations', TourismLocationController::class)->except('show');
+});

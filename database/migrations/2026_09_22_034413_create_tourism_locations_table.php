@@ -16,10 +16,10 @@ return new class extends Migration
             $table->foreignId('category_id')->constrained('tourism_categories')->onDelete('cascade');
             $table->foreignId('map_id')->constrained('tourism_maps')->onDelete('cascade');
             $table->string('location_name');
-            $table->string('location_address');
-            $table->text('location_description');
-            $table->float('coordinate_x', 5, 2);
-            $table->float('coordinate_y', 5, 2);
+            $table->string('location_address')->nullable();
+            $table->text('location_description')->nullable();
+            $table->float('coordinate_x', 5)->nullable();
+            $table->float('coordinate_y', 5)->nullable();
             $table->string('location_media_url')->nullable();
             $table->string('location_source_media')->nullable();
             $table->boolean('is_active')->default(true);

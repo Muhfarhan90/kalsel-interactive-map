@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('tourism_maps', function (Blueprint $table) {
             $table->id();
             $table->string('map_title');
-            $table->string('map_sub_title');
-            $table->string('map_logo');
-            $table->text('map_image');
-            $table->text('map_description');
+            $table->string('map_sub_title')->nullable();
+            $table->string('map_logo')->nullable();
+            $table->text('map_image')->nullable();
+            $table->text('map_description')->nullable();
             $table->timestamps();
         });
     }

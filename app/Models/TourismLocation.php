@@ -20,6 +20,15 @@ class TourismLocation extends Model
         'is_active',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'coordinate_x' => 'float',
+            'coordinate_y' => 'float',
+            'is_active' => 'boolean',
+        ];
+    }
+
     public function tourism_category(): BelongsTo
     {
         return $this->belongsTo(TourismCategory::class, 'category_id');

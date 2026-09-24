@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('tourism_categories', function (Blueprint $table) {
             $table->id();
             $table->string('category_name');
-            $table->string('category_color');
-            $table->string('category_icon');
-            $table->text('category_description');
+            $table->string('category_color')->nullable();
+            $table->string('category_icon')->nullable();
+            $table->text('category_description')->nullable();
             $table->timestamps();
         });
     }
