@@ -10,12 +10,9 @@
     @mouseleave="$store.sidebar.setHovered(false)">
     <!-- Logo Section -->
     <div class="pt-8 pb-7 flex items-center gap-2" :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'justify-center' : 'justify-between'">
-        <a href="/">
-            <div class="hidden [.sidebar-expanded_&]:block">
-                <img class="dark:hidden" src="/images/logo/logo.svg" alt="Logo" width="150" height="40" />
-                <img class="hidden dark:block" src="/images/logo/logo-dark.svg" alt="Logo" width="150" height="40" />
-            </div>
-            <img class="block [.sidebar-expanded_&]:hidden" src="/images/logo/logo-icon.svg" alt="Logo" width="32" height="32" />
+        <a href="/" class="flex items-center gap-3">
+            <img src="/images/logo/logo_kalsel.svg" alt="Logo Kalsel" class="size-10 shrink-0 object-contain" />
+            <span class="hidden text-2xl font-bold text-gray-900 [.sidebar-expanded_&]:block dark:text-white">Kalimantan Selatan</span>
         </a>
     </div>
 
@@ -42,9 +39,9 @@
 
         <ul class="flex flex-col gap-1">
             <li>
-                <a href="{{ route('dashboard') }}"
+                <a href="{{ route('admin.dashboard') }}"
                     class="menu-item group
-                    {{ request()->routeIs('dashboard')
+                    {{ request()->routeIs('admin.dashboard')
                         ? 'menu-item-active'
                         : 'menu-item-inactive' }}"
 
@@ -55,7 +52,7 @@
                             : 'xl:justify-start'">
 
                     <span
-                        class="{{ request()->routeIs('dashboard')
+                        class="{{ request()->routeIs('admin.dashboard')
                             ? 'menu-item-icon-active'
                             : 'menu-item-icon-inactive' }}">
 
@@ -85,6 +82,16 @@
                 </a>
             </li>
             <li>
+                <a href="{{ route('admin.map.edit') }}"
+                    class="menu-item group {{ request()->routeIs('admin.map.*') ? 'menu-item-active' : 'menu-item-inactive' }}"
+                    :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'xl:justify-center' : 'xl:justify-start'">
+                    <span class="{{ request()->routeIs('admin.map.*') ? 'menu-item-icon-active' : 'menu-item-icon-inactive' }}">
+                        <x-heroicon-o-map class="size-6" />
+                    </span>
+                    <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen" class="menu-item-text">Manajemen Peta</span>
+                </a>
+            </li>
+            <li>
                 <a href="{{ route('admin.locations.index') }}"
                     class="menu-item group {{ request()->routeIs('admin.locations.*') ? 'menu-item-active' : 'menu-item-inactive' }}"
                     :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'xl:justify-center' : 'xl:justify-start'">
@@ -109,6 +116,18 @@
                     <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen" class="menu-item-text">Kategori Wisata</span>
                 </a>
             </li>
+            @if (auth()->user()?->role === 'admin')
+                <li>
+                    <a href="{{ route('admin.users.index') }}"
+                        class="menu-item group {{ request()->routeIs('admin.users.*') ? 'menu-item-active' : 'menu-item-inactive' }}"
+                        :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'xl:justify-center' : 'xl:justify-start'">
+                        <span class="{{ request()->routeIs('admin.users.*') ? 'menu-item-icon-active' : 'menu-item-icon-inactive' }}">
+                            <x-heroicon-o-users class="size-6" />
+                        </span>
+                        <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen" class="menu-item-text">Pengguna</span>
+                    </a>
+                </li>
+            @endif
         </ul>
 
     </nav>

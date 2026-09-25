@@ -113,6 +113,7 @@ class TourismLocationController extends Controller
         return view('pages.admin.locations.form', [
             'location' => $location,
             'categories' => TourismCategory::orderBy('category_name')->get(),
+            'map' => $this->defaultMap(),
         ]);
     }
 
@@ -126,7 +127,7 @@ class TourismLocationController extends Controller
             'coordinate_x' => ['required', 'numeric', 'between:0,100'],
             'coordinate_y' => ['required', 'numeric', 'between:0,100'],
             'location_source_media' => ['nullable', 'string', 'max:255'],
-            'media' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,mp4', 'max:51200'],
+            'media' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,mp4', 'max:71680'],
         ]);
 
         $media = $data['media'] ?? null;

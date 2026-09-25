@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TourismLocation;
+use App\Models\TourismMap;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -10,6 +11,7 @@ class TourismController extends Controller
 {
     public function __invoke(): View
     {
+        $map = TourismMap::first();
         $locations = TourismLocation::with('tourism_category')
             ->where('is_active', true)
             ->orderBy('category_id')
@@ -37,6 +39,9 @@ class TourismController extends Controller
                 ];
             });
 
-        return view('pages.tourism', ['tourismLocations' => $locations]);
+        return view('pages.tourism', [
+            'tourismLocations' => $locations,
+            'map' => $map,
+        ]);
     }
 }

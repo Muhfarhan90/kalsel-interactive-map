@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Peta Wisata Kalimantan Selatan</title>
+    <title>{{ $map?->map_title ?: 'Peta Wisata Kalimantan Selatan' }}</title>
     @vite('resources/css/app.css')
 </head>
 
@@ -24,7 +24,7 @@
                 <div class="p-3">
                     <div class="relative mx-auto aspect-square w-full max-w-[calc(100vh-6rem)]" id="mapFrame">
                         <img class="block size-full rounded"
-                            src="{{ asset('images/maps/peta_provinsi_kalsel.png') }}" alt="Peta Kalimantan Selatan">
+                            src="{{ asset($map?->map_image ?: 'images/maps/peta_provinsi_kalsel.png') }}" alt="{{ $map?->map_title ?: 'Peta Kalimantan Selatan' }}">
                     </div>
                 </div>
             </div>
@@ -34,9 +34,14 @@
                     <div class="grid">
                         <header class="border-b border-gray-200 pb-2">
                             <div class="flex items-center gap-2.5">
-                                <img class="w-12 h-auto object-contain" src="{{ asset('images/logo/logo_kalsel.svg') }}"
-                                    alt="Logo Kalimantan Selatan">
-                                <h2 class="m-0 text-2xl font-bold text-[#da251d]">Wisata Kalimantan Selatan</h2>
+                                <img class="w-12 h-auto object-contain" src="{{ asset($map?->map_logo ?: 'images/logo/logo_kalsel.svg') }}"
+                                    alt="Logo {{ $map?->map_title ?: 'Kalimantan Selatan' }}">
+                                <div>
+                                    <h2 class="m-0 text-2xl font-bold text-[#da251d]">{{ $map?->map_title ?: 'Peta Wisata Kalimantan Selatan' }}</h2>
+                                    @if ($map?->map_sub_title)
+                                        <p class="mt-1 text-sm leading-5 text-gray-500">{{ $map->map_sub_title }}</p>
+                                    @endif
+                                </div>
                             </div>
                         </header>
 
@@ -66,8 +71,8 @@
                                 id="detailCategory"></div>
                         </header>
 
-                        <div class="min-h-0 flex-1 overflow-y-auto p-4">
-                            <div class="mb-4 grid aspect-video place-items-center overflow-hidden rounded-lg bg-[#da251d] text-white"
+                        <div class="min-h-0 flex-1 overflow-y-auto p-4" id="detailContent">
+                            <div class="relative mb-4 grid aspect-video place-items-center overflow-hidden rounded-lg bg-black text-white"
                                 id="detailMedia"></div>
 
                             <p class="mb-4 text-sm leading-6 text-gray-600">
@@ -84,7 +89,7 @@
                                 <p class="m-0 text-sm leading-6 font-bold" id="detailAddress"></p>
                             </div>
 
-                            <div class="[&_ol]:list-decimal [&_ul]:list-disc [&_li]:ml-5 text-justify" id="detailDescription"></div>
+                            <div class="text-justify [&_h1]:mb-3 [&_h1]:mt-6 [&_h1]:text-3xl [&_h1]:font-bold [&_h2]:mb-3 [&_h2]:mt-5 [&_h2]:text-2xl [&_h2]:font-bold [&_h3]:mb-2 [&_h3]:mt-4 [&_h3]:text-xl [&_h3]:font-semibold [&_ol]:list-decimal [&_ul]:list-disc [&_li]:ml-5" id="detailDescription"></div>
                         </div>
                     </article>
                 </div>
@@ -157,7 +162,7 @@
                 const marker = document.createElement('button');
                 marker.type = 'button';
                 marker.className =
-                    'absolute z-10 grid size-12 -translate-x-1/2 -translate-y-full cursor-pointer place-items-end border-0 bg-transparent p-0 drop-shadow-md focus:outline-none focus-visible:ring-4 focus-visible:ring-red-200';
+                    'absolute z-10 grid size-12 origin-bottom -translate-x-1/2 -translate-y-full cursor-pointer place-items-end border-0 bg-transparent p-0 drop-shadow-md focus:outline-none focus-visible:ring-4 focus-visible:ring-red-200';
                 marker.dataset.locationId = location.id;
                 marker.style.left = location.coordinate_x + '%';
                 marker.style.top = location.coordinate_y + '%';
@@ -226,7 +231,7 @@
                 detailMedia.innerHTML = '<span>Media belum tersedia</span>';
             } else if (isVideo) {
                 detailMedia.innerHTML =
-                    '<video class="block h-full w-full bg-black object-contain" autoplay controls playsinline preload="metadata" aria-label="Video ' +
+                    '<video class="absolute inset-0 block bg-black" style="width:100%;height:100%;object-fit:contain" autoplay controls playsinline preload="metadata" aria-label="Video ' +
                     escapeHtml(location.location_name) + '">' +
                     '<source src="' + escapeHtml(mediaUrl) + '">' +
                     'Browser tidak mendukung pemutaran video.' +
@@ -234,7 +239,7 @@
                 detailMedia.querySelector('video').play().catch(() => {});
             } else {
                 detailMedia.innerHTML =
-                    '<img class="block h-full w-full object-cover" src="' + escapeHtml(mediaUrl) + '" alt="Media ' +
+                    '<img class="absolute inset-0 block" style="width:100%;height:100%;object-fit:contain" src="' + escapeHtml(mediaUrl) + '" alt="Media ' +
                     escapeHtml(
                         location.location_name) + '">';
             }
@@ -254,13 +259,13 @@
                 const active = markerLocation.id === locationId;
                 element.style.color = active ? '#da251d' : markerLocation.category_color;
                 element.querySelector('.marker-number')?.classList.toggle('hidden', active);
-                element.classList.toggle('animate-bounce', active);
-                element.classList.toggle('scale-110', active);
+                element.classList.toggle('scale-y-110', active);
                 element.classList.toggle('z-20', active);
             });
 
             listView.hidden = true;
             detailView.hidden = false;
+            document.getElementById('detailContent').scrollTop = 0;
         }
 
         document.getElementById('backButton').addEventListener('click', () => {
@@ -273,7 +278,7 @@
                     .locationId));
                 if (location) marker.style.color = location.category_color;
                 marker.querySelector('.marker-number')?.classList.remove('hidden');
-                marker.classList.remove('animate-bounce', 'z-20', 'scale-110');
+                marker.classList.remove('z-20', 'scale-y-110');
             });
         });
 

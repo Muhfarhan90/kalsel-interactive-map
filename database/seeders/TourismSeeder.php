@@ -36,15 +36,108 @@ class TourismSeeder extends Seeder
         });
 
         $locations = [
-            ['category' => 'Wisata Alam', 'location_name' => 'Pegunungan Meratus Loksado', 'location_address' => 'Kecamatan Loksado, Kabupaten Hulu Sungai Selatan', 'location_description' => 'Loksado berada di kawasan Pegunungan Meratus dan dikenal dengan lanskap hutan serta aliran Sungai Amandit. Salah satu pengalaman khasnya adalah balanting paring atau bamboo rafting, yaitu menyusuri sungai dengan rakit bambu yang dahulu digunakan masyarakat untuk membawa bambu dari hulu ke hilir. Kawasan ini juga menjadi tempat tinggal masyarakat Dayak Meratus, sehingga wisata alamnya beriringan dengan tradisi dan kehidupan budaya setempat.', 'coordinate_x' => 48, 'coordinate_y' => 47],
-            ['category' => 'Wisata Alam', 'location_name' => 'Bukit Matang Kaladan', 'location_address' => 'Desa Tiwingan Lama, Kecamatan Aranio, Kabupaten Banjar', 'location_description' => 'Bukit Matang Kaladan berada di Desa Tiwingan Lama, Kecamatan Aranio. Dari puncaknya, pengunjung dapat melihat gugusan pulau kecil di Waduk Riam Kanan dan bentang perairan yang dikelilingi perbukitan. Perjalanan menuju puncak dilakukan melalui jalur pendakian; kawasan ini menarik untuk menikmati panorama, berfoto, serta melihat perubahan suasana waduk pada pagi atau sore hari.', 'coordinate_x' => 40, 'coordinate_y' => 31],
-            ['category' => 'Budaya & Sejarah', 'location_name' => 'Pasar Terapung Lok Baintan', 'location_address' => 'Desa Lok Baintan, Kecamatan Sungai Tabuk, Kabupaten Banjar', 'location_description' => 'Pasar Terapung Lok Baintan merupakan pasar tradisional di aliran Sungai Martapura, tempat pedagang dari kampung-kampung sekitar menjajakan hasil kebun, pertanian, dan produk rumah tangga dari atas jukung atau perahu tradisional tanpa mesin. Aktivitas pasar berlangsung pada pagi hari dan mencerminkan hubungan erat masyarakat Banjar dengan sungai sebagai jalur transportasi serta ruang perdagangan. Pengunjung dapat menyaksikan transaksi dari tepian atau menyusuri kawasan dengan perahu setempat.', 'coordinate_x' => 25, 'coordinate_y' => 23],
-            ['category' => 'Budaya & Sejarah', 'location_name' => 'Museum Lambung Mangkurat', 'location_address' => 'Jalan Ahmad Yani Km 36, Kota Banjarbaru', 'location_description' => 'Museum Lambung Mangkurat menyajikan sejarah dan kebudayaan Kalimantan Selatan di gedung yang mengadopsi bentuk rumah adat Banjar. Koleksinya mencakup miniatur rumah dan sampan, pakaian adat, kerajinan, alat kesenian, serta diorama yang menggambarkan kehidupan masyarakat. Museum ini juga menyimpan benda-benda bersejarah dari masa Hindu dan Kerajaan Banjar, termasuk replika pusaka kerajaan, sehingga pengunjung dapat mengenal beragam lapisan sejarah Banua.', 'coordinate_x' => 30, 'coordinate_y' => 28],
-            ['category' => 'Wisata Religi', 'location_name' => 'Masjid Sultan Suriansyah', 'location_address' => 'Jalan Kuin Utara, Kelurahan Kuin Utara, Kecamatan Banjarmasin Utara, Kota Banjarmasin', 'location_description' => 'Masjid Sultan Suriansyah, yang juga dikenal sebagai Masjid Kuin, merupakan masjid bersejarah di tepi Sungai Kuin. Masjid ini dibangun pada masa pemerintahan Sultan Suriansyah, raja Banjar pertama yang memeluk Islam, sekitar abad ke-16. Ciri arsitekturnya antara lain penggunaan kayu ulin dan bentuk atap tumpang yang mempertahankan karakter bangunan tradisional Banjar. Letaknya berdekatan dengan kompleks makam Sultan Suriansyah dan menjadi bagian penting dari kawasan sejarah Kuin.', 'coordinate_x' => 18, 'coordinate_y' => 28],
-            ['category' => 'Wisata Religi', 'location_name' => 'Makam Datu Kalampayan', 'location_address' => 'Desa Kalampayan Tengah, Kecamatan Astambul, Kabupaten Banjar', 'location_description' => 'Kompleks ini merupakan tempat peristirahatan Syekh Muhammad Arsyad al-Banjari, ulama Banjar yang dikenal luas sebagai Datu Kalampayan. Setelah menuntut ilmu di Makkah, beliau kembali ke Banjar untuk mengajarkan agama dan mendirikan pusat pendidikan di Dalam Pagar; karya fikihnya, Sabilal Muhtadin, juga dikenal di kawasan Asia Tenggara. Makam di Kalampayan Tengah menjadi tujuan ziarah dari berbagai daerah sekaligus pengingat kontribusinya bagi perkembangan ilmu dan pendidikan Islam di Kalimantan Selatan.', 'coordinate_x' => 34, 'coordinate_y' => 24],
-            ['category' => 'Wisata Bahari', 'location_name' => 'Pantai Angsana', 'location_address' => 'Desa Angsana, Kecamatan Angsana, Kabupaten Tanah Bumbu', 'location_description' => 'Pantai Angsana berada di Desa Angsana, Kabupaten Tanah Bumbu, dan dikenal dengan garis pantai berpasir serta kawasan terumbu karang di perairan sekitarnya. Selain menikmati suasana pantai dan matahari terbenam, pengunjung datang untuk kegiatan bahari seperti snorkeling, menyelam, dan memancing. Sejumlah titik terumbu karang berada di lepas pantai dan dicapai menggunakan perahu; kondisi laut dan layanan setempat dapat berubah mengikuti cuaca serta pengelolaan kawasan.', 'coordinate_x' => 64, 'coordinate_y' => 75],
-            ['category' => 'Wisata Bahari', 'location_name' => 'Pulau Samber Gelap', 'location_address' => 'Pulau Sebuku, Kabupaten Kotabaru', 'location_description' => 'Pulau Samber Gelap berada di wilayah Pulau Sebuku, Kabupaten Kotabaru, dan tercatat sebagai destinasi bahari dengan potensi terumbu karang serta habitat penyu. Daya tarik utamanya adalah lingkungan pesisir dan kehidupan laut di sekitarnya, yang membuat kawasan ini bernilai untuk wisata alam sekaligus pelestarian. Saat berkunjung, pengunjung perlu menjaga kebersihan pantai dan tidak mengganggu penyu maupun ekosistem terumbu karang.', 'coordinate_x' => 79, 'coordinate_y' => 82],
+            [
+                'category' => 'Wisata Alam',
+                'location_name' => 'Pegunungan Meratus Loksado',
+                'location_address' => 'Kecamatan Loksado, Kabupaten Hulu Sungai Selatan',
+                'location_description' => '<h1>Pegunungan Meratus Loksado</h1>'.
+                    '<p><strong>Loksado</strong> merupakan kawasan pegunungan di Hulu Sungai Selatan yang memadukan hutan tropis, aliran Sungai Amandit, dan kehidupan masyarakat Dayak Meratus. Suasananya sejuk dan cocok untuk pengunjung yang ingin menikmati wisata alam sekaligus mengenal budaya setempat.</p>'.
+                    '<h2>Daya tarik utama</h2><ul><li><strong>Balanting paring</strong>, yaitu menyusuri Sungai Amandit menggunakan rakit bambu.</li><li>Jalur trekking menuju perbukitan, air terjun, dan permukiman adat.</li><li>Kerajinan, tradisi, serta hasil kebun masyarakat Dayak Meratus.</li></ul>'.
+                    '<h3>Tips berkunjung</h3><ol><li>Periksa cuaca dan kondisi sungai sebelum mengikuti aktivitas air.</li><li>Gunakan alas kaki yang nyaman dan bawa perlindungan dari hujan.</li><li>Hormati aturan kampung serta mintalah izin sebelum memotret kegiatan warga.</li></ol>'.
+                    '<p><em>Waktu dan rute kegiatan dapat berubah mengikuti kondisi alam.</em> <u>Selalu ikuti arahan pemandu lokal.</u></p>',
+                'coordinate_x' => 46.95,
+                'coordinate_y' => 51.23,
+            ],
+            [
+                'category' => 'Wisata Alam',
+                'location_name' => 'Air Terjun Lano',
+                'location_address' => 'Desa Lano, Kecamatan Jaro, Kabupaten Tabalong',
+                'location_description' => '<h1>Air Terjun Lano</h1>'.
+                    '<p>Air Terjun Lano berada di kawasan hutan Desa Lano, Kecamatan Jaro, dekat perbatasan Kalimantan Selatan dan Kalimantan Timur. Perjalanan menuju air terjun menghadirkan suasana hutan yang masih alami, pepohonan besar, serta beberapa aliran sungai kecil.</p>'.
+                    '<h2>Pengalaman yang ditawarkan</h2><ul><li>Berjalan kaki sekitar 800 meter dari akses utama menuju air terjun.</li><li>Menikmati udara sejuk dan suara air di tengah kawasan hutan.</li><li>Mengamati vegetasi serta bentang alam khas wilayah Tabalong bagian utara.</li></ul>'.
+                    '<h3>Persiapan perjalanan</h3><ol><li>Gunakan sepatu dengan daya cengkeram baik.</li><li>Bawa air minum dan simpan kembali seluruh sampah.</li><li>Hindari mendekati arus deras ketika hujan atau debit air meningkat.</li></ol>'.
+                    '<p><strong>Keselamatan adalah prioritas.</strong> <em>Kondisi jalur dapat berubah setelah hujan.</em></p>',
+                'coordinate_x' => 52.09,
+                'coordinate_y' => 17.79,
+            ],
+            [
+                'category' => 'Budaya & Sejarah',
+                'location_name' => 'Pasar Terapung Lok Baintan',
+                'location_address' => 'Desa Lok Baintan, Kecamatan Sungai Tabuk, Kabupaten Banjar',
+                'location_description' => '<h1>Pasar Terapung Lok Baintan</h1>'.
+                    '<p>Pasar Terapung Lok Baintan adalah pasar tradisional di Sungai Martapura. Pedagang datang menggunakan <em>jukung</em> dan menawarkan hasil kebun, makanan, serta kebutuhan rumah tangga langsung dari atas perahu.</p>'.
+                    '<h2>Nilai budaya</h2><ul><li>Memperlihatkan hubungan masyarakat Banjar dengan sungai sebagai ruang hidup.</li><li>Mempertahankan transaksi tradisional antarpedagang dan pembeli di atas perahu.</li><li>Menyajikan suasana permukiman tepian sungai pada pagi hari.</li></ul>'.
+                    '<h3>Rencana kunjungan</h3><ol><li>Datang pada pagi hari ketika aktivitas pasar masih ramai.</li><li>Gunakan jasa perahu setempat dan kenakan pelampung.</li><li>Siapkan uang tunai pecahan kecil untuk berbelanja.</li></ol>'.
+                    '<p><u>Jaga keseimbangan saat berada di jukung</u> dan hindari menghalangi jalur perahu pedagang.</p>',
+                'coordinate_x' => 22.87,
+                'coordinate_y' => 67.38,
+            ],
+            [
+                'category' => 'Budaya & Sejarah',
+                'location_name' => 'Situs Candi Agung',
+                'location_address' => 'Desa Sungai Malang, Kecamatan Amuntai Tengah, Kabupaten Hulu Sungai Utara',
+                'location_description' => '<h1>Situs Candi Agung</h1>'.
+                    '<p>Situs Candi Agung di Amuntai berkaitan dengan sejarah <strong>Kerajaan Negara Dipa</strong> dan perjalanan awal terbentuknya Kerajaan Banjar. Kawasan ini menjadi ruang pembelajaran mengenai arkeologi, sejarah lokal, dan perkembangan masyarakat di wilayah Hulu Sungai.</p>'.
+                    '<h2>Yang dapat dipelajari</h2><ul><li>Sisa struktur candi dan material bangunan yang ditemukan di kawasan situs.</li><li>Kisah Negara Dipa dalam sejarah dan tradisi tutur masyarakat Banjar.</li><li>Koleksi pendukung yang menjelaskan temuan arkeologi setempat.</li></ul>'.
+                    '<h3>Etika mengunjungi situs</h3><ol><li>Ikuti jalur kunjungan dan petunjuk pengelola.</li><li>Jangan menyentuh, memindahkan, atau menaiki bagian situs.</li><li>Jaga ketenangan dan kebersihan kawasan bersejarah.</li></ol>'.
+                    '<p><em>Kunjungan yang bertanggung jawab membantu menjaga peninggalan sejarah untuk generasi berikutnya.</em></p>',
+                'coordinate_x' => 38.34,
+                'coordinate_y' => 38.72,
+            ],
+            [
+                'category' => 'Wisata Religi',
+                'location_name' => 'Masjid Sultan Suriansyah',
+                'location_address' => 'Jalan Kuin Utara, Kelurahan Kuin Utara, Kecamatan Banjarmasin Utara, Kota Banjarmasin',
+                'location_description' => '<h1>Masjid Sultan Suriansyah</h1>'.
+                    '<p>Masjid Sultan Suriansyah atau Masjid Kuin merupakan salah satu masjid bersejarah di Kalimantan Selatan. Masjid ini berada di kawasan tepian Sungai Kuin dan berkaitan dengan Sultan Suriansyah, raja Banjar pertama yang memeluk Islam.</p>'.
+                    '<h2>Keunikan bangunan</h2><ul><li>Konstruksi yang banyak menggunakan kayu ulin.</li><li>Atap bertumpang yang mempertahankan karakter arsitektur tradisional Banjar.</li><li>Lingkungan bersejarah yang berdekatan dengan kompleks makam Sultan Suriansyah.</li></ul>'.
+                    '<h3>Adab berkunjung</h3><ol><li>Kenakan pakaian sopan dan jaga ketenangan selama berada di masjid.</li><li>Hindari mengganggu pelaksanaan ibadah.</li><li>Mintalah izin sebelum mengambil foto di area tertentu.</li></ol>'.
+                    '<p><strong>Masjid tetap berfungsi sebagai tempat ibadah.</strong> <u>Dahulukan kepentingan jemaah.</u></p>',
+                'coordinate_x' => 17.49,
+                'coordinate_y' => 67.60,
+            ],
+            [
+                'category' => 'Wisata Religi',
+                'location_name' => 'Makam Datu Sanggul',
+                'location_address' => 'Desa Suato Tatakan, Kecamatan Tapin Selatan, Kabupaten Tapin',
+                'location_description' => '<h1>Makam Datu Sanggul</h1>'.
+                    '<p>Makam Datu Sanggul merupakan tujuan ziarah di Desa Suato Tatakan, Kecamatan Tapin Selatan. Datu Sanggul dikenal sebagai ulama dan tokoh masyarakat yang hidup pada abad ke-18 serta sezaman dengan Syekh Muhammad Arsyad al-Banjari.</p>'.
+                    '<h2>Makna kunjungan</h2><ul><li>Mengenal perjalanan tokoh agama yang dihormati masyarakat Tapin.</li><li>Melihat tradisi ziarah yang tetap dijalankan oleh masyarakat.</li><li>Mengunjungi salah satu rangkaian destinasi religi di kawasan Tatakan.</li></ul>'.
+                    '<h3>Adab ziarah</h3><ol><li>Berpakaian sopan dan berbicara dengan tenang.</li><li>Ikuti aturan serta arahan pengelola makam.</li><li>Jaga kebersihan dan hormati peziarah lain.</li></ol>'.
+                    '<p><em>Kawasan ini adalah ruang ibadah dan refleksi.</em> <u>Hindari kegiatan yang mengganggu kekhusyukan.</u></p>',
+                'coordinate_x' => 34.90,
+                'coordinate_y' => 59.26,
+            ],
+            [
+                'category' => 'Wisata Bahari',
+                'location_name' => 'Pantai Angsana',
+                'location_address' => 'Desa Angsana, Kecamatan Angsana, Kabupaten Tanah Bumbu',
+                'location_description' => '<h1>Pantai Angsana</h1>'.
+                    '<p>Pantai Angsana dikenal sebagai destinasi bahari di Kabupaten Tanah Bumbu. Garis pantai, suasana pesisir, dan kawasan terumbu karang di perairan sekitarnya menjadi daya tarik bagi pengunjung yang ingin menikmati kegiatan laut.</p>'.
+                    '<h2>Aktivitas wisata</h2><ul><li>Bersantai di pantai dan menikmati matahari terbenam.</li><li>Snorkeling atau menyelam pada titik yang diizinkan.</li><li>Menuju kawasan terumbu karang menggunakan perahu dan pemandu setempat.</li></ul>'.
+                    '<h3>Persiapan aktivitas laut</h3><ol><li>Periksa cuaca, gelombang, dan ketersediaan operator sebelum berangkat.</li><li>Gunakan pelampung serta perlengkapan sesuai standar.</li><li>Jangan menginjak, menyentuh, atau mengambil bagian dari terumbu karang.</li></ol>'.
+                    '<p><strong>Kelestarian laut adalah tanggung jawab bersama.</strong> <em>Bawa kembali sampah dan gunakan produk yang ramah lingkungan.</em></p>',
+                'coordinate_x' => 53.59,
+                'coordinate_y' => 80.70,
+            ],
+            [
+                'category' => 'Wisata Bahari',
+                'location_name' => 'Pantai Batakan Baru',
+                'location_address' => 'Jalan Pariwisata, Desa Batakan, Kecamatan Panyipatan, Kabupaten Tanah Laut',
+                'location_description' => '<h1>Pantai Batakan Baru</h1>'.
+                    '<p>Pantai Batakan Baru merupakan destinasi pesisir di Desa Batakan, Kecamatan Panyipatan. Kawasan ini memiliki garis pantai yang panjang, pepohonan rindang, serta panorama Pulau Datu yang dapat terlihat dari sekitar pantai.</p>'.
+                    '<h2>Daya tarik pantai</h2><ul><li>Area rekreasi keluarga dengan ruang terbuka di sepanjang pesisir.</li><li>Pemandangan matahari terbit dan terbenam saat kondisi cuaca mendukung.</li><li>Aktivitas berkuda, bersantai, dan menikmati kuliner dari usaha setempat.</li></ul>'.
+                    '<h3>Tips berkunjung</h3><ol><li>Perhatikan batas aman ketika bermain di dekat air.</li><li>Awasi anak-anak dan ikuti petunjuk pengelola kawasan.</li><li>Gunakan tempat sampah serta jaga kebersihan fasilitas umum.</li></ol>'.
+                    '<p><u>Fasilitas dan aktivitas dapat berubah mengikuti kondisi kawasan.</u> <em>Konfirmasikan informasi terbaru sebelum berangkat.</em></p>',
+                'coordinate_x' => 18.78,
+                'coordinate_y' => 92.56,
+            ],
         ];
+
+        TourismLocation::where('location_name', 'Bukit Matang Kaladan')->update(['location_name' => 'Air Terjun Lano']);
+        TourismLocation::where('location_name', 'Museum Lambung Mangkurat')->update(['location_name' => 'Situs Candi Agung']);
+        TourismLocation::where('location_name', 'Makam Datu Kalampayan')->update(['location_name' => 'Makam Datu Sanggul']);
+        TourismLocation::where('location_name', 'Pulau Samber Gelap')->update(['location_name' => 'Pantai Batakan Baru']);
 
         foreach ($locations as $data) {
             $category = $categories[$data['category']];
@@ -55,7 +148,6 @@ class TourismSeeder extends Seeder
                 array_merge($data, [
                     'category_id' => $category->id,
                     'map_id' => $map->id,
-                    'location_source_media' => null,
                     'is_active' => true,
                 ]),
             );
