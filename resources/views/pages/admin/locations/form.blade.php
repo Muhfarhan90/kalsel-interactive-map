@@ -114,20 +114,11 @@
                     </div>
 
                     <div class="md:col-span-2">
-                        <x-form.form-elements.text-area-inputs label="Deskripsi" name="location_description" :value="$location->location_description" rows="5" required maxlength="3000" />
+                        <x-form.form-elements.rich-text-editor label="Deskripsi" name="location_description" :value="$location->location_description" required/>
                     </div>
 
                     <x-form.form-elements.file-input-example label="Media gambar atau MP4" name="media" accept="image/jpeg,image/png,image/webp,video/mp4" help="Maksimal 50 MB. Kosongkan saat edit jika media tidak berubah." x-on:change="checkMedia($event.target.files[0])" />
 
-                    <div x-cloak x-show="uploading" class="md:col-span-2 rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-white/[0.03]" role="status" aria-live="polite">
-                        <div class="mb-2 flex items-center justify-between text-sm">
-                            <span class="font-medium text-gray-700 dark:text-gray-300">Mengunggah media</span>
-                            <span class="font-semibold tabular-nums text-[#da251d]" x-text="`${progress}%`"></span>
-                        </div>
-                        <div class="h-2 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700" role="progressbar" aria-label="Progres upload media" aria-valuemin="0" aria-valuemax="100" :aria-valuenow="progress">
-                            <div class="h-full rounded-full bg-[#da251d] transition-[width] duration-200" :style="`width: ${progress}%`"></div>
-                        </div>
-                    </div>
                     <div x-cloak x-show="uploadError" class="md:col-span-2 rounded-lg border border-error-200 bg-error-50 px-4 py-3 text-sm text-error-700 dark:border-error-500/30 dark:bg-error-500/10 dark:text-error-400" role="alert">
                         <p x-text="uploadError"></p>
                         <ul x-show="uploadErrors.length" class="mt-2 list-disc space-y-1 pl-5">
@@ -157,9 +148,15 @@
                         </span>
                     </button>
 
-                    <div class="mt-4 grid grid-cols-2 gap-3">
-                        @foreach (['coordinate_x' => ['Koordinat X (%)', 'x'], 'coordinate_y' => ['Koordinat Y (%)', 'y']] as $name => [$label, $model])
-                            <x-form.form-elements.default-inputs :label="$label" :name="$name" type="number" :value="$name === 'coordinate_x' ? $coordinateX : $coordinateY" x-model="{{ $model }}" min="0" max="100" step="0.01" required />
+                    <div class="mt-4 space-y-5">
+                        @foreach (['coordinate_x' => ['Koordinat X', 'x'], 'coordinate_y' => ['Koordinat Y', 'y']] as $name => [$label, $model])
+                            <label for="{{ $name }}" class="block">
+                                <span class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-400">{{ $label }}</span>
+                                <input id="{{ $name }}" name="{{ $name }}" type="range" min="0" max="100" step="0.01" value="{{ $name === 'coordinate_x' ? $coordinateX : $coordinateY }}" x-model.number="{{ $model }}" required aria-label="{{ $label }}" class="h-2 w-full cursor-pointer accent-[#da251d]">
+                                @error($name)
+                                    <span class="mt-1 block text-xs text-error-600">{{ $message }}</span>
+                                @enderror
+                            </label>
                         @endforeach
                     </div>
                 </x-common.component-card>
@@ -185,7 +182,7 @@
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                         </svg>
                         <span x-show="!isSubmitting">{{ $editing ? 'Simpan perubahan' : 'Tambah wisata' }}</span>
-                        <span x-cloak x-show="isSubmitting" x-text="uploading ? `Mengunggah ${progress}%` : 'Menyimpan…'"></span>
+                        <span x-cloak x-show="isSubmitting" x-text="uploading ? `Menyimpan ${progress}%` : 'Menyimpan…'"></span>
                     </button>
                 </div>
             </div>

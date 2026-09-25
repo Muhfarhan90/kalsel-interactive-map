@@ -29,7 +29,7 @@ class TourismController extends Controller
                     'category_icon_svg' => svg('heroicon-o-'.$location->tourism_category->heroiconName(), 'size-5')->toHtml(),
                     'location_name' => $location->location_name,
                     'location_address' => $location->location_address,
-                    'location_description' => $location->location_description,
+                    'location_description' => str_replace("\u{00A0}", ' ', $location->location_description ?? ''),
                     'location_media_url' => $mediaUrl,
                     'location_source_media' => $location->location_source_media,
                     'coordinate_x' => $location->coordinate_x,

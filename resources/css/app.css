@@ -1312,3 +1312,11 @@ pre code,
   text-align: left !important;
   unicode-bidi: isolate;
 }
+
+[data-rich-text-editor-surface].ql-container {
+  height: auto;
+}
+
+[data-rich-text-editor-surface] .ql-editor {
+  min-height: 10rem;
+}

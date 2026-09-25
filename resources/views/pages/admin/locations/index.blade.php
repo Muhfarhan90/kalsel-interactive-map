@@ -32,7 +32,6 @@
                         <tr class="text-left text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
                             <th class="px-5 py-3.5 text-left">Wisata</th>
                             <th class="px-5 py-3.5 text-left">Kategori</th>
-                            <th class="px-5 py-3.5 text-left">Koordinat</th>
                             <th class="px-5 py-3.5 text-left">Status</th>
                             <th class="px-5 py-3.5 text-right">Aksi</th>
                         </tr>
@@ -51,10 +50,6 @@
                                         <x-dynamic-component :component="'heroicon-o-'.$location->tourism_category->heroiconName()" class="size-4" />
                                         {{ $location->tourism_category->category_name }}
                                     </span>
-                                </td>
-                                <td class="px-5 py-4 font-mono text-xs text-gray-500">
-                                    X {{ number_format($location->coordinate_x, 2) }}<br>
-                                    Y {{ number_format($location->coordinate_y, 2) }}
                                 </td>
                                 <td class="px-5 py-4">
                                     <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $location->is_active ? 'bg-success-50 text-success-700 dark:bg-success-500/10 dark:text-success-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400' }}">

@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
+use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
 class TourismLocationController extends Controller
 {
@@ -120,7 +122,7 @@ class TourismLocationController extends Controller
             'category_id' => ['required', 'exists:tourism_categories,id'],
             'location_name' => ['required', 'string', 'max:150'],
             'location_address' => ['required', 'string', 'max:255'],
-            'location_description' => ['required', 'string', 'max:3000'],
+            'location_description' => ['required', 'string'],
             'coordinate_x' => ['required', 'numeric', 'between:0,100'],
             'coordinate_y' => ['required', 'numeric', 'between:0,100'],
             'location_source_media' => ['nullable', 'string', 'max:255'],
@@ -129,6 +131,12 @@ class TourismLocationController extends Controller
 
         $media = $data['media'] ?? null;
         unset($data['media']);
+
+        $config = new HtmlSanitizerConfig();
+        foreach (['p', 'h1', 'h2', 'h3', 'br', 'strong', 'b', 'em', 'i', 'u', 'ul', 'ol', 'li', 'blockquote'] as $tag) {
+            $config = $config->allowElement($tag, []);
+        }
+        $data['location_description'] = str_replace("\u{00A0}", ' ', (new HtmlSanitizer($config))->sanitize($data['location_description']));
 
         $data['is_active'] = $request->boolean('is_active');
         $data['map_id'] = $this->defaultMap()->id;
