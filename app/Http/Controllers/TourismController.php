@@ -11,7 +11,7 @@ class TourismController extends Controller
 {
     public function __invoke(): View
     {
-        $map = TourismMap::first();
+        $map = TourismMap::query()->latest('id')->first();
         $locations = TourismLocation::with('tourism_category')
             ->where('is_active', true)
             ->orderBy('category_id')

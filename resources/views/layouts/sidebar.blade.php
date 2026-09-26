@@ -56,17 +56,7 @@
                             ? 'menu-item-icon-active'
                             : 'menu-item-icon-inactive' }}">
 
-                        <svg width="24" height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
-                                d="M5.5 3.25C4.25736 3.25 3.25 4.25736 3.25 5.5V9C3.25 10.2426 4.25736 11.25 5.5 11.25H9C10.2426 11.25 11.25 10.2426 11.25 9V5.5C11.25 4.25736 10.2426 3.25 9 3.25H5.5ZM12.75 5.5C12.75 4.25736 13.7574 3.25 15 3.25H18.5C19.7426 3.25 20.75 4.25736 20.75 5.5V9C20.75 10.2426 19.7426 11.25 18.5 11.25H15C13.7574 11.25 12.75 10.2426 12.75 9V5.5Z"
-                                fill="currentColor"
-                            />
-                        </svg>
+                        <x-heroicon-o-home class="size-6" />
 
                     </span>
 

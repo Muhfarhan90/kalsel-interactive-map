@@ -44,17 +44,15 @@ class TourismMapController extends Controller
 
     private function map(): TourismMap
     {
-        return TourismMap::firstOrCreate(
-            ['map_title' => 'Peta Wisata Kalimantan Selatan'],
-            [
+        return TourismMap::query()->latest('id')->first() ?? TourismMap::create([
+                'map_title' => 'Peta Wisata Kalimantan Selatan',
                 'map_sub_title' => 'Interactive Map Guidance',
                 'map_logo' => 'images/logo/logo_kalsel.svg',
                 'map_image' => 'images/maps/peta_provinsi_kalsel.png',
                 'map_description' => 'Peta utama lokasi wisata Kalimantan Selatan.',
                 'header_title' => 'Kalimantan Selatan',
                 'header_sub_title' => 'Interactive Map Guidance',
-            ],
-        );
+            ]);
     }
 
     private function storeImage(UploadedFile $file, string $name, ?string $currentPath): string
