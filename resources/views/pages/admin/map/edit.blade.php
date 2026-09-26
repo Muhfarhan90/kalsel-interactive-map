@@ -14,7 +14,14 @@
             @csrf
             @method('PUT')
 
-            <x-common.component-card title="Informasi peta" desc="Judul, subjudul, dan deskripsi akan ditampilkan pada halaman publik.">
+            <x-common.component-card title="Header peta" desc="Atur tulisan pada header bagian atas peta publik.">
+                <div class="grid gap-5 md:grid-cols-2">
+                    <x-form.form-elements.default-inputs label="Judul header" name="header_title" :value="$map->header_title ?: 'Kalimantan Selatan'" required maxlength="255" />
+                    <x-form.form-elements.default-inputs label="Subjudul header" name="header_sub_title" :value="$map->header_sub_title ?: 'Interactive Map Guidance'" required maxlength="255" />
+                </div>
+            </x-common.component-card>
+
+            <x-common.component-card title="Informasi peta" desc="Judul, subjudul, dan deskripsi akan ditampilkan pada panel informasi publik.">
                 <div class="grid gap-5 md:grid-cols-2">
                     <x-form.form-elements.default-inputs label="Judul peta" name="map_title" :value="$map->map_title" required maxlength="255" />
                     <x-form.form-elements.default-inputs label="Subjudul" name="map_sub_title" :value="$map->map_sub_title" maxlength="255" />

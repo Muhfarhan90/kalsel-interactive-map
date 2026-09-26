@@ -12,8 +12,8 @@
     class="m-0 h-screen overflow-hidden bg-gray-100 font-sans text-gray-800 max-[850px]:h-auto max-[850px]:min-h-screen max-[850px]:overflow-y-auto">
     <header
         class="flex h-16 items-center justify-between border-b border-red-800 bg-[#da251d] px-4 py-1 text-[26px] font-bold text-white uppercase max-[520px]:px-2 max-[520px]:text-sm">
-        <div class="min-w-0 flex-1 truncate">Kalimantan Selatan</div>
-        <div class="shrink-0 whitespace-nowrap text-center tracking-wide">Interactive Map Guidance</div>
+        <div class="min-w-0 flex-1 truncate">{{ $map?->header_title ?: 'Kalimantan Selatan' }}</div>
+        <div class="shrink-0 whitespace-nowrap text-center tracking-wide">{{ $map?->header_sub_title ?: 'Interactive Map Guidance' }}</div>
         <time class="min-w-0 flex-1 text-right tabular-nums" id="clock" aria-label="Waktu sekarang">--:--</time>
     </header>
 
@@ -260,6 +260,7 @@
                 element.style.color = active ? '#da251d' : markerLocation.category_color;
                 element.querySelector('.marker-number')?.classList.toggle('hidden', active);
                 element.classList.toggle('scale-y-110', active);
+                element.classList.toggle('animate-stretch-up', active);
                 element.classList.toggle('z-20', active);
             });
 
@@ -278,7 +279,7 @@
                     .locationId));
                 if (location) marker.style.color = location.category_color;
                 marker.querySelector('.marker-number')?.classList.remove('hidden');
-                marker.classList.remove('z-20', 'scale-y-110');
+                marker.classList.remove('z-20', 'animate-stretch-up', 'scale-y-110');
             });
         });
 

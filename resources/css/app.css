@@ -1320,3 +1320,13 @@ pre code,
 [data-rich-text-editor-surface] .ql-editor {
   min-height: 10rem;
 }
+
+@keyframes stretch-up {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(1.15); }
+}
+
+@utility animate-stretch-up {
+  animation: stretch-up 1500ms ease-in-out infinite;
+}
+

@@ -13,6 +13,8 @@ class TourismMap extends Model
         'map_logo',
         'map_image',
         'map_description',
+        'header_title',
+        'header_sub_title',
     ];
 
     public function tourism_locations(): HasMany

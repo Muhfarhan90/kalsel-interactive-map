@@ -131,7 +131,7 @@
                     <x-form.form-elements.default-inputs label="Sumber media" name="location_source_media" :value="$location->location_source_media" maxlength="255" placeholder="Nama pembuat atau URL sumber" />
 
                     <div class="md:col-span-2">
-                        <x-form.form-elements.checkbox-component label="Tampilkan pada peta" name="is_active" :checked="$location->exists ? $location->is_active : true" help="Data nonaktif tetap tersimpan tetapi tidak muncul pada papan digital." />
+                        <x-form.form-elements.checkbox-component label="Tampilkan pada peta" name="is_active" :checked="$location->exists ? $location->is_active : true" help="Data nonaktif tetap tersimpan tetapi tidak muncul pada peta." />
                     </div>
                 </div>
             </x-common.component-card>
