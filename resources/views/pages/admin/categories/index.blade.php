@@ -8,7 +8,7 @@
                 <h1 class="mt-1 text-2xl font-bold text-gray-900 dark:text-white">Kategori wisata</h1>
                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Atur warna dan pengelompokan marker pada peta interaktif.</p>
             </div>
-            <a href="{{ route('admin.categories.create') }}" class="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-[#da251d] px-4 py-2.5 text-sm font-semibold text-white shadow-theme-xs transition hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-100">
+            <a href="{{ route('admin.tourism-categories.create') }}" class="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-[#da251d] px-4 py-2.5 text-sm font-semibold text-white shadow-theme-xs transition hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-100">
                 <span class="text-lg leading-none">+</span>
                 Tambah kategori
             </a>
@@ -52,8 +52,8 @@
                                 </td>
                                 <td class="px-5 py-4">
                                     <div class="flex justify-end gap-2">
-                                        <a href="{{ route('admin.categories.edit', $category) }}" class="inline-flex min-h-10 items-center rounded-lg border border-gray-300 px-3 py-2 text-xs font-semibold text-gray-700 transition hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800">Edit</a>
-                                        <form action="{{ route('admin.categories.destroy', $category) }}" method="POST" onsubmit="return confirm('Hapus kategori ini?')">
+                                        <a href="{{ route('admin.tourism-categories.edit', $category) }}" class="inline-flex min-h-10 items-center rounded-lg border border-gray-300 px-3 py-2 text-xs font-semibold text-gray-700 transition hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800">Edit</a>
+                                        <form action="{{ route('admin.tourism-categories.destroy', $category) }}" method="POST" onsubmit="return confirm('Hapus kategori ini?')">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="inline-flex min-h-10 items-center rounded-lg border border-error-200 px-3 py-2 text-xs font-semibold text-error-600 transition hover:bg-error-50 dark:border-error-500/30 dark:hover:bg-error-500/10">Hapus</button>

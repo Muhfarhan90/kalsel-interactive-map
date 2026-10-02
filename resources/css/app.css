@@ -1330,3 +1330,39 @@ pre code,
   animation: stretch-up 1500ms ease-in-out infinite;
 }
 
+/* View transition start */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root) {
+  animation: 300ms ease-in both page-leave;
+}
+
+::view-transition-new(root) {
+  animation: 380ms ease-out both page-enter;
+}
+
+@keyframes page-leave {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 1ms;
+  }
+}
+/* View transition end */

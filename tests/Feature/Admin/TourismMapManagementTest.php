@@ -15,7 +15,7 @@ class TourismMapManagementTest extends TestCase
     {
         $admin = User::factory()->create(['role' => 'admin']);
 
-        $this->actingAs($admin)->put(route('admin.map.update'), [
+        $this->actingAs($admin)->put(route('admin.tourism-map.update'), [
             'map_title' => 'Peta Wisata Baru',
             'map_sub_title' => 'Panduan Interaktif',
             'map_description' => 'Deskripsi peta baru.',
@@ -33,10 +33,10 @@ class TourismMapManagementTest extends TestCase
         $operator = User::factory()->create(['role' => 'operator']);
 
         $this->actingAs($operator)
-            ->get(route('admin.map.edit'))
+            ->get(route('admin.tourism-map.edit'))
             ->assertOk();
 
-        $this->actingAs($operator)->put(route('admin.map.update'), [
+        $this->actingAs($operator)->put(route('admin.tourism-map.update'), [
             'map_title' => 'Peta Operator',
             'map_sub_title' => 'Panduan Operator',
             'map_description' => 'Diperbarui oleh operator.',

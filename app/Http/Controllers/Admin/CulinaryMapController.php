@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\CulinaryMap;
 use App\Models\Map;
-use App\Models\TourismMap;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -12,49 +12,49 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
-class TourismMapController extends Controller
+class CulinaryMapController extends Controller
 {
     public function edit(): View
     {
-        return view('pages.admin.map.edit', [
-            'map' => $this->map(),
-        ]);
+        return view('pages.admin.culinary-map.edit', ['map' => $this->map()]);
     }
 
     public function update(Request $request): RedirectResponse
     {
-        $tourismMap = $this->map();
+        $culinaryMap = $this->map();
         $data = $request->validate([
             'map_title' => ['required', 'string', 'max:255'],
             'map_sub_title' => ['nullable', 'string', 'max:255'],
             'map_logo_file' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ]);
 
-        $tourismMap->update([
+        $culinaryMap->update([
             'map_title' => $data['map_title'],
             'map_sub_title' => $data['map_sub_title'] ?? null,
             'map_logo' => $request->hasFile('map_logo_file')
-                ? $this->storeImage($request->file('map_logo_file'), $tourismMap->map_logo)
-                : $tourismMap->map_logo,
+                ? $this->storeImage($request->file('map_logo_file'), $culinaryMap->map_logo)
+                : $culinaryMap->map_logo,
         ]);
 
-        return back()->with('success', 'Pengaturan peta berhasil diperbarui.');
+        return back()->with('success', 'Pengaturan peta kuliner berhasil diperbarui.');
     }
 
-    private function map(): TourismMap
+    private function map(): CulinaryMap
     {
-        $tourismMap = TourismMap::with('map')->latest('id')->first();
-        if ($tourismMap) {
-            if (!$tourismMap->map) {
-                $tourismMap->map()->associate(Map::shared())->save();
+        $culinaryMap = CulinaryMap::with('map')->latest('id')->first();
+        if ($culinaryMap) {
+            if (!$culinaryMap->map) {
+                $culinaryMap->map()->associate(Map::shared())->save();
+            } elseif ($culinaryMap->map_id !== Map::shared()->id) {
+                $culinaryMap->map()->associate(Map::shared())->save();
             }
 
-            return $tourismMap->load('map');
+            return $culinaryMap->load('map');
         }
 
-        return TourismMap::create([
+        return CulinaryMap::create([
             'map_id' => Map::shared()->id,
-            'map_title' => 'Peta Wisata Kalimantan Selatan',
+            'map_title' => 'Peta Kuliner Kalimantan Selatan',
             'map_sub_title' => 'Interactive Map Guidance',
             'map_logo' => 'images/logo/logo_kalsel.svg',
         ])->load('map');
@@ -63,12 +63,10 @@ class TourismMapController extends Controller
     private function storeImage(UploadedFile $file, ?string $currentPath): string
     {
         $path = $file->storeAs('maps', Str::uuid().'.'.strtolower($file->extension()), 'public');
-
         if ($currentPath && str_starts_with($currentPath, 'storage/')) {
             Storage::disk('public')->delete(substr($currentPath, 8));
         }
 
         return 'storage/'.$path;
     }
-
 }

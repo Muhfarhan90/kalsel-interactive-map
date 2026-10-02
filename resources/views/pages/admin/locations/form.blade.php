@@ -19,7 +19,7 @@
         @if ($categories->isEmpty())
             <div class="rounded-xl border border-warning-200 bg-warning-50 px-4 py-3 text-sm text-warning-700">
                 Tambahkan kategori terlebih dahulu sebelum membuat data wisata.
-                <a href="{{ route('admin.categories.create') }}" class="font-semibold underline">Tambah kategori</a>
+                <a href="{{ route('admin.tourism-categories.create') }}" class="font-semibold underline">Tambah kategori</a>
             </div>
         @endif
 
@@ -128,7 +128,7 @@
                         </ul>
                     </div>
 
-                    <x-form.form-elements.default-inputs label="Sumber media" name="location_source_media" :value="$location->location_source_media" maxlength="255" placeholder="Nama pembuat atau URL sumber" />
+                    <x-form.form-elements.default-inputs label="Sumber media" name="location_source_media" :value="$location->location_source_media" maxlength="255" placeholder="TikTok, Instagram, YouTube, atau nama kreator" />
 
                     <div class="md:col-span-2">
                         <x-form.form-elements.checkbox-component label="Tampilkan pada peta" name="is_active" :checked="$location->exists ? $location->is_active : true" help="Data nonaktif tetap tersimpan tetapi tidak muncul pada peta." />

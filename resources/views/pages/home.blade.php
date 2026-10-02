@@ -41,13 +41,13 @@
                     <span class="mt-2 hidden max-w-[18rem] text-base leading-5 text-white/85 sm:block">Temukan destinasi dan tempat menarik di seluruh Kalsel.</span>
                 </a>
 
-                <article class="relative z-10 flex min-h-[9rem] min-w-0 flex-col items-center justify-center gap-2.5 px-1.5 py-4 text-center text-white sm:min-h-[14.5rem] sm:gap-0 sm:px-6 sm:py-6 lg:p-8">
+                <a href="{{ route('culinary') }}" class="relative z-10 flex min-h-[9rem] min-w-0 flex-col items-center justify-center gap-2.5 px-1.5 py-4 text-center text-white focus-visible:z-20 focus-visible:outline-4 focus-visible:outline-offset-[-5px] focus-visible:outline-white sm:min-h-[14.5rem] sm:gap-0 sm:px-6 sm:py-6 lg:p-8">
                     <span class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-white/15 sm:size-12 sm:rounded-2xl">
-                        <svg aria-hidden="true" class="size-5 sm:size-7" viewBox="0 0 24 24" fill="none"><path d="M5 9h14l-1 11H6L5 9Zm3 0V6a4 4 0 0 1 8 0v3m-8 4v.01M16 13v.01" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <svg aria-hidden="true" class="size-5 sm:size-7" viewBox="0 0 24 24" fill="none"><path d="M3 2v7c0 1.1.9 2 2 2h4c1.1 0 2-.9 2-2V2M7 2v20M21 15V2c-2 2-3 4-3 7v6h3Zm0 0v7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </span>
                     <span class="block text-base font-semibold sm:mt-6 sm:min-h-12 sm:text-2xl uppercase">Kuliner</span>
                     <span class="mt-2 hidden max-w-[18rem] text-base leading-5 text-white/85 sm:block">Kenali hidangan khas dan cita rasa Banua.</span>
-                </article>
+                </a>
 
                 <article class="relative z-10 flex min-h-[9rem] min-w-0 flex-col items-center justify-center gap-2.5 px-1.5 py-4 text-center text-white sm:min-h-[14.5rem] sm:gap-0 sm:px-6 sm:py-6 lg:p-8">
                     <span class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-white/15 sm:size-12 sm:rounded-2xl">

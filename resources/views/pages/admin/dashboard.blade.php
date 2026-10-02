@@ -36,7 +36,7 @@
                     <span class="text-2xl text-[#da251d]">→</span>
                 </div>
             </a>
-            <a href="{{ route('admin.categories.index') }}" class="group rounded-2xl border border-gray-200 bg-white p-6 shadow-theme-sm transition hover:border-[#da251d] dark:border-gray-800 dark:bg-gray-900">
+            <a href="{{ route('admin.tourism-categories.index') }}" class="group rounded-2xl border border-gray-200 bg-white p-6 shadow-theme-sm transition hover:border-[#da251d] dark:border-gray-800 dark:bg-gray-900">
                 <div class="flex items-start justify-between gap-4">
                     <div>
                         <p class="text-lg font-bold text-gray-900 dark:text-white">Kategori wisata</p>

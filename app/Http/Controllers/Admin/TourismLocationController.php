@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Map;
 use App\Models\TourismCategory;
 use App\Models\TourismLocation;
 use App\Models\TourismMap;
@@ -162,13 +163,21 @@ class TourismLocationController extends Controller
 
     private function defaultMap(): TourismMap
     {
-        return TourismMap::query()->latest('id')->first() ?? TourismMap::create([
-                'map_title' => 'Peta Wisata Kalimantan Selatan',
-                'map_sub_title' => 'Interactive Map Guidance',
-                'map_logo' => 'images/logo/logo_kalsel.svg',
-                'map_image' => 'images/maps/peta_provinsi_kalsel.png',
-                'map_description' => 'Peta utama lokasi wisata Kalimantan Selatan.',
-            ]);
+        $tourismMap = TourismMap::with('map')->latest('id')->first();
+        if ($tourismMap) {
+            if (!$tourismMap->map) {
+                $tourismMap->map()->associate(Map::shared())->save();
+            }
+
+            return $tourismMap->load('map');
+        }
+
+        return TourismMap::create([
+            'map_id' => Map::shared()->id,
+            'map_title' => 'Peta Wisata Kalimantan Selatan',
+            'map_sub_title' => 'Interactive Map Guidance',
+            'map_logo' => 'images/logo/logo_kalsel.svg',
+        ])->load('map');
     }
 
     private function deleteStoredMedia(?string $mediaUrl): void

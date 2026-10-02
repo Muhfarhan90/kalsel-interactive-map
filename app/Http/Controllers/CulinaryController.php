@@ -2,23 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TourismLocation;
-use App\Models\TourismMap;
+use App\Models\CulinaryLocation;
+use App\Models\CulinaryMap;
 use App\Models\PublicPageHeader;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
-class TourismController extends Controller
+class CulinaryController extends Controller
 {
     public function __invoke(): View
     {
-        $map = TourismMap::with('map')->latest('id')->first();
-        $locations = TourismLocation::with('tourism_category')
+        $map = CulinaryMap::with('map')->latest('id')->first();
+        $locations = CulinaryLocation::with('culinary_category')
             ->where('is_active', true)
             ->orderBy('category_id')
             ->orderBy('location_name')
             ->get()
-            ->map(function (TourismLocation $location): array {
+            ->map(function (CulinaryLocation $location): array {
                 $mediaUrl = $location->location_media_url;
 
                 if ($mediaUrl && ! Str::startsWith($mediaUrl, ['http://', 'https://'])) {
@@ -27,9 +27,9 @@ class TourismController extends Controller
 
                 return [
                     'id' => $location->id,
-                    'category' => $location->tourism_category->category_name,
-                    'category_color' => $location->tourism_category->category_color,
-                    'category_icon_svg' => svg('heroicon-o-'.$location->tourism_category->heroiconName(), 'size-5')->toHtml(),
+                    'category' => $location->culinary_category->category_name,
+                    'category_color' => $location->culinary_category->category_color,
+                    'category_icon_svg' => svg('heroicon-o-'.$location->culinary_category->heroiconName(), 'size-5')->toHtml(),
                     'location_name' => $location->location_name,
                     'location_address' => $location->location_address,
                     'location_description' => str_replace("\u{00A0}", ' ', $location->location_description ?? ''),
@@ -40,8 +40,8 @@ class TourismController extends Controller
                 ];
             });
 
-        return view('pages.tourism', [
-            'tourismLocations' => $locations,
+        return view('pages.culinary', [
+            'culinaryLocations' => $locations,
             'map' => $map,
             'pageHeader' => PublicPageHeader::where('page_key', 'home')->firstOrFail(),
         ]);

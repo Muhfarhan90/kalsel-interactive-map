@@ -33,7 +33,7 @@ class TourismCategoryController extends Controller
         TourismCategory::create($this->validatedData($request));
 
         return redirect()
-            ->route('admin.categories.index')
+            ->route('admin.tourism-categories.index')
             ->with('success', 'Kategori wisata berhasil ditambahkan.');
     }
 
@@ -50,7 +50,7 @@ class TourismCategoryController extends Controller
         $category->update($this->validatedData($request));
 
         return redirect()
-            ->route('admin.categories.index')
+            ->route('admin.tourism-categories.index')
             ->with('success', 'Kategori wisata berhasil diperbarui.');
     }
 

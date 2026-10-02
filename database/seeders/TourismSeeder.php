@@ -5,19 +5,22 @@ namespace Database\Seeders;
 use App\Models\TourismCategory;
 use App\Models\TourismLocation;
 use App\Models\TourismMap;
+use App\Models\Map;
 use Illuminate\Database\Seeder;
 
 class TourismSeeder extends Seeder
 {
     public function run(): void
     {
-        $map = TourismMap::query()->latest('id')->first() ?? TourismMap::create([
+        $map = TourismMap::with('map')->latest('id')->first();
+        if (!$map) {
+            $map = TourismMap::create([
+                'map_id' => Map::shared()->id,
                 'map_title' => 'Peta Wisata Kalimantan Selatan',
                 'map_sub_title' => 'Interactive Map Guidance',
                 'map_logo' => 'images/logo/logo_kalsel.svg',
-                'map_image' => 'images/maps/peta_provinsi_kalsel.png',
-                'map_description' => 'Peta utama lokasi wisata Kalimantan Selatan.',
-            ]);
+            ])->load('map');
+        }
 
         $categories = collect([
             ['category_name' => 'Wisata Alam', 'category_color' => '#2f7d57', 'category_icon' => 'globe-asia-australia', 'category_description' => 'Destinasi alam, pegunungan, dan bentang hijau.'],

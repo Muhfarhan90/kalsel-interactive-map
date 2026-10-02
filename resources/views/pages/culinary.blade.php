@@ -4,14 +4,14 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $map?->map_title ?: 'Peta Wisata Kalimantan Selatan' }}</title>
+    <title>{{ $map?->map_title ?: 'Peta Kuliner Kalimantan Selatan' }}</title>
     @vite('resources/css/app.css')
 </head>
 
 <body
     class="m-0 h-screen overflow-hidden bg-gray-100 font-sans text-gray-800 max-[850px]:h-auto max-[850px]:min-h-screen max-[850px]:overflow-y-auto"
-    style="--page-header-background: #da251d">
-    <x-public-page-header :settings="$pageHeader" background-color="#da251d" />
+    style="--page-header-background: #9a6507">
+    <x-public-page-header :settings="$pageHeader" background-color="#9a6507" />
 
     <main class="h-[calc(100vh-4rem)] w-full px-2 py-1 max-[850px]:h-auto">
         <section
@@ -34,13 +34,13 @@
                                     <img class="h-auto w-16 md:w-28 shrink-0 object-contain" src="{{ asset($map?->map_logo ?: 'images/logo/logo_kalsel.svg') }}"
                                         alt="Logo {{ $map?->map_title ?: 'Kalimantan Selatan' }}">
                                     <div class="min-w-0">
-                                        <h2 class="m-0 break-words text-2xl font-bold text-[#da251d]">{{ $map?->map_title ?: 'Peta Wisata Kalimantan Selatan' }}</h2>
+                                        <h2 class="m-0 break-words text-2xl font-bold text-[#9a6507]">{{ $map?->map_title ?: 'Peta Kuliner Kalimantan Selatan' }}</h2>
                                         @if ($map?->map_sub_title)
                                             <p class="text-sm text-gray-500">{{ $map->map_sub_title }}</p>
                                         @endif
                                     </div>
                                 </div>
-                                <a href="{{ route('home') }}" class="inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-bold text-white shadow-sm transition-opacity hover:opacity-90 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-red-200 max-[520px]:px-2 max-[520px]:text-xs" style="background-color: var(--page-header-background)" aria-label="Kembali ke halaman utama">
+                                <a href="{{ route('home') }}" class="inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-bold text-white shadow-sm transition-opacity hover:opacity-90 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-amber-200 max-[520px]:px-2 max-[520px]:text-xs" style="background-color: var(--page-header-background)" aria-label="Kembali ke halaman utama">
                                     Kembali
                                 </a>
                             </div>
@@ -100,7 +100,7 @@
     </main>
 
     <script>
-        const tourismLocations = @json($tourismLocations);
+        const culinaryLocations = @json($culinaryLocations);
 
         const mapFrame = document.getElementById('mapFrame');
         const categoryGrid = document.getElementById('categoryGrid');
@@ -131,7 +131,7 @@
             return template.innerHTML;
         }
 
-        const groupedLocations = tourismLocations.reduce((groups, location) => {
+        const groupedLocations = culinaryLocations.reduce((groups, location) => {
             if (!groups[location.category]) {
                 groups[location.category] = {
                     color: location.category_color,
@@ -144,17 +144,17 @@
             return groups;
         }, {});
 
-        const getCategoryNumber = (location) => tourismLocations
+        const getCategoryNumber = (location) => culinaryLocations
             .filter((item) => item.category === location.category)
             .findIndex((item) => item.id === location.id) + 1;
 
         function renderMarkers() {
-            tourismLocations.forEach((location) => {
+            culinaryLocations.forEach((location) => {
                 const categoryNumber = getCategoryNumber(location);
                 const marker = document.createElement('button');
                 marker.type = 'button';
                 marker.className =
-                    'absolute z-10 grid size-12 origin-bottom -translate-x-1/2 -translate-y-full cursor-pointer place-items-end border-0 bg-transparent p-0 drop-shadow-md focus:outline-none focus-visible:ring-4 focus-visible:ring-red-200';
+                    'absolute z-10 grid size-12 origin-bottom -translate-x-1/2 -translate-y-full cursor-pointer place-items-end border-0 bg-transparent p-0 drop-shadow-md focus:outline-none focus-visible:ring-4 focus-visible:ring-amber-200';
                 marker.dataset.locationId = location.id;
                 marker.style.left = location.coordinate_x + '%';
                 marker.style.top = location.coordinate_y + '%';
@@ -200,7 +200,7 @@
         }
 
         function showDetail(locationId) {
-            const location = tourismLocations.find((item) => item.id === locationId);
+            const location = culinaryLocations.find((item) => item.id === locationId);
             if (!location) return;
 
             const detailCategory = document.getElementById('detailCategory');
@@ -241,11 +241,11 @@
 
             document.querySelectorAll('[data-location-id]').forEach((element) => {
                 if (!element.closest('#mapFrame')) return;
-                const markerLocation = tourismLocations.find((item) => item.id === Number(element.dataset
+                const markerLocation = culinaryLocations.find((item) => item.id === Number(element.dataset
                     .locationId));
                 if (!markerLocation) return;
                 const active = markerLocation.id === locationId;
-                element.style.color = active ? '#da251d' : markerLocation.category_color;
+                element.style.color = active ? '#9a6507' : markerLocation.category_color;
                 element.querySelector('.marker-number')?.classList.toggle('hidden', active);
                 element.classList.toggle('scale-y-110', active);
                 element.classList.toggle('animate-stretch-up', active);
@@ -263,7 +263,7 @@
             listView.hidden = false;
 
             document.querySelectorAll('#mapFrame [data-location-id]').forEach((marker) => {
-                const location = tourismLocations.find((item) => item.id === Number(marker.dataset
+                const location = culinaryLocations.find((item) => item.id === Number(marker.dataset
                     .locationId));
                 if (location) marker.style.color = location.category_color;
                 marker.querySelector('.marker-number')?.classList.remove('hidden');

@@ -86,19 +86,21 @@
         </ul>
 
         <h2 class="mb-2 mt-5 flex text-xs uppercase leading-[20px] text-gray-400" :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'lg:justify-center' : 'justify-start'">
-            <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen">Peta wisata</span>
+            <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen">Peta</span>
         </h2>
         <ul class="flex flex-col gap-1">
             <li>
-                <a href="{{ route('admin.map.edit') }}"
-                    class="menu-item group {{ request()->routeIs('admin.map.*') ? 'menu-item-active' : 'menu-item-inactive' }}"
-                    :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'xl:justify-center' : 'xl:justify-start'">
-                    <span class="{{ request()->routeIs('admin.map.*') ? 'menu-item-icon-active' : 'menu-item-icon-inactive' }}">
-                        <x-heroicon-o-map class="size-6" />
-                    </span>
-                    <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen" class="menu-item-text">Manajemen Peta</span>
+                <a href="{{ route('admin.maps.edit') }}" class="menu-item group {{ request()->routeIs('admin.maps.*') ? 'menu-item-active' : 'menu-item-inactive' }}" :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'xl:justify-center' : 'xl:justify-start'">
+                    <span class="{{ request()->routeIs('admin.maps.*') ? 'menu-item-icon-active' : 'menu-item-icon-inactive' }}"><x-heroicon-o-photo class="size-6" /></span>
+                    <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen" class="menu-item-text">Peta Dasar</span>
                 </a>
             </li>
+        </ul>
+
+        <h2 class="mb-2 mt-5 flex text-xs uppercase leading-[20px] text-gray-400" :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'lg:justify-center' : 'justify-start'">
+            <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen">Wisata</span>
+        </h2>
+        <ul class="flex flex-col gap-1">
             <li>
                 <a href="{{ route('admin.locations.index') }}"
                     class="menu-item group {{ request()->routeIs('admin.locations.*') ? 'menu-item-active' : 'menu-item-inactive' }}"
@@ -113,15 +115,21 @@
                 </a>
             </li>
             <li>
-                <a href="{{ route('admin.categories.index') }}"
-                    class="menu-item group {{ request()->routeIs('admin.categories.*') ? 'menu-item-active' : 'menu-item-inactive' }}"
+                <a href="{{ route('admin.tourism-categories.index') }}"
+                    class="menu-item group {{ request()->routeIs('admin.tourism-categories.*') ? 'menu-item-active' : 'menu-item-inactive' }}"
                     :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'xl:justify-center' : 'xl:justify-start'">
-                    <span class="{{ request()->routeIs('admin.categories.*') ? 'menu-item-icon-active' : 'menu-item-icon-inactive' }}">
+                    <span class="{{ request()->routeIs('admin.tourism-categories.*') ? 'menu-item-icon-active' : 'menu-item-icon-inactive' }}">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M4 5.5C4 4.67 4.67 4 5.5 4H10V10H4V5.5ZM14 4H18.5C19.33 4 20 4.67 20 5.5V10H14V4ZM4 14H10V20H5.5C4.67 20 4 19.33 4 18.5V14ZM14 14H20V18.5C20 19.33 19.33 20 18.5 20H14V14Z" fill="currentColor"/>
                         </svg>
                     </span>
                     <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen" class="menu-item-text">Kategori Wisata</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('admin.tourism-map.edit') }}" class="menu-item group {{ request()->routeIs('admin.tourism-map.*') ? 'menu-item-active' : 'menu-item-inactive' }}" :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'xl:justify-center' : 'xl:justify-start'">
+                    <span class="{{ request()->routeIs('admin.tourism-map.*') ? 'menu-item-icon-active' : 'menu-item-icon-inactive' }}"><x-heroicon-o-map class="size-6" /></span>
+                    <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen" class="menu-item-text">Pengaturan Peta</span>
                 </a>
             </li>
             @if (auth()->user()?->role === 'admin')
@@ -136,6 +144,30 @@
                     </a>
                 </li>
             @endif
+        </ul>
+
+        <h2 class="mb-2 mt-5 flex text-xs uppercase leading-[20px] text-gray-400" :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'lg:justify-center' : 'justify-start'">
+            <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen">Kuliner</span>
+        </h2>
+        <ul class="flex flex-col gap-1">
+            <li>
+                <a href="{{ route('admin.culinary-locations.index') }}" class="menu-item group {{ request()->routeIs('admin.culinary-locations.*') ? 'menu-item-active' : 'menu-item-inactive' }}" :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'xl:justify-center' : 'xl:justify-start'">
+                    <span class="{{ request()->routeIs('admin.culinary-locations.*') ? 'menu-item-icon-active' : 'menu-item-icon-inactive' }}"><x-heroicon-o-cake class="size-6" /></span>
+                    <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen" class="menu-item-text">Data Kuliner</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('admin.culinary-categories.index') }}" class="menu-item group {{ request()->routeIs('admin.culinary-categories.*') ? 'menu-item-active' : 'menu-item-inactive' }}" :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'xl:justify-center' : 'xl:justify-start'">
+                    <span class="{{ request()->routeIs('admin.culinary-categories.*') ? 'menu-item-icon-active' : 'menu-item-icon-inactive' }}"><x-heroicon-o-tag class="size-6" /></span>
+                    <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen" class="menu-item-text">Kategori Kuliner</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('admin.culinary-map.edit') }}" class="menu-item group {{ request()->routeIs('admin.culinary-map.*') ? 'menu-item-active' : 'menu-item-inactive' }}" :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'xl:justify-center' : 'xl:justify-start'">
+                    <span class="{{ request()->routeIs('admin.culinary-map.*') ? 'menu-item-icon-active' : 'menu-item-icon-inactive' }}"><x-heroicon-o-map class="size-6" /></span>
+                    <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen" class="menu-item-text">Pengaturan Peta</span>
+                </a>
+            </li>
         </ul>
 
     </nav>

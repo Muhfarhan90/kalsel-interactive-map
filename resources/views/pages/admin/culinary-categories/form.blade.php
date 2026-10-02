@@ -3,7 +3,13 @@
 @php
     $editing = $category->exists;
     $selectedIcon = old('category_icon', $category->heroiconName());
+    $selectedIcon = is_string($selectedIcon) && array_key_exists($selectedIcon, $iconOptions)
+        ? $selectedIcon
+        : $category->heroiconName();
     $selectedColor = old('category_color', $category->category_color ?: '#da251d');
+    $selectedColor = is_string($selectedColor) && preg_match('/^#[0-9a-fA-F]{6}$/', $selectedColor)
+        ? $selectedColor
+        : '#da251d';
     $heroiconPath = base_path('vendor/blade-ui-kit/blade-heroicons/resources/svg');
     $selectedIconSvg = file_get_contents($heroiconPath.'/o-'.$selectedIcon.'.svg');
 @endphp
@@ -11,31 +17,30 @@
 @section('content')
     <div class="mx-auto max-w-4xl space-y-6">
         <div>
-            <a href="{{ route('admin.tourism-categories.index') }}" class="text-sm font-semibold text-[#da251d] hover:underline">← Kembali ke kategori</a>
-            <h1 class="mt-3 text-2xl font-bold text-gray-900 dark:text-white">{{ $editing ? 'Edit kategori' : 'Tambah kategori' }}</h1>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Warna kategori digunakan pada pin peta, nomor lokasi, dan badge detail.</p>
+            <a href="{{ route('admin.culinary-categories.index') }}" class="text-sm font-semibold text-[#da251d] hover:underline">← Kembali ke kategori kuliner</a>
+            <h1 class="mt-3 text-2xl font-bold text-gray-900 dark:text-white">{{ $editing ? 'Edit kategori kuliner' : 'Tambah kategori kuliner' }}</h1>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Warna dan ikon membantu membedakan kategori kuliner di panel admin.</p>
         </div>
 
         @include('components.common.flash-message')
 
-        <form action="{{ $editing ? route('admin.tourism-categories.update', $category) : route('admin.tourism-categories.store') }}" method="POST">
+        <form action="{{ $editing ? route('admin.culinary-categories.update', $category) : route('admin.culinary-categories.store') }}" method="POST">
             @csrf
-            @if ($editing)
-                @method('PUT')
-            @endif
+            @if ($editing) @method('PUT') @endif
 
-            <x-common.component-card title="Informasi kategori" desc="Warna kategori digunakan pada marker, nomor lokasi, dan badge detail.">
+            <x-common.component-card title="Informasi kategori" desc="Atur nama, warna, ikon, dan deskripsi kategori kuliner.">
                 <div class="grid gap-5 md:grid-cols-2" x-data="{ icon: @js($selectedIcon), iconSvg: @js($selectedIconSvg), color: @js($selectedColor), pickerOpen: false, iconSearch: '' }">
                     <div class="md:col-span-2">
                         <x-form.form-elements.default-inputs label="Nama kategori" name="category_name" :value="$category->category_name" required maxlength="100" />
                     </div>
 
                     <label class="block">
-                        <span class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Warna marker</span>
+                        <span class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Warna kategori</span>
                         <div class="flex h-11 items-center gap-3 rounded-lg border border-gray-300 px-3 shadow-theme-xs dark:border-gray-700">
                             <input type="color" name="category_color" value="{{ $selectedColor }}" x-model="color" required class="size-7 cursor-pointer border-0 bg-transparent p-0">
                             <span class="text-xs text-gray-500">Pilih warna yang mudah dibedakan.</span>
                         </div>
+                        @error('category_color') <p class="mt-1.5 text-xs text-error-500">{{ $message }}</p> @enderror
                     </label>
 
                     <div class="relative" @click.outside="pickerOpen = false" @keydown.escape.window="pickerOpen = false">
@@ -69,18 +74,16 @@
                                 @endforeach
                             </div>
                         </div>
-                        @error('category_icon')
-                            <p class="mt-1.5 text-xs text-error-500">{{ $message }}</p>
-                        @enderror
+                        @error('category_icon') <p class="mt-1.5 text-xs text-error-500">{{ $message }}</p> @enderror
                     </div>
 
                     <div class="md:col-span-2">
-                        <x-form.form-elements.text-area-inputs label="Deskripsi kategori" name="category_description" :value="$category->category_description" rows="4" required maxlength="1000" />
+                        <x-form.form-elements.text-area-inputs label="Deskripsi kategori" name="category_description" :value="$category->category_description" rows="4" maxlength="1000" />
                     </div>
                 </div>
 
                 <div class="flex flex-col-reverse gap-3 border-t border-gray-100 pt-5 sm:flex-row sm:justify-end dark:border-gray-800">
-                    <a href="{{ route('admin.tourism-categories.index') }}" class="inline-flex min-h-11 items-center justify-center rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800">Batal</a>
+                    <a href="{{ route('admin.culinary-categories.index') }}" class="inline-flex min-h-11 items-center justify-center rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800">Batal</a>
                     <button type="submit" class="inline-flex min-h-11 items-center justify-center rounded-lg bg-[#da251d] px-5 py-2.5 text-sm font-semibold text-white shadow-theme-xs hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-100">
                         {{ $editing ? 'Simpan perubahan' : 'Tambah kategori' }}
                     </button>
