@@ -14,7 +14,9 @@ class TourismMapController extends Controller
 {
     public function edit(): View
     {
-        return view('pages.admin.map.edit', ['map' => $this->map()]);
+        return view('pages.admin.map.edit', [
+            'map' => $this->map(),
+        ]);
     }
 
     public function update(Request $request): RedirectResponse
@@ -24,8 +26,6 @@ class TourismMapController extends Controller
             'map_title' => ['required', 'string', 'max:255'],
             'map_sub_title' => ['nullable', 'string', 'max:255'],
             'map_description' => ['nullable', 'string', 'max:2000'],
-            'header_title' => ['required', 'string', 'max:255'],
-            'header_sub_title' => ['required', 'string', 'max:255'],
             'map_logo_file' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'map_image_file' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:10240'],
         ]);
@@ -38,7 +38,6 @@ class TourismMapController extends Controller
         }
 
         $map->update($data);
-
         return back()->with('success', 'Pengaturan peta berhasil diperbarui.');
     }
 
@@ -50,8 +49,6 @@ class TourismMapController extends Controller
                 'map_logo' => 'images/logo/logo_kalsel.svg',
                 'map_image' => 'images/maps/peta_provinsi_kalsel.png',
                 'map_description' => 'Peta utama lokasi wisata Kalimantan Selatan.',
-                'header_title' => 'Kalimantan Selatan',
-                'header_sub_title' => 'Interactive Map Guidance',
             ]);
     }
 

@@ -9,13 +9,9 @@
 </head>
 
 <body
-    class="m-0 h-screen overflow-hidden bg-gray-100 font-sans text-gray-800 max-[850px]:h-auto max-[850px]:min-h-screen max-[850px]:overflow-y-auto">
-    <header
-        class="flex h-16 items-center justify-between border-b border-red-800 bg-[#da251d] px-4 py-1 text-[26px] font-bold text-white uppercase max-[520px]:px-2 max-[520px]:text-sm">
-        <div class="min-w-0 flex-1 truncate">{{ $map?->header_title ?: 'Kalimantan Selatan' }}</div>
-        <div class="shrink-0 whitespace-nowrap text-center tracking-wide">{{ $map?->header_sub_title ?: 'Interactive Map Guidance' }}</div>
-        <time class="min-w-0 flex-1 text-right tabular-nums" id="clock" aria-label="Waktu sekarang">--:--</time>
-    </header>
+    class="m-0 h-screen overflow-hidden bg-gray-100 font-sans text-gray-800 max-[850px]:h-auto max-[850px]:min-h-screen max-[850px]:overflow-y-auto"
+    style="--page-header-background: #da251d">
+    <x-public-page-header :settings="$pageHeader" background-color="#da251d" />
 
     <main class="h-[calc(100vh-4rem)] w-full px-2 py-1 max-[850px]:h-auto">
         <section
@@ -33,15 +29,20 @@
                 <div id="listView" class="h-full overflow-y-auto">
                     <div class="grid">
                         <header class="border-b border-gray-200 pb-2">
-                            <div class="flex items-center gap-2.5">
-                                <img class="w-12 h-auto object-contain" src="{{ asset($map?->map_logo ?: 'images/logo/logo_kalsel.svg') }}"
-                                    alt="Logo {{ $map?->map_title ?: 'Kalimantan Selatan' }}">
-                                <div>
-                                    <h2 class="m-0 text-2xl font-bold text-[#da251d]">{{ $map?->map_title ?: 'Peta Wisata Kalimantan Selatan' }}</h2>
-                                    @if ($map?->map_sub_title)
-                                        <p class="mt-1 text-sm leading-5 text-gray-500">{{ $map->map_sub_title }}</p>
-                                    @endif
+                            <div class="flex items-center justify-between gap-3 max-[520px]:items-start">
+                                <div class="flex min-w-0 items-center gap-2.5">
+                                    <img class="h-auto w-16 md:w-28 shrink-0 object-contain" src="{{ asset($map?->map_logo ?: 'images/logo/logo_kalsel.svg') }}"
+                                        alt="Logo {{ $map?->map_title ?: 'Kalimantan Selatan' }}">
+                                    <div class="min-w-0">
+                                        <h2 class="m-0 break-words text-2xl font-bold text-[#da251d]">{{ $map?->map_title ?: 'Peta Wisata Kalimantan Selatan' }}</h2>
+                                        @if ($map?->map_sub_title)
+                                            <p class="text-sm text-gray-500">{{ $map->map_sub_title }}</p>
+                                        @endif
+                                    </div>
                                 </div>
+                                <a href="{{ route('home') }}" class="inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-bold text-white shadow-sm transition-opacity hover:opacity-90 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-red-200 max-[520px]:px-2 max-[520px]:text-xs" style="background-color: var(--page-header-background)" aria-label="Kembali ke halaman utama">
+                                    Kembali
+                                </a>
                             </div>
                         </header>
 
@@ -62,7 +63,8 @@
                                     <h2 class="m-0 min-w-0 break-words text-2xl font-bold max-[520px]:text-xl" id="detailName"></h2>
                                 </div>
                                 <button
-                                    class="inline-flex min-h-10 shrink-0 cursor-pointer items-center whitespace-nowrap rounded-lg border-0 bg-[#da251d] px-3 py-2 text-sm font-bold text-white shadow-sm focus:outline-none focus-visible:ring-4 focus-visible:ring-red-200 max-[520px]:px-2 max-[520px]:text-xs"
+                                    class="inline-flex min-h-10 shrink-0 cursor-pointer items-center whitespace-nowrap rounded-lg border-0 px-3 py-2 text-sm font-bold text-white shadow-sm focus:outline-none focus-visible:ring-4 focus-visible:ring-gray-300 max-[520px]:px-2 max-[520px]:text-xs"
+                                    style="background-color: var(--page-header-background)"
                                     id="backButton" type="button">
                                     Kembali ke daftar
                                 </button>
@@ -104,16 +106,6 @@
         const categoryGrid = document.getElementById('categoryGrid');
         const listView = document.getElementById('listView');
         const detailView = document.getElementById('detailView');
-        const clock = document.getElementById('clock');
-
-        function updateClock() {
-            clock.textContent = new Intl.DateTimeFormat('id-ID', {
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false
-            }).format(new Date());
-        }
-
         const escapeHtml = (value) => String(value ?? '')
             .replaceAll('&', '&amp;')
             .replaceAll('<', '&lt;')
@@ -285,8 +277,6 @@
 
         renderMarkers();
         renderList();
-        updateClock();
-        setInterval(updateClock, 30000);
     </script>
 </body>
 

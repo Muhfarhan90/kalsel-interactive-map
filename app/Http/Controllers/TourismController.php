@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\TourismLocation;
 use App\Models\TourismMap;
+use App\Models\PublicPageHeader;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -42,6 +43,7 @@ class TourismController extends Controller
         return view('pages.tourism', [
             'tourismLocations' => $locations,
             'map' => $map,
+            'pageHeader' => PublicPageHeader::where('page_key', 'home')->firstOrFail(),
         ]);
     }
 }

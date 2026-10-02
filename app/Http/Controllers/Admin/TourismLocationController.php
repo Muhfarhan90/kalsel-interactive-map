@@ -168,8 +168,6 @@ class TourismLocationController extends Controller
                 'map_logo' => 'images/logo/logo_kalsel.svg',
                 'map_image' => 'images/maps/peta_provinsi_kalsel.png',
                 'map_description' => 'Peta utama lokasi wisata Kalimantan Selatan.',
-                'header_title' => 'Kalimantan Selatan',
-                'header_sub_title' => 'Interactive Map Guidance',
             ]);
     }
 

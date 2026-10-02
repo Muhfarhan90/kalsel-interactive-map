@@ -71,6 +71,24 @@
 
                 </a>
             </li>
+        </ul>
+
+        <h2 class="mb-2 mt-5 flex text-xs uppercase leading-[20px] text-gray-400" :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'lg:justify-center' : 'justify-start'">
+            <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen">Pengaturan situs</span>
+        </h2>
+        <ul class="flex flex-col gap-1">
+            <li>
+                <a href="{{ route('admin.headers.edit') }}" class="menu-item group {{ request()->routeIs('admin.headers.*') ? 'menu-item-active' : 'menu-item-inactive' }}" :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'xl:justify-center' : 'xl:justify-start'">
+                    <span class="{{ request()->routeIs('admin.headers.*') ? 'menu-item-icon-active' : 'menu-item-icon-inactive' }}"><x-heroicon-o-cog-6-tooth class="size-6" /></span>
+                    <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen" class="menu-item-text">Pengaturan header</span>
+                </a>
+            </li>
+        </ul>
+
+        <h2 class="mb-2 mt-5 flex text-xs uppercase leading-[20px] text-gray-400" :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'lg:justify-center' : 'justify-start'">
+            <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen">Peta wisata</span>
+        </h2>
+        <ul class="flex flex-col gap-1">
             <li>
                 <a href="{{ route('admin.map.edit') }}"
                     class="menu-item group {{ request()->routeIs('admin.map.*') ? 'menu-item-active' : 'menu-item-inactive' }}"

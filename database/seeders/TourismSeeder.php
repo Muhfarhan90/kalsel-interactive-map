@@ -11,17 +11,13 @@ class TourismSeeder extends Seeder
 {
     public function run(): void
     {
-        $map = TourismMap::updateOrCreate(
-            ['map_title' => 'Peta Wisata Kalimantan Selatan'],
-            [
+        $map = TourismMap::query()->latest('id')->first() ?? TourismMap::create([
+                'map_title' => 'Peta Wisata Kalimantan Selatan',
                 'map_sub_title' => 'Interactive Map Guidance',
                 'map_logo' => 'images/logo/logo_kalsel.svg',
                 'map_image' => 'images/maps/peta_provinsi_kalsel.png',
                 'map_description' => 'Peta utama lokasi wisata Kalimantan Selatan.',
-                'header_title' => 'Kalimantan Selatan',
-                'header_sub_title' => 'Interactive Map Guidance',
-            ],
-        );
+            ]);
 
         $categories = collect([
             ['category_name' => 'Wisata Alam', 'category_color' => '#2f7d57', 'category_icon' => 'globe-asia-australia', 'category_description' => 'Destinasi alam, pegunungan, dan bentang hijau.'],
