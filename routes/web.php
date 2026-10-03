@@ -6,12 +6,16 @@ use App\Http\Controllers\Admin\CulinaryLocationController;
 use App\Http\Controllers\Admin\CulinaryMapController;
 use App\Http\Controllers\Admin\MapController;
 use App\Http\Controllers\Admin\PublicPageHeaderController;
+use App\Http\Controllers\Admin\TransportationCategoryController;
+use App\Http\Controllers\Admin\TransportationLocationController;
+use App\Http\Controllers\Admin\TransportationMapController;
 use App\Http\Controllers\Admin\TourismCategoryController;
 use App\Http\Controllers\Admin\TourismLocationController;
 use App\Http\Controllers\Admin\TourismMapController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CulinaryController;
+use App\Http\Controllers\TransportationController;
 use App\Http\Controllers\TourismController;
 use App\Models\PublicPageHeader;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +25,7 @@ Route::get('/', fn () => view('pages.home', [
 ]))->name('home');
 Route::get('/wisata', TourismController::class)->name('tourism');
 Route::get('/kuliner', CulinaryController::class)->name('culinary');
+Route::get('/transportasi', TransportationController::class)->name('transportation');
 Route::get('/login', [AuthController::class, 'create'])->name('login');
 Route::post('/login', [AuthController::class, 'store']);
 Route::post('/logout', [AuthController::class, 'destroy'])->middleware('auth')->name('logout');
@@ -44,6 +49,14 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::resource('culinary-locations', CulinaryLocationController::class)
         ->except('show')
         ->parameters(['culinary-locations' => 'location']);
+    Route::get('transportation-map', [TransportationMapController::class, 'edit'])->name('transportation-map.edit');
+    Route::put('transportation-map', [TransportationMapController::class, 'update'])->name('transportation-map.update');
+    Route::resource('transportation-categories', TransportationCategoryController::class)
+        ->except('show')
+        ->parameters(['transportation-categories' => 'category']);
+    Route::resource('transportation-locations', TransportationLocationController::class)
+        ->except('show')
+        ->parameters(['transportation-locations' => 'location']);
     Route::delete('locations/{location}/media', [TourismLocationController::class, 'destroyMedia'])->name('locations.media.destroy');
     Route::resource('locations', TourismLocationController::class)->except('show');
     Route::resource('users', UserController::class)->except('show');

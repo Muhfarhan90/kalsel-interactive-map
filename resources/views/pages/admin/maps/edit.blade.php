@@ -5,7 +5,7 @@
         <div>
             <p class="text-sm font-medium text-[#da251d]">Pengaturan peta</p>
             <h1 class="mt-1 text-2xl font-bold text-gray-900 dark:text-white">Peta dasar</h1>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Gambar dan deskripsi peta dasar ini digunakan bersama oleh peta wisata dan kuliner.</p>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Gambar dan deskripsi peta dasar ini digunakan bersama oleh peta wisata, kuliner, dan transportasi.</p>
         </div>
 
         @include('components.common.flash-message')

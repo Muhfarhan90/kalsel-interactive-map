@@ -12,7 +12,8 @@ class Map extends Model
     public static function shared(): self
     {
         $mapId = TourismMap::query()->latest('id')->value('map_id')
-            ?? CulinaryMap::query()->latest('id')->value('map_id');
+            ?? CulinaryMap::query()->latest('id')->value('map_id')
+            ?? TransportationMap::query()->latest('id')->value('map_id');
 
         return static::query()->find($mapId)
             ?? static::query()->latest('id')->first()
@@ -30,5 +31,10 @@ class Map extends Model
     public function culinary_maps(): HasMany
     {
         return $this->hasMany(CulinaryMap::class);
+    }
+
+    public function transportation_maps(): HasMany
+    {
+        return $this->hasMany(TransportationMap::class);
     }
 }

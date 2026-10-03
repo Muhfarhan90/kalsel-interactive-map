@@ -9,9 +9,9 @@
 @section('content')
     <div class="space-y-6">
         <div>
-            <a href="{{ route('admin.culinary-locations.index') }}" class="text-sm font-semibold text-[#da251d] hover:underline">← Kembali ke data kuliner</a>
-            <h1 class="mt-3 text-2xl font-bold text-gray-900 dark:text-white">{{ $editing ? 'Edit data kuliner' : 'Tambah data kuliner' }}</h1>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Isi informasi kuliner lalu pilih posisi markernya pada peta.</p>
+            <a href="{{ route('admin.transportation-locations.index') }}" class="text-sm font-semibold text-[#da251d] hover:underline">← Kembali ke data transportasi</a>
+            <h1 class="mt-3 text-2xl font-bold text-gray-900 dark:text-white">{{ $editing ? 'Edit data transportasi' : 'Tambah data transportasi' }}</h1>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Isi informasi transportasi lalu pilih posisi markernya pada peta.</p>
         </div>
 
         @include('components.common.flash-message')
@@ -19,18 +19,18 @@
         @if ($categories->isEmpty())
             <div class="rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm text-orange-800 dark:border-orange-500/30 dark:bg-orange-500/10 dark:text-orange-300">
                 Tambahkan kategori terlebih dahulu.
-                <a href="{{ route('admin.culinary-categories.create') }}" class="font-semibold underline">Buat kategori kuliner</a>
+                <a href="{{ route('admin.transportation-categories.create') }}" class="font-semibold underline">Buat kategori transportasi</a>
             </div>
         @endif
 
-        <form action="{{ $editing ? route('admin.culinary-locations.update', $location) : route('admin.culinary-locations.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ $editing ? route('admin.transportation-locations.update', $location) : route('admin.transportation-locations.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             @if ($editing) @method('PUT') @endif
             <div class="grid gap-6 lg:grid-cols-2">
-                <x-common.component-card title="Informasi kuliner" desc="Informasi ini akan digunakan pada panel detail kuliner.">
+                <x-common.component-card title="Informasi transportasi" desc="Informasi ini akan digunakan pada panel detail transportasi.">
                     <div class="space-y-5">
                         <label class="block">
-                            <span class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Nama kuliner</span>
+                            <span class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Nama lokasi</span>
                             <input type="text" name="location_name" value="{{ old('location_name', $location->location_name) }}" required maxlength="150" class="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 text-sm text-gray-800 outline-none focus:border-[#da251d] focus:ring-3 focus:ring-red-100 dark:border-gray-700 dark:text-white/90">
                             @error('location_name') <span class="mt-1 block text-xs text-error-500">{{ $message }}</span> @enderror
                         </label>
@@ -49,7 +49,7 @@
                             <input type="text" name="location_address" value="{{ old('location_address', $location->location_address) }}" maxlength="255" class="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 text-sm text-gray-800 outline-none focus:border-[#da251d] focus:ring-3 focus:ring-red-100 dark:border-gray-700 dark:text-white/90">
                             @error('location_address') <span class="mt-1 block text-xs text-error-500">{{ $message }}</span> @enderror
                         </label>
-                        <x-form.form-elements.rich-text-editor label="Deskripsi (opsional)" name="location_description" :value="$location->location_description" maxlength="5000" />
+                        <x-form.form-elements.rich-text-editor label="Deskripsi (opsional)" name="location_description" :value="$location->location_description" help="Gunakan judul, paragraf, dan daftar untuk menjelaskan layanan, trayek, serta fasilitas yang terverifikasi." maxlength="5000" />
                         <label class="block">
                             <span class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Foto/video <span class="font-normal text-gray-400">(opsional, maks. 70 MB)</span></span>
                             <input type="file" name="media" accept="image/jpeg,image/png,image/webp,video/mp4" class="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm dark:border-gray-700">
@@ -67,7 +67,7 @@
                     </div>
                 </x-common.component-card>
 
-                <x-common.component-card title="Posisi pada peta" desc="Klik pada peta atau geser bar koordinat untuk menentukan titik lokasi kuliner.">
+                <x-common.component-card title="Posisi pada peta" desc="Klik pada peta atau geser bar koordinat untuk menentukan titik lokasi transportasi.">
                     <div x-data="{
                         x: @js($coordinateX), y: @js($coordinateY),
                         pick(event) {
@@ -77,7 +77,7 @@
                         }
                     }">
                         <div class="relative mx-auto aspect-square w-full max-w-lg overflow-hidden rounded-lg bg-gray-50" @click="pick($event)">
-                            <img src="{{ asset($map->map_image) }}" alt="Peta kuliner Kalimantan Selatan" class="absolute inset-0 size-full cursor-crosshair object-contain">
+                            <img src="{{ asset($map->map_image) }}" alt="Peta transportasi Kalimantan Selatan" class="absolute inset-0 size-full cursor-crosshair object-contain">
                             <span class="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-full text-[#da251d]" :style="{ left: `${x}%`, top: `${y}%` }">
                                 <svg class="h-10 w-8 drop-shadow" viewBox="0 0 36 46" aria-hidden="true"><path d="M18 1.5C9.2 1.5 2 8.4 2 16.9C2 29.1 18 44.5 18 44.5S34 29.1 34 16.9C34 8.4 26.8 1.5 18 1.5Z" fill="currentColor" stroke="white" stroke-width="2.5"/><circle cx="18" cy="17" r="6" fill="white"/></svg>
                             </span>
@@ -106,8 +106,8 @@
             </div>
 
             <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-                <a href="{{ route('admin.culinary-locations.index') }}" class="inline-flex min-h-11 items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800">Batal</a>
-                <button type="submit" @disabled($categories->isEmpty()) class="inline-flex min-h-11 items-center justify-center rounded-lg bg-[#da251d] px-5 py-2.5 text-sm font-semibold text-white shadow-theme-xs hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50">{{ $editing ? 'Simpan perubahan' : 'Tambah kuliner' }}</button>
+                <a href="{{ route('admin.transportation-locations.index') }}" class="inline-flex min-h-11 items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800">Batal</a>
+                <button type="submit" @disabled($categories->isEmpty()) class="inline-flex min-h-11 items-center justify-center rounded-lg bg-[#da251d] px-5 py-2.5 text-sm font-semibold text-white shadow-theme-xs hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50">{{ $editing ? 'Simpan perubahan' : 'Tambah transportasi' }}</button>
             </div>
         </form>
     </div>

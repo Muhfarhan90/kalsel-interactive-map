@@ -24,7 +24,7 @@
                 <span class="h-px w-7 bg-[#f4c76d]" aria-hidden="true"></span>
             </p>
             <h1 class="max-w-4xl text-[2.25rem] font-semibold leading-[1.08] tracking-tight sm:text-[3.5rem] lg:text-[4rem] capitalize">Satu tempat untuk mengenal Kalimantan Selatan</h1>
-            <p class="mt-3 max-w-2xl text-base leading-6 text-white/85 sm:mt-4 sm:text-xl sm:leading-8">Temukan alam, budaya, rasa, dan karya lokal. Pilih cara menjelajah yang paling menarik untukmu.</p>
+            <p class="mt-3 max-w-2xl text-base leading-6 text-white/85 sm:mt-4 sm:text-xl sm:leading-8">Temukan wisata, cita rasa, dan akses perjalanan di Banua. Pilih cara menjelajah yang paling menarik untukmu.</p>
 
             <nav aria-label="Menu utama" class="relative isolate mt-6 grid w-full max-w-5xl grid-cols-3 overflow-hidden rounded-[1.65rem] border-2 border-white/85 shadow-[0_22px_50px_rgba(12,38,30,0.4)] sm:mt-9 sm:rounded-[2.5rem] sm:border-[3px]">
                 <svg aria-hidden="true" class="pointer-events-none absolute inset-0 z-0 size-full" viewBox="0 0 1000 1000" preserveAspectRatio="none">
@@ -49,13 +49,13 @@
                     <span class="mt-2 hidden max-w-[18rem] text-base leading-5 text-white/85 sm:block">Kenali hidangan khas dan cita rasa Banua.</span>
                 </a>
 
-                <article class="relative z-10 flex min-h-[9rem] min-w-0 flex-col items-center justify-center gap-2.5 px-1.5 py-4 text-center text-white sm:min-h-[14.5rem] sm:gap-0 sm:px-6 sm:py-6 lg:p-8">
+                <a href="{{ route('transportation') }}" class="relative z-10 flex min-h-[9rem] min-w-0 flex-col items-center justify-center gap-2.5 px-1.5 py-4 text-center text-white focus-visible:z-20 focus-visible:outline-4 focus-visible:outline-offset-[-5px] focus-visible:outline-white sm:min-h-[14.5rem] sm:gap-0 sm:px-6 sm:py-6 lg:p-8">
                     <span class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-white/15 sm:size-12 sm:rounded-2xl">
-                        <svg aria-hidden="true" class="size-5 sm:size-7" viewBox="0 0 24 24" fill="none"><path d="M4 20V9l8-5 8 5v11H4Zm5 0v-6h6v6M8 10h.01M12 10h.01M16 10h.01" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <svg aria-hidden="true" class="size-5 sm:size-7" viewBox="0 0 24 24" fill="none"><path d="M11 3v18M11 5H5L3 8l2 3h6m0-2h7l3 3-3 3h-7M7 21h9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </span>
-                    <span class="block max-w-[13rem] text-sm font-semibold leading-5 sm:mt-6 sm:min-h-12 sm:text-2xl sm:leading-7 uppercase">Industri</span>
-                    <span class="mt-2 hidden max-w-[18rem] text-base leading-5 text-white/85 sm:block">Jelajahi produk unggulan dan karya lokal.</span>
-                </article>
+                    <span class="block max-w-[13rem] text-sm font-semibold leading-5 sm:mt-6 sm:min-h-12 sm:text-2xl sm:leading-7 uppercase">Transportasi</span>
+                    <span class="mt-2 hidden max-w-[18rem] text-base leading-5 text-white/85 sm:block">Temukan bandara, pelabuhan, dan terminal di Kalimantan Selatan.</span>
+                </a>
             </nav>
         </section>
     </main>
