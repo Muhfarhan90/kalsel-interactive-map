@@ -14,9 +14,12 @@ class TransportationController extends Controller
     {
         $map = TransportationMap::with('map')->latest('id')->first();
         $locations = TransportationLocation::with('transportation_category')
-            ->where('is_active', true)
-            ->orderBy('category_id')
-            ->orderBy('location_name')
+            ->join('transportation_categories', 'transportation_locations.category_id', '=', 'transportation_categories.id')
+            ->select('transportation_locations.*')
+            ->where('transportation_locations.is_active', true)
+            ->orderBy('transportation_categories.sort_order')
+            ->orderBy('transportation_categories.id')
+            ->orderBy('transportation_locations.location_name')
             ->get()
             ->map(function (TransportationLocation $location): array {
                 $mediaUrl = $location->location_media_url;

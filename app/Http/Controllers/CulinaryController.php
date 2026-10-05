@@ -14,9 +14,12 @@ class CulinaryController extends Controller
     {
         $map = CulinaryMap::with('map')->latest('id')->first();
         $locations = CulinaryLocation::with('culinary_category')
-            ->where('is_active', true)
-            ->orderBy('category_id')
-            ->orderBy('location_name')
+            ->join('culinary_categories', 'culinary_locations.category_id', '=', 'culinary_categories.id')
+            ->select('culinary_locations.*')
+            ->where('culinary_locations.is_active', true)
+            ->orderBy('culinary_categories.sort_order')
+            ->orderBy('culinary_categories.id')
+            ->orderBy('culinary_locations.location_name')
             ->get()
             ->map(function (CulinaryLocation $location): array {
                 $mediaUrl = $location->location_media_url;

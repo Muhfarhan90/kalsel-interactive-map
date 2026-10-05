@@ -7,6 +7,7 @@ use App\Models\TransportationCategory;
 use App\Models\TransportationLocation;
 use App\Models\TransportationMap;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class TransportationSeeder extends Seeder
 {
@@ -30,41 +31,24 @@ class TransportationSeeder extends Seeder
             ['Bandara', '#1f5da8', 'paper-airplane', 'Bandara dan fasilitas penerbangan di Kalimantan Selatan.'],
             ['Pelabuhan', '#0f766e', 'lifebuoy', 'Pelabuhan laut, sungai, dan penyeberangan di Kalimantan Selatan.'],
             ['Terminal', '#b7791f', 'building-office', 'Terminal dan layanan angkutan darat di Kalimantan Selatan.'],
-        ] as [$name, $color, $icon, $description]) {
+        ] as $index => [$name, $color, $icon, $description]) {
             TransportationCategory::firstOrCreate(
                 ['category_name' => $name],
                 [
                     'category_color' => $color,
                     'category_icon' => $icon,
                     'category_description' => $description,
+                    'sort_order' => $index + 1,
                 ],
             );
         }
-
-        TransportationCategory::query()
-            ->where('category_name', 'Stasiun')
-            ->whereDoesntHave('transportation_locations')
-            ->delete();
-
-        // Keluarkan simpul lokal atau lokasi lama tanpa dukungan data operasional terkini.
-        TransportationLocation::query()
-            ->whereIn('location_name', [
-                'Terminal Paringin', 'Terminal Martapura', 'Dermaga Riam Kanan', 'Terminal Barabai',
-                'Terminal Amuntai', 'Terminal Pasar Batuah', 'Terminal KM 6 Kayuh Baimbai',
-                'Dermaga Lok Baintan', 'Dermaga Aluh-Aluh', 'Pelabuhan Kintap', 'Bandar Udara Warukin',
-                'Simpul Angkutan Handil Bakti', 'Terminal Marabahan', 'Terminal Rantau', 'Dermaga Nagara',
-                'Dermaga Bajayau', 'Terminal Pasar Keramat', 'Dermaga Danau Panggang',
-                'Terminal Barang Haur Batu', 'Terminal Pasar Batu Mandi',
-                'Pelabuhan Penyeberangan Banjar Raya', 'Pelabuhan Danau Aranio',
-            ])
-            ->delete();
 
         $categories = TransportationCategory::query()
             ->whereIn('category_name', ['Bandara', 'Pelabuhan', 'Terminal'])
             ->get()
             ->keyBy('category_name');
 
-        foreach ([
+        $locations = [
             [
                 'category' => 'Bandara',
                 'location_name' => 'Bandara Internasional Syamsudin Noor',
@@ -141,7 +125,7 @@ class TransportationSeeder extends Seeder
                 'category' => 'Terminal',
                 'location_name' => 'Terminal Stagen',
                 'location_address' => 'Stagen, Kecamatan Pulau Laut Utara, Kabupaten Kotabaru, Kalimantan Selatan 72114',
-                'location_description' => '<p>Terminal Stagen berada di Kecamatan Pulau Laut Utara, Kabupaten Kotabaru. Pemerintah Provinsi Kalimantan Selatan mencatatnya sebagai terminal tipe B di Pulau Laut. Jaringan terminal provinsi menghubungkan Kotabaru dengan Tanah Bumbu, Tanah Laut, dan Banjarmasin.</p><h3>Rute Trans Saijaan</h3><ul><li><strong>Terminal Stagen–Pelabuhan Panjang Kotabaru:</strong> menghubungkan terminal dengan kawasan pelabuhan penumpang. Dinas Perhubungan mencantumkan layanan rute ini pada hari kerja.</li><li><strong>Terminal Stagen–Siring Laut:</strong> menghubungkan terminal dengan kawasan wisata tepi laut Kotabaru. Rute ini tercantum sebagai layanan akhir pekan.</li></ul><p>Terminal juga dipakai Dinas Perhubungan Kotabaru untuk pemeriksaan kelaikan bus, termasuk pemeriksaan angkutan menjelang masa perjalanan Lebaran.</p>',
+                'location_description' => '<p>Terminal Stagen berada di Jalan Raya Stagen, Kecamatan Pulau Laut Utara, Kabupaten Kotabaru. Terminal tipe B ini menjadi titik pertemuan perjalanan dari wilayah utara dan selatan Pulau Laut. Kawasannya berdampingan dengan unit pengujian kendaraan bermotor.</p><h3>Jaringan angkutan</h3><ul><li>Angkutan antarkota dalam provinsi menuju Banjarmasin.</li><li>Angkutan perkotaan pada koridor Kotabaru–Stagen.</li><li>Angkutan perdesaan pada jaringan Gunung Ulin, Lontar, Megasari, Sambuluhan, Tanjung Lalak, Tanjung Pelayar, dan Tanjung Seloka.</li></ul><h3>Fasilitas terminal</h3><p>Kajian lapangan Politeknik Transportasi Darat Indonesia mencatat jalur kedatangan dan keberangkatan, ruang tunggu, loket, area parkir, serta kios. Luas kawasan terminal sekitar 29.400 meter persegi.</p>',
                 'coordinate_x' => 68.0,
                 'coordinate_y' => 76.0,
             ],
@@ -169,18 +153,31 @@ class TransportationSeeder extends Seeder
                 'coordinate_x' => 39.0,
                 'coordinate_y' => 50.0,
             ],
-        ] as $data) {
-            $category = $categories[$data['category']];
-            unset($data['category']);
+        ];
 
-            TransportationLocation::updateOrCreate(
-                ['location_name' => $data['location_name']],
-                array_merge($data, [
-                    'category_id' => $category->id,
-                    'map_id' => $map->id,
-                    'is_active' => true,
-                ]),
-            );
-        }
+        DB::transaction(function () use ($locations, $categories, $map): void {
+            TransportationLocation::query()
+                ->whereNotIn('location_name', array_column($locations, 'location_name'))
+                ->delete();
+
+            foreach ($locations as $data) {
+                $category = $categories[$data['category']];
+                unset($data['category']);
+
+                TransportationLocation::updateOrCreate(
+                    ['location_name' => $data['location_name']],
+                    array_merge($data, [
+                        'category_id' => $category->id,
+                        'map_id' => $map->id,
+                        'is_active' => true,
+                    ]),
+                );
+            }
+
+            TransportationCategory::query()
+                ->where('category_name', 'Stasiun')
+                ->whereDoesntHave('transportation_locations')
+                ->delete();
+        });
     }
 }

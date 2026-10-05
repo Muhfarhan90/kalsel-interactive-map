@@ -14,7 +14,7 @@
 
     <main class="relative flex h-[calc(100svh-4rem)] items-center justify-center overflow-hidden px-4 py-5 sm:px-8 lg:px-12">
         <img src="{{ asset('images/home/menara-pandang.jpeg') }}" alt="" aria-hidden="true" class="absolute inset-0 size-full object-cover object-center">
-        <div class="absolute inset-0 bg-[#102b29]/45" aria-hidden="true"></div>
+        <div class="absolute inset-0 bg-[#102b29]/20" aria-hidden="true"></div>
         <div class="absolute inset-0 bg-gradient-to-b from-[#102b29]/25 via-transparent to-[#102b29]/70" aria-hidden="true"></div>
 
         <section class="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-center text-center">

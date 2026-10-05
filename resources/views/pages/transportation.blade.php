@@ -18,8 +18,8 @@
             class="grid h-full grid-cols-12 rounded-lg bg-white max-[850px]:h-auto max-[850px]:grid-cols-1">
             <div class="col-span-7 min-w-0 bg-gray-50">
                 <div class="p-3">
-                    <div class="relative mx-auto aspect-square w-full max-w-[calc(100vh-6rem)]" id="mapFrame">
-                        <img class="block size-full rounded"
+                    <div class="relative mx-auto aspect-square w-full max-w-[calc(100vh-6rem)] border-[6px]" style="border-color: var(--page-header-background)" id="mapFrame">
+                        <img class="block size-full"
                             src="{{ asset($map?->map_image ?: 'images/maps/peta_provinsi_kalsel.png') }}" alt="{{ $map?->map_title ?: 'Peta Kalimantan Selatan' }}">
                     </div>
                 </div>
@@ -154,16 +154,16 @@
                 const marker = document.createElement('button');
                 marker.type = 'button';
                 marker.className =
-                    'absolute z-10 grid size-12 origin-bottom -translate-x-1/2 -translate-y-full cursor-pointer place-items-end border-0 bg-transparent p-0 drop-shadow-md focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-200';
+                    'pointer-events-none absolute z-10 grid size-12 origin-bottom -translate-x-1/2 -translate-y-full cursor-pointer place-items-end justify-items-center border-0 bg-transparent p-0 drop-shadow-md focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-200';
                 marker.dataset.locationId = location.id;
                 marker.style.left = location.coordinate_x + '%';
                 marker.style.top = location.coordinate_y + '%';
                 marker.style.color = location.category_color;
                 marker.innerHTML =
-                    '<svg class="h-10 w-8 overflow-visible" viewBox="0 0 36 46" aria-hidden="true">' +
-                    '<path d="M18 1.5C9.2 1.5 2 8.4 2 16.9C2 29.1 18 44.5 18 44.5S34 29.1 34 16.9C34 8.4 26.8 1.5 18 1.5Z" fill="currentColor" stroke="white" stroke-width="2.5"/>' +
-                    '<circle cx="18" cy="17" r="8" fill="white"/>' +
-                    '<text class="marker-number" x="18" y="20.5" text-anchor="middle" font-size="10" font-weight="700" fill="currentColor">' +
+                    '<svg class="h-10 w-8 overflow-visible" style="cursor:pointer" viewBox="0 0 36 46" aria-hidden="true">' +
+                    '<path d="M18 1.5C9.2 1.5 2 8.4 2 16.9C2 29.1 18 44.5 18 44.5S34 29.1 34 16.9C34 8.4 26.8 1.5 18 1.5Z" fill="currentColor" stroke="white" stroke-width="2.5" style="pointer-events:visiblePainted"/>' +
+                    '<circle cx="18" cy="17" r="8" fill="white" style="pointer-events:visiblePainted"/>' +
+                    '<text class="marker-number" x="18" y="20.5" text-anchor="middle" font-size="10" font-weight="700" fill="currentColor" style="pointer-events:visiblePainted">' +
                     categoryNumber + '</text>' +
                     '</svg>';
                 marker.title = location.location_name;

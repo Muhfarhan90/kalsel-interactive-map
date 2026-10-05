@@ -14,9 +14,12 @@ class TourismController extends Controller
     {
         $map = TourismMap::with('map')->latest('id')->first();
         $locations = TourismLocation::with('tourism_category')
-            ->where('is_active', true)
-            ->orderBy('category_id')
-            ->orderBy('location_name')
+            ->join('tourism_categories', 'tourism_locations.category_id', '=', 'tourism_categories.id')
+            ->select('tourism_locations.*')
+            ->where('tourism_locations.is_active', true)
+            ->orderBy('tourism_categories.sort_order')
+            ->orderBy('tourism_categories.id')
+            ->orderBy('tourism_locations.location_name')
             ->get()
             ->map(function (TourismLocation $location): array {
                 $mediaUrl = $location->location_media_url;

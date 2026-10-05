@@ -7,6 +7,7 @@ use App\Models\CulinaryCategory;
 use App\Models\CulinaryLocation;
 use App\Models\CulinaryMap;
 use App\Models\Map;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -47,11 +48,11 @@ class CulinaryLocationController extends Controller
         return $this->formView(new CulinaryLocation());
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): RedirectResponse|JsonResponse
     {
         CulinaryLocation::create($this->validatedData($request));
 
-        return redirect()->route('admin.culinary-locations.index')->with('success', 'Data kuliner berhasil ditambahkan.');
+        return $this->savedResponse($request, 'Data kuliner berhasil ditambahkan.');
     }
 
     public function edit(CulinaryLocation $location): View
@@ -59,11 +60,23 @@ class CulinaryLocationController extends Controller
         return $this->formView($location);
     }
 
-    public function update(Request $request, CulinaryLocation $location): RedirectResponse
+    public function update(Request $request, CulinaryLocation $location): RedirectResponse|JsonResponse
     {
         $location->update($this->validatedData($request, $location));
 
-        return redirect()->route('admin.culinary-locations.index')->with('success', 'Data kuliner berhasil diperbarui.');
+        return $this->savedResponse($request, 'Data kuliner berhasil diperbarui.');
+    }
+
+    private function savedResponse(Request $request, string $message): RedirectResponse|JsonResponse
+    {
+        $url = route('admin.culinary-locations.index');
+        if ($request->expectsJson()) {
+            $request->session()->flash('success', $message);
+
+            return response()->json(['redirect' => $url]);
+        }
+
+        return redirect()->to($url)->with('success', $message);
     }
 
     public function destroy(CulinaryLocation $location): RedirectResponse

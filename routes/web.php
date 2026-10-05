@@ -38,11 +38,13 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::put('maps', [MapController::class, 'update'])->name('maps.update');
     Route::get('tourism-map', [TourismMapController::class, 'edit'])->name('tourism-map.edit');
     Route::put('tourism-map', [TourismMapController::class, 'update'])->name('tourism-map.update');
+    Route::post('tourism-categories/reorder', [TourismCategoryController::class, 'reorder'])->name('tourism-categories.reorder');
     Route::resource('tourism-categories', TourismCategoryController::class)
         ->except('show')
         ->parameters(['tourism-categories' => 'category']);
     Route::get('culinary-map', [CulinaryMapController::class, 'edit'])->name('culinary-map.edit');
     Route::put('culinary-map', [CulinaryMapController::class, 'update'])->name('culinary-map.update');
+    Route::post('culinary-categories/reorder', [CulinaryCategoryController::class, 'reorder'])->name('culinary-categories.reorder');
     Route::resource('culinary-categories', CulinaryCategoryController::class)
         ->except('show')
         ->parameters(['culinary-categories' => 'category']);
@@ -51,6 +53,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
         ->parameters(['culinary-locations' => 'location']);
     Route::get('transportation-map', [TransportationMapController::class, 'edit'])->name('transportation-map.edit');
     Route::put('transportation-map', [TransportationMapController::class, 'update'])->name('transportation-map.update');
+    Route::post('transportation-categories/reorder', [TransportationCategoryController::class, 'reorder'])->name('transportation-categories.reorder');
     Route::resource('transportation-categories', TransportationCategoryController::class)
         ->except('show')
         ->parameters(['transportation-categories' => 'category']);

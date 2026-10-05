@@ -6,6 +6,7 @@ import Alpine from 'alpinejs';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import './components/rich-text-editor';
+import './components/category-sort';
 
 window.Alpine = Alpine;
 window.createPopper = createPopper;

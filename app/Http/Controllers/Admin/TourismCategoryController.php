@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\TourismCategory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -15,8 +16,9 @@ class TourismCategoryController extends Controller
     {
         return view('pages.admin.categories.index', [
             'categories' => TourismCategory::withCount('tourism_locations')
-                ->latest()
-                ->paginate(10),
+                ->orderBy('sort_order')
+                ->orderBy('id')
+                ->get(),
         ]);
     }
 
@@ -30,7 +32,9 @@ class TourismCategoryController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        TourismCategory::create($this->validatedData($request));
+        TourismCategory::create(array_merge($this->validatedData($request), [
+            'sort_order' => (int) TourismCategory::max('sort_order') + 1,
+        ]));
 
         return redirect()
             ->route('admin.tourism-categories.index')
@@ -52,6 +56,32 @@ class TourismCategoryController extends Controller
         return redirect()
             ->route('admin.tourism-categories.index')
             ->with('success', 'Kategori wisata berhasil diperbarui.');
+    }
+
+    public function reorder(Request $request): RedirectResponse
+    {
+        $order = $request->validate([
+            'order' => ['required', 'array'],
+            'order.*' => ['required', 'integer', 'distinct'],
+        ])['order'];
+
+        $ids = array_map('intval', $order);
+        $submittedIds = $ids;
+        $existingIds = TourismCategory::pluck('id')->map(fn ($id) => (int) $id)->all();
+        sort($submittedIds);
+        sort($existingIds);
+
+        if ($submittedIds !== $existingIds) {
+            return back()->with('error', 'Daftar kategori berubah. Muat ulang halaman dan coba lagi.');
+        }
+
+        DB::transaction(function () use ($ids): void {
+            foreach ($ids as $position => $id) {
+                TourismCategory::whereKey($id)->update(['sort_order' => $position + 1]);
+            }
+        });
+
+        return back()->with('success', 'Urutan kategori wisata berhasil diperbarui.');
     }
 
     public function destroy(TourismCategory $category): RedirectResponse

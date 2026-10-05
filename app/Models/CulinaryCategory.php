@@ -12,6 +12,7 @@ class CulinaryCategory extends Model
         'category_color',
         'category_icon',
         'category_description',
+        'sort_order',
     ];
 
     public static function iconOptions(): array

@@ -13,6 +13,7 @@ class TourismCategory extends Model
         'category_color',
         'category_icon',
         'category_description',
+        'sort_order',
     ];
 
     public function tourism_locations(): HasMany

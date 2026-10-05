@@ -7,6 +7,7 @@ use App\Models\TransportationCategory;
 use App\Models\TransportationLocation;
 use App\Models\TransportationMap;
 use App\Models\Map;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -47,11 +48,11 @@ class TransportationLocationController extends Controller
         return $this->formView(new TransportationLocation());
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): RedirectResponse|JsonResponse
     {
         TransportationLocation::create($this->validatedData($request));
 
-        return redirect()->route('admin.transportation-locations.index')->with('success', 'Data transportasi berhasil ditambahkan.');
+        return $this->savedResponse($request, 'Data transportasi berhasil ditambahkan.');
     }
 
     public function edit(TransportationLocation $location): View
@@ -59,11 +60,23 @@ class TransportationLocationController extends Controller
         return $this->formView($location);
     }
 
-    public function update(Request $request, TransportationLocation $location): RedirectResponse
+    public function update(Request $request, TransportationLocation $location): RedirectResponse|JsonResponse
     {
         $location->update($this->validatedData($request, $location));
 
-        return redirect()->route('admin.transportation-locations.index')->with('success', 'Data transportasi berhasil diperbarui.');
+        return $this->savedResponse($request, 'Data transportasi berhasil diperbarui.');
+    }
+
+    private function savedResponse(Request $request, string $message): RedirectResponse|JsonResponse
+    {
+        $url = route('admin.transportation-locations.index');
+        if ($request->expectsJson()) {
+            $request->session()->flash('success', $message);
+
+            return response()->json(['redirect' => $url]);
+        }
+
+        return redirect()->to($url)->with('success', $message);
     }
 
     public function destroy(TransportationLocation $location): RedirectResponse

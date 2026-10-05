@@ -140,7 +140,7 @@
                 <x-common.component-card title="Posisi marker" desc="Sentuh lokasi pada peta. Nilai X dan Y akan terisi otomatis.">
                     <button type="button" class="relative block aspect-square w-full cursor-crosshair overflow-hidden border border-gray-200 bg-gray-50 p-0 dark:border-gray-700" @click="const rect = $el.getBoundingClientRect(); x = Math.max(0, Math.min(100, (($event.clientX - rect.left) / rect.width) * 100)).toFixed(2); y = Math.max(0, Math.min(100, (($event.clientY - rect.top) / rect.height) * 100)).toFixed(2)">
                         <img src="{{ asset($map->map_image ?: 'images/maps/peta_provinsi_kalsel.png') }}" alt="Pilih posisi marker pada peta" class="size-full object-fill">
-                        <span class="pointer-events-none absolute z-10 grid size-10 -translate-x-1/2 -translate-y-full place-items-end text-[#da251d] drop-shadow-md" :style="{ left: x + '%', top: y + '%' }">
+                        <span class="pointer-events-none absolute z-10 grid size-12 -translate-x-1/2 -translate-y-full place-items-end justify-items-center text-[#da251d] drop-shadow-md" :style="{ left: x + '%', top: y + '%' }">
                             <svg class="h-10 w-8" viewBox="0 0 36 46" aria-hidden="true">
                                 <path d="M18 1.5C9.2 1.5 2 8.4 2 16.9C2 29.1 18 44.5 18 44.5S34 29.1 34 16.9C34 8.4 26.8 1.5 18 1.5Z" fill="currentColor" stroke="white" stroke-width="2.5"/>
                                 <circle cx="18" cy="17" r="6" fill="white"/>
