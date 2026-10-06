@@ -25,16 +25,30 @@ class CulinaryMapController extends Controller
         $data = $request->validate([
             'map_title' => ['required', 'string', 'max:255'],
             'map_sub_title' => ['nullable', 'string', 'max:255'],
+            'map_background_text' => ['nullable', 'string', 'max:150'],
             'map_logo_file' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'map_background_image_file' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:10240'],
+            'remove_map_background_image' => ['nullable', 'boolean'],
         ]);
+
+        $previousBackgroundImage = $culinaryMap->map_background_image;
+        $backgroundImage = $request->hasFile('map_background_image_file')
+            ? $this->storeImage($request->file('map_background_image_file'), null)
+            : ($request->boolean('remove_map_background_image') ? null : $previousBackgroundImage);
 
         $culinaryMap->update([
             'map_title' => $data['map_title'],
             'map_sub_title' => $data['map_sub_title'] ?? null,
+            'map_background_text' => $data['map_background_text'] ?? null,
             'map_logo' => $request->hasFile('map_logo_file')
                 ? $this->storeImage($request->file('map_logo_file'), $culinaryMap->map_logo)
                 : $culinaryMap->map_logo,
+            'map_background_image' => $backgroundImage,
         ]);
+
+        if ($previousBackgroundImage !== $backgroundImage && $previousBackgroundImage && str_starts_with($previousBackgroundImage, 'storage/')) {
+            Storage::disk('public')->delete(substr($previousBackgroundImage, 8));
+        }
 
         return back()->with('success', 'Pengaturan peta kuliner berhasil diperbarui.');
     }

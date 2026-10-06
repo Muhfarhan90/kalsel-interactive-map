@@ -13,6 +13,7 @@ class TourismCategory extends Model
         'category_color',
         'category_icon',
         'category_description',
+        'category_background_image',
         'sort_order',
     ];
 

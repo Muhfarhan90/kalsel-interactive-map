@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class TransportationMap extends Model
 {
-    protected $fillable = ['map_id', 'map_title', 'map_sub_title', 'map_logo'];
+    public const DEFAULT_BACKGROUND_TEXT = 'Temukan akses perjalanan untuk menjelajahi Kalimantan Selatan.';
+
+    protected $fillable = ['map_id', 'map_title', 'map_sub_title', 'map_logo', 'map_background_image', 'map_background_text'];
 
     public function map(): BelongsTo
     {
@@ -28,5 +30,10 @@ class TransportationMap extends Model
     public function getMapDescriptionAttribute(): ?string
     {
         return $this->map?->map_description;
+    }
+
+    public function getMapBackgroundTextAttribute(?string $value): string
+    {
+        return $value ?: self::DEFAULT_BACKGROUND_TEXT;
     }
 }

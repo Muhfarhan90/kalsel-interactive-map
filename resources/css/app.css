@@ -1321,6 +1321,10 @@ pre code,
   min-height: 10rem;
 }
 
+.category-list-text {
+  text-shadow: 0 0 8px #fff, 0 0 18px #fff, 0 0 28px #fff;
+}
+
 @keyframes stretch-up {
   0%, 100% { transform: scaleY(1); }
   50% { transform: scaleY(1.15); }
@@ -1330,26 +1334,18 @@ pre code,
   animation: stretch-up 1500ms ease-in-out infinite;
 }
 
-/* View transition start */
-@view-transition {
-  navigation: auto;
+/* Animate navigation between the public landing page and its menu pages. */
+.public-page > header,
+.public-page > main {
+  animation: 380ms ease-out both public-page-enter;
 }
 
-::view-transition-old(root) {
-  animation: 300ms ease-in both page-leave;
+.public-page.page-leaving > header,
+.public-page.page-leaving > main {
+  animation: 180ms ease-in both public-page-leave;
 }
 
-::view-transition-new(root) {
-  animation: 380ms ease-out both page-enter;
-}
-
-@keyframes page-leave {
-  to {
-    opacity: 0;
-  }
-}
-
-@keyframes page-enter {
+@keyframes public-page-enter {
   from {
     opacity: 0;
   }
@@ -1359,10 +1355,15 @@ pre code,
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation-duration: 1ms;
+@keyframes public-page-leave {
+  to {
+    opacity: 0;
   }
 }
-/* View transition end */
+
+@media (prefers-reduced-motion: reduce) {
+  .public-page > header,
+  .public-page > main {
+ soto banjar   animation: none;
+  }
+}

@@ -9,17 +9,17 @@
 </head>
 
 <body
-    class="m-0 h-screen overflow-hidden bg-gray-100 font-sans text-gray-800 max-[850px]:h-auto max-[850px]:min-h-screen max-[850px]:overflow-y-auto"
+    class="public-page m-0 h-screen overflow-hidden bg-gray-100 font-sans text-gray-800 max-[850px]:h-auto max-[850px]:min-h-screen max-[850px]:overflow-y-auto"
     style="--page-header-background: #1f5da8">
     <x-public-page-header :settings="$pageHeader" background-color="#1f5da8" />
 
-    <main class="h-[calc(100vh-4rem)] w-full px-2 py-1 max-[850px]:h-auto">
+    <main class="h-[calc(100vh-4rem)] w-full max-[850px]:h-auto">
         <section
             class="grid h-full grid-cols-12 rounded-lg bg-white max-[850px]:h-auto max-[850px]:grid-cols-1">
-            <div class="col-span-7 min-w-0 bg-gray-50">
+            <div class="col-span-7 min-w-0" style="background-color: color-mix(in srgb, var(--page-header-background) 14%, white)">
                 <div class="p-3">
-                    <div class="relative mx-auto aspect-square w-full max-w-[calc(100vh-6rem)] border-[6px]" style="border-color: var(--page-header-background)" id="mapFrame">
-                        <img class="block size-full"
+                    <div class="relative mx-auto aspect-square w-full max-w-[calc(100vh-6rem)] border-[6px] rounded-lg" style="border-color: var(--page-header-background)" id="mapFrame">
+                        <img class="block size-full rounded-xl"
                             src="{{ asset($map?->map_image ?: 'images/maps/peta_provinsi_kalsel.png') }}" alt="{{ $map?->map_title ?: 'Peta Kalimantan Selatan' }}">
                     </div>
                 </div>
@@ -40,7 +40,7 @@
                                         @endif
                                     </div>
                                 </div>
-                                <a href="{{ route('home') }}" class="inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-bold text-white shadow-sm transition-opacity hover:opacity-90 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-blue-200 max-[520px]:px-2 max-[520px]:text-xs" style="background-color: var(--page-header-background)" aria-label="Kembali ke halaman utama">
+                                <a href="{{ route('home') }}" data-public-page-link class="inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-bold text-white shadow-sm transition-opacity hover:opacity-90 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-blue-200 max-[520px]:px-2 max-[520px]:text-xs" style="background-color: var(--page-header-background)" aria-label="Kembali ke halaman utama">
                                     Kembali
                                 </a>
                             </div>
@@ -48,6 +48,9 @@
 
                         <div class="pt-2.5 pr-1">
                             <div class="grid grid-cols-2 gap-2.5 max-[520px]:grid-cols-1" id="categoryGrid"></div>
+                            @if ($map?->map_background_image)
+                                <x-map-background-banner :image="$map->map_background_image" :text="$map->map_background_text" />
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -136,6 +139,7 @@
                 groups[location.category] = {
                     color: location.category_color,
                     icon: location.category_icon_svg,
+                    backgroundImage: location.category_background_image,
                     locations: []
                 };
             }
@@ -175,24 +179,32 @@
 
         function renderList() {
             categoryGrid.innerHTML = Object.entries(groupedLocations).map(([category, group]) =>
-                '<section class="rounded-lg border border-gray-200 p-2.5">' +
-                '<h3 class="mb-2 flex items-center gap-2 text-md font-bold">' +
+                '<section class="flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">' +
+                '<h3 class="m-0 flex items-center gap-2 px-2.5 py-2.5 text-md font-bold" style="background-color: color-mix(in srgb, ' + escapeHtml(group.color) + ' 14%, white)">' +
                 '<span class="grid size-8 shrink-0 place-items-center rounded-lg bg-gray-50 text-gray-500 dark:bg-gray-800 dark:text-gray-300" style="color: ' +
                 escapeHtml(group.color) + '">' + group.icon + '</span>' +
                 '<span style="color: ' + escapeHtml(group.color) + '">' + escapeHtml(category) + '</span>' +
                 '</h3>' +
+                '<div class="relative flex-1 border-t-2 border-white px-2.5 py-1">' +
+                (group.backgroundImage
+                    ? '<img src="' + escapeHtml(group.backgroundImage) + '" alt="" aria-hidden="true" loading="lazy" class="pointer-events-none absolute inset-y-0 right-0 h-full w-[55%] object-cover object-center">' +
+                      '<div class="pointer-events-none absolute inset-y-0 right-0 w-[60%] bg-gradient-to-r from-white via-white/85 to-transparent"></div>'
+                    : '') +
+                '<div class="relative">' +
                 group.locations.map((location, index) =>
-                    '<button class="flex w-full cursor-pointer items-center gap-2 border-0 border-t border-solid border-gray-100 bg-transparent py-2 text-left text-sm text-gray-800" type="button" data-location-id="' +
+                    '<button class="flex w-full cursor-pointer items-center gap-2 border-0 bg-transparent py-2 text-left text-sm text-gray-800" type="button" data-location-id="' +
                     location.id + '">' +
                     '<span class="grid size-[22px] shrink-0 place-items-center rounded-full text-[10px] font-bold text-white" style="background-color: ' +
                     escapeHtml(location.category_color) + '">' +
                     (index + 1) +
                     '</span>' +
-                    '<span>' + escapeHtml(location.location_name) + '</span>' +
+                    '<span class="category-list-text">' + escapeHtml(location.location_name) + '</span>' +
                     '</button>'
                 ).join('') +
-                '</section>'
+                '</div></div></section>'
             ).join('');
+
+            if (categoryGrid.children.length % 2) categoryGrid.lastElementChild.style.gridColumn = '1 / -1';
 
             if (!Object.keys(groupedLocations).length) {
                 categoryGrid.innerHTML = '<p class="rounded-lg border border-gray-200 p-4 text-sm text-gray-500">Belum ada lokasi transportasi yang ditampilkan.</p>';

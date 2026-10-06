@@ -33,6 +33,9 @@ class CulinaryController extends Controller
                     'category' => $location->culinary_category->category_name,
                     'category_color' => $location->culinary_category->category_color,
                     'category_icon_svg' => svg('heroicon-o-'.$location->culinary_category->heroiconName(), 'size-5')->toHtml(),
+                    'category_background_image' => $location->culinary_category->category_background_image
+                        ? asset($location->culinary_category->category_background_image)
+                        : null,
                     'location_name' => $location->location_name,
                     'location_address' => $location->location_address,
                     'location_description' => str_replace("\u{00A0}", ' ', $location->location_description ?? ''),

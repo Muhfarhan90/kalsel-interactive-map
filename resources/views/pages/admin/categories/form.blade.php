@@ -18,7 +18,7 @@
 
         @include('components.common.flash-message')
 
-        <form action="{{ $editing ? route('admin.tourism-categories.update', $category) : route('admin.tourism-categories.store') }}" method="POST">
+        <form action="{{ $editing ? route('admin.tourism-categories.update', $category) : route('admin.tourism-categories.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             @if ($editing)
                 @method('PUT')
@@ -76,6 +76,19 @@
 
                     <div class="md:col-span-2">
                         <x-form.form-elements.text-area-inputs label="Deskripsi kategori" name="category_description" :value="$category->category_description" rows="4" required maxlength="1000" />
+                    </div>
+
+                    <div class="md:col-span-2">
+                        @if ($category->category_background_image)
+                            <div class="mb-3 flex flex-wrap items-center gap-4">
+                                <img src="{{ asset($category->category_background_image) }}" alt="Gambar latar kategori saat ini" class="h-24 w-40 rounded-lg object-cover">
+                                <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                                    <input type="checkbox" name="remove_background_image" value="1" @checked(old('remove_background_image')) class="size-4 rounded border-gray-300 text-[#da251d]">
+                                    Hapus gambar saat ini
+                                </label>
+                            </div>
+                        @endif
+                        <x-form.form-elements.file-input-example label="Gambar latar daftar" name="category_background_image_file" accept="image/jpeg,image/png,image/webp" help="Tampil di sisi kanan kartu kategori wisata. JPG, PNG, atau WebP; maksimal 5 MB." />
                     </div>
                 </div>
 

@@ -17,11 +17,17 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CulinaryController;
 use App\Http\Controllers\TransportationController;
 use App\Http\Controllers\TourismController;
+use App\Models\CulinaryMap;
 use App\Models\PublicPageHeader;
+use App\Models\TourismMap;
+use App\Models\TransportationMap;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => view('pages.home', [
     'pageHeader' => PublicPageHeader::where('page_key', 'home')->firstOrFail(),
+    'tourismMap' => TourismMap::latest('id')->first(),
+    'culinaryMap' => CulinaryMap::latest('id')->first(),
+    'transportationMap' => TransportationMap::latest('id')->first(),
 ]))->name('home');
 Route::get('/wisata', TourismController::class)->name('tourism');
 Route::get('/kuliner', CulinaryController::class)->name('culinary');

@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class CulinaryMap extends Model
 {
-    protected $fillable = ['map_id', 'map_title', 'map_sub_title', 'map_logo'];
+    public const DEFAULT_BACKGROUND_TEXT = 'Nikmati cita rasa khas Banua di setiap perjalanan.';
+
+    protected $fillable = ['map_id', 'map_title', 'map_sub_title', 'map_logo', 'map_background_image', 'map_background_text'];
 
     public function map(): BelongsTo
     {
@@ -28,5 +30,10 @@ class CulinaryMap extends Model
     public function getMapDescriptionAttribute(): ?string
     {
         return $this->map?->map_description;
+    }
+
+    public function getMapBackgroundTextAttribute(?string $value): string
+    {
+        return $value ?: self::DEFAULT_BACKGROUND_TEXT;
     }
 }
