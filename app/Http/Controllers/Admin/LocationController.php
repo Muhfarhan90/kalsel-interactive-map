@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Location;
 use App\Models\Map;
 use App\Models\Menu;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -53,7 +54,7 @@ class LocationController extends Controller
         return $this->formView(new Location(), $this->menuFromRequest($request));
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): RedirectResponse|JsonResponse
     {
         $menu = $this->menuFromRequest($request);
         $data = $this->validatedData($request, $menu);
@@ -64,9 +65,7 @@ class LocationController extends Controller
 
         Location::create($data);
 
-        return redirect()
-            ->route('admin.locations.index', ['menu' => $menu->slug])
-            ->with('success', 'Lokasi berhasil ditambahkan.');
+        return $this->savedResponse($request, $menu, 'Lokasi berhasil ditambahkan.');
     }
 
     public function edit(Location $location): View
@@ -76,7 +75,7 @@ class LocationController extends Controller
         return $this->formView($location, $location->category->menu);
     }
 
-    public function update(Request $request, Location $location): RedirectResponse
+    public function update(Request $request, Location $location): RedirectResponse|JsonResponse
     {
         $location->loadMissing('category.menu');
         $menu = $location->category->menu;
@@ -95,9 +94,7 @@ class LocationController extends Controller
             $this->deleteStoredMedia($previousMedia);
         }
 
-        return redirect()
-            ->route('admin.locations.index', ['menu' => $menu->slug])
-            ->with('success', 'Lokasi berhasil diperbarui.');
+        return $this->savedResponse($request, $menu, 'Lokasi berhasil diperbarui.');
     }
 
     public function destroy(Location $location): RedirectResponse
@@ -122,6 +119,19 @@ class LocationController extends Controller
             'categories' => $menu->categories()->orderBy('sort_order')->orderBy('name')->get(),
             'map' => Map::shared(),
         ]);
+    }
+
+    private function savedResponse(Request $request, Menu $menu, string $message): RedirectResponse|JsonResponse
+    {
+        $url = route('admin.locations.index', ['menu' => $menu->slug]);
+
+        if ($request->expectsJson()) {
+            $request->session()->flash('success', $message);
+
+            return response()->json(['redirect' => $url]);
+        }
+
+        return redirect()->to($url)->with('success', $message);
     }
 
     private function menuFromRequest(Request $request): Menu

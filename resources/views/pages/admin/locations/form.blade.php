@@ -33,6 +33,68 @@
             method="POST"
             enctype="multipart/form-data"
             class="space-y-6"
+            x-data="{
+                isSubmitting: false,
+                uploading: false,
+                progress: 0,
+                uploadError: '',
+                uploadErrors: [],
+                submitForm(form) {
+                    if (this.isSubmitting) return;
+
+                    const file = form.querySelector('input[name=media_file]')?.files[0];
+                    this.uploadError = '';
+                    this.uploadErrors = [];
+
+                    if (file && file.size > 70 * 1024 * 1024) {
+                        this.uploadError = 'Ukuran media maksimal 70 MB.';
+                        return;
+                    }
+
+                    this.isSubmitting = true;
+                    if (!file) {
+                        form.submit();
+                        return;
+                    }
+
+                    this.uploading = true;
+                    this.progress = 0;
+
+                    const request = new XMLHttpRequest();
+                    request.open(form.method, form.action);
+                    request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                    request.setRequestHeader('Accept', 'application/json');
+                    request.upload.addEventListener('progress', event => {
+                        if (event.lengthComputable) {
+                            this.progress = Math.round(event.loaded / event.total * 100);
+                        }
+                    });
+                    request.addEventListener('load', () => {
+                        let response = {};
+                        try { response = JSON.parse(request.responseText); } catch {}
+
+                        if (request.status >= 200 && request.status < 300 && response.redirect) {
+                            window.location.assign(response.redirect);
+                            return;
+                        }
+
+                        this.isSubmitting = false;
+                        this.uploading = false;
+                        this.uploadErrors = Object.values(response.errors || {}).flat();
+                        this.uploadError = this.uploadErrors.length
+                            ? 'Periksa kembali data berikut:'
+                            : `Upload gagal (HTTP ${request.status}). Coba lagi.`;
+                    });
+                    request.addEventListener('error', () => {
+                        this.isSubmitting = false;
+                        this.uploading = false;
+                        this.uploadErrors = [];
+                        this.uploadError = 'Upload gagal. Periksa koneksi lalu coba lagi.';
+                    });
+                    request.send(new FormData(form));
+                }
+            }"
+            x-on:submit.prevent="submitForm($el)"
         >
             @csrf
             @if ($editing)
@@ -85,6 +147,22 @@
                                 accept="image/jpeg,image/png,image/webp,video/mp4"
                                 help="JPG, PNG, WebP, atau MP4; maksimal 70 MB. Kosongkan saat edit jika tidak ingin mengganti."
                             />
+                        </div>
+
+                        <div x-cloak x-show="uploadError" class="md:col-span-2 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700" role="alert">
+                            <p x-text="uploadError"></p>
+                            <ul x-show="uploadErrors.length" class="mt-2 list-inside list-disc">
+                                <template x-for="(error, index) in uploadErrors" :key="index">
+                                    <li x-text="error"></li>
+                                </template>
+                            </ul>
+                        </div>
+
+                        <div x-cloak x-show="uploading" class="md:col-span-2" role="status" aria-live="polite">
+                            <p class="mb-2 text-sm text-gray-600 dark:text-gray-300" x-text="`Mengunggah media: ${progress}%`"></p>
+                            <div class="h-2 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+                                <div class="h-full bg-[#da251d] transition-all" :style="{ width: progress + '%' }"></div>
+                            </div>
                         </div>
 
                         <div class="md:col-span-2">
@@ -149,8 +227,9 @@
 
             <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
                 <a href="{{ $indexUrl }}" class="inline-flex min-h-11 items-center justify-center rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800">Batal</a>
-                <button type="submit" @disabled($categories->isEmpty()) class="inline-flex min-h-11 items-center justify-center rounded-lg bg-[#da251d] px-5 py-2.5 text-sm font-semibold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50">
-                    {{ $editing ? 'Simpan perubahan' : 'Tambah lokasi' }}
+                <button type="submit" @disabled($categories->isEmpty()) :disabled="isSubmitting || @js($categories->isEmpty())" class="inline-flex min-h-11 items-center justify-center rounded-lg bg-[#da251d] px-5 py-2.5 text-sm font-semibold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50">
+                    <span x-show="!isSubmitting">{{ $editing ? 'Simpan perubahan' : 'Tambah lokasi' }}</span>
+                    <span x-cloak x-show="isSubmitting" x-text="uploading ? `Mengunggah ${progress}%` : 'Menyimpan…'"></span>
                 </button>
             </div>
         </form>
