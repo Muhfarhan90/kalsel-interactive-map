@@ -9,11 +9,11 @@
                     <h1 class="text-3xl font-bold md:text-4xl">Kelola peta wisata</h1>
                     <p class="mt-2 max-w-2xl text-sm leading-6 text-white/80">Perbarui kategori, lokasi, media, dan posisi marker yang ditampilkan pada papan digital interaktif.</p>
                 </div>
-                <a href="{{ route('tourism') }}" target="_blank" class="inline-flex min-h-11 items-center justify-center rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-[#a91612] shadow-theme-xs hover:bg-red-50">Buka peta publik ↗</a>
+                <a href="{{ route('home') }}" target="_blank" class="inline-flex min-h-11 items-center justify-center rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-[#a91612] shadow-theme-xs hover:bg-red-50">Buka peta publik ↗</a>
             </div>
         </div>
 
-        <div class="grid gap-4 md:grid-cols-3">
+        {{-- <div class="grid gap-4 md:grid-cols-3">
             @foreach ([
                 ['label' => 'Kategori', 'value' => $categoryCount, 'tone' => 'bg-orange-50 text-orange-700 dark:bg-orange-500/10 dark:text-orange-400'],
                 ['label' => 'Total wisata', 'value' => $locationCount, 'tone' => 'bg-blue-light-50 text-blue-light-700 dark:bg-blue-light-500/10 dark:text-blue-light-400'],
@@ -24,10 +24,10 @@
                     <p class="mt-4 text-3xl font-bold text-gray-900 dark:text-white">{{ $stat['value'] }}</p>
                 </div>
             @endforeach
-        </div>
+        </div> --}}
 
         <div class="grid gap-4 lg:grid-cols-2">
-            <a href="{{ route('admin.locations.index') }}" class="group rounded-2xl border border-gray-200 bg-white p-6 shadow-theme-sm transition hover:border-[#da251d] dark:border-gray-800 dark:bg-gray-900">
+            {{-- <a href="{{ route('admin.locations.index') }}" class="group rounded-2xl border border-gray-200 bg-white p-6 shadow-theme-sm transition hover:border-[#da251d] dark:border-gray-800 dark:bg-gray-900">
                 <div class="flex items-start justify-between gap-4">
                     <div>
                         <p class="text-lg font-bold text-gray-900 dark:text-white">Data wisata</p>
@@ -44,7 +44,7 @@
                     </div>
                     <span class="text-2xl text-[#da251d]">→</span>
                 </div>
-            </a>
+            </a> --}}
         </div>
     </div>
 @endsection

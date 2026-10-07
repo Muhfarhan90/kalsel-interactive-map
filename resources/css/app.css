@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap') layer(base);
 @import 'prismjs/themes/prism.min.css';
 @import 'tailwindcss';
-
+@import '@fortawesome/fontawesome-free/css/all.min.css';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -1364,6 +1364,6 @@ pre code,
 @media (prefers-reduced-motion: reduce) {
   .public-page > header,
   .public-page > main {
- soto banjar   animation: none;
+  animation: none;
   }
 }
