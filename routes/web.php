@@ -18,7 +18,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CulinaryController;
 use App\Http\Controllers\HomepageController;
-use App\Http\Controllers\LocationController;
+use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\TransportationController;
 use App\Http\Controllers\TourismController;
 use App\Models\CulinaryMap;
