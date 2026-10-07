@@ -12,7 +12,7 @@
 @section('content')
     <div class="mx-auto max-w-4xl space-y-6">
         <div>
-            <a href="{{ route('admin.menu.index') }}" class="text-sm font-semibold text-[#da251d] hover:underline">← Kembali
+            <a href="{{ route('admin.menus.index') }}" class="text-sm font-semibold text-[#da251d] hover:underline">← Kembali
                 ke menu</a>
             <h1 class="mt-3 text-2xl font-bold text-gray-900 dark:text-white">{{ $editing ? 'Edit menu' : 'Tambah menu' }}
             </h1>
@@ -21,7 +21,7 @@
 
         @include('components.common.flash-message')
 
-        <form action="{{ $editing ? route('admin.menu.update', $menu) : route('admin.menu.store') }}" method="POST"
+        <form action="{{ $editing ? route('admin.menus.update', $menu) : route('admin.menus.store') }}" method="POST"
             enctype="multipart/form-data">
             @csrf
             @if ($editing)
@@ -160,7 +160,7 @@
 
                 <div
                     class="flex flex-col-reverse gap-3 border-t border-gray-100 pt-5 sm:flex-row sm:justify-end dark:border-gray-800">
-                    <a href="{{ route('admin.menu.index') }}"
+                    <a href="{{ route('admin.menus.index') }}"
                         class="inline-flex min-h-11 items-center justify-center rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800">Batal</a>
                     <button type="submit"
                         class="inline-flex min-h-11 items-center justify-center rounded-lg bg-[#da251d] px-5 py-2.5 text-sm font-semibold text-white shadow-theme-xs hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-100">

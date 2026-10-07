@@ -196,7 +196,7 @@
                 '<h3 class="m-0 flex items-center gap-2 px-2.5 py-2.5 text-md font-bold" style="background-color: color-mix(in srgb, ' +
                 escapeHtml(group.color) + ' 14%, white)">' +
                 '<span class="grid size-8 shrink-0 place-items-center rounded-lg bg-gray-50 text-gray-500 dark:bg-gray-800 dark:text-gray-300" style="color: ' +
-                escapeHtml(group.color) + '">' + '<i class="' + escapeHtml(group.icon) + '"></i>' + '</span>' +
+                escapeHtml(group.color) + '">' + '<i class="fas fa-' + escapeHtml(group.icon) + '"></i>' + '</span>' +
                 '<span style="color: ' + escapeHtml(group.color) + '">' + escapeHtml(category) + '</span>' +
                 '</h3>' +
                 '<div class="relative flex-1 px-2.5 py-1">' +

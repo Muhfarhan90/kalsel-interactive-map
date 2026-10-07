@@ -74,7 +74,7 @@
         </ul>
 
         <h2 class="mb-2 mt-5 flex text-xs uppercase leading-[20px] text-gray-400" :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'lg:justify-center' : 'justify-start'">
-            <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen">Pengaturan situs</span>
+            <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen">Pengaturan</span>
         </h2>
         <ul class="flex flex-col gap-1">
             <li>
@@ -83,12 +83,6 @@
                     <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen" class="menu-item-text">Pengaturan header</span>
                 </a>
             </li>
-        </ul>
-
-        <h2 class="mb-2 mt-5 flex text-xs uppercase leading-[20px] text-gray-400" :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'lg:justify-center' : 'justify-start'">
-            <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen">Peta</span>
-        </h2>
-        <ul class="flex flex-col gap-1">
             <li>
                 <a href="{{ route('admin.maps.edit') }}" class="menu-item group {{ request()->routeIs('admin.maps.*') ? 'menu-item-active' : 'menu-item-inactive' }}" :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'xl:justify-center' : 'xl:justify-start'">
                     <span class="{{ request()->routeIs('admin.maps.*') ? 'menu-item-icon-active' : 'menu-item-icon-inactive' }}"><x-heroicon-o-photo class="size-6" /></span>
@@ -96,13 +90,105 @@
                 </a>
             </li>
             <li>
-                <a href="{{ route('admin.menu.index') }}" class="menu-item group {{ request()->routeIs('admin.menu.*') ? 'menu-item-active' : 'menu-item-inactive' }}" :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'xl:justify-center' : 'xl:justify-start'">
-                    <span class="{{ request()->routeIs('admin.menu.*') ? 'menu-item-icon-active' : 'menu-item-icon-inactive' }}"><x-heroicon-o-adjustments-horizontal
-
- class="size-6" /></span>
+                <a href="{{ route('admin.menus.index') }}" class="menu-item group {{ request()->routeIs('admin.menus.*') ? 'menu-item-active' : 'menu-item-inactive' }}" :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'xl:justify-center' : 'xl:justify-start'">
+                    <span class="{{ request()->routeIs('admin.menus.*') ? 'menu-item-icon-active' : 'menu-item-icon-inactive' }}"><x-heroicon-o-adjustments-horizontal class="size-6" /></span>
                     <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen" class="menu-item-text">Menu</span>
                 </a>
             </li>
+             @if (auth()->user()?->role === 'admin')
+                <li>
+                    <a href="{{ route('admin.users.index') }}"
+                        class="menu-item group {{ request()->routeIs('admin.users.*') ? 'menu-item-active' : 'menu-item-inactive' }}"
+                        :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'xl:justify-center' : 'xl:justify-start'">
+                        <span class="{{ request()->routeIs('admin.users.*') ? 'menu-item-icon-active' : 'menu-item-icon-inactive' }}">
+                            <x-heroicon-o-users class="size-6" />
+                        </span>
+                        <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen" class="menu-item-text">Pengguna</span>
+                    </a>
+                </li>
+            @endif
+        </ul>    
+        <h2 class="mb-2 mt-5 flex text-xs uppercase leading-[20px] text-gray-400" :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'lg:justify-center' : 'justify-start'">
+            <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen">Menu</span>
+        </h2>
+            @foreach ($sidebarMenus as $menu)
+    @php
+        $categoryActive = request()->routeIs('admin.categories.*')
+            && request()->query('menu') === $menu->slug;
+
+        $locationActive = request()->routeIs('admin.locations.*')
+            && request()->query('menu') === $menu->slug;
+
+        $menuActive = $categoryActive || $locationActive;
+    @endphp
+
+    <li x-data="{ open: @js($menuActive) }">
+        <button
+            type="button"
+            @click="open = !open"
+            :aria-expanded="open"
+            aria-controls="submenu-{{ $menu->id }}"
+            class="menu-item group w-full {{ $menuActive ? 'menu-item-active' : 'menu-item-inactive' }}"
+            :class="(!$store.sidebar.isExpanded &&
+                     !$store.sidebar.isHovered &&
+                     !$store.sidebar.isMobileOpen)
+                     ? 'xl:justify-center'
+                     : 'xl:justify-start'"
+        >
+            <span class="{{ $menuActive ? 'menu-item-icon-active' : 'menu-item-icon-inactive' }}">
+                <i class="fa-solid fa-{{ $menu->icon }} text-xl" aria-hidden="true"></i>
+            </span>
+
+            <span
+                x-show="$store.sidebar.isExpanded ||
+                        $store.sidebar.isHovered ||
+                        $store.sidebar.isMobileOpen"
+                class="menu-item-text flex-1 text-left"
+            >
+                {{ $menu->name }}
+            </span>
+
+            <i
+                x-show="$store.sidebar.isExpanded ||
+                        $store.sidebar.isHovered ||
+                        $store.sidebar.isMobileOpen"
+                class="fa-solid fa-chevron-down ml-auto text-xs transition-transform"
+                :class="{ 'rotate-180': open }"
+                aria-hidden="true"
+            ></i>
+        </button>
+
+        <ul
+            id="submenu-{{ $menu->id }}"
+            x-cloak
+            x-show="open && (
+                $store.sidebar.isExpanded ||
+                $store.sidebar.isHovered ||
+                $store.sidebar.isMobileOpen
+            )"
+            x-transition
+            class="ml-9 mt-1 flex flex-col gap-1 border-l border-gray-200 pl-3 dark:border-gray-700"
+        >
+            <li>
+                <a
+                    href="{{ route('admin.categories.index', ['menu' => $menu->slug]) }}"
+                    class="block rounded-lg px-3 py-2 text-sm {{ $categoryActive ? 'bg-red-50 font-semibold text-[#da251d]' : 'text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800' }}"
+                >
+                    Kategori
+                </a>
+            </li>
+
+            <li>
+                <a
+                    href="{{ route('admin.locations.index', ['menu' => $menu->slug]) }}"
+                    class="block rounded-lg px-3 py-2 text-sm {{ $locationActive ? 'bg-red-50 font-semibold text-[#da251d]' : 'text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800' }}"
+                >
+                    Lokasi
+                </a>
+            </li>
+        </ul>
+    </li>
+@endforeach
         </ul>
 
         {{-- @foreach ($ as $menu)
@@ -214,20 +300,6 @@
                 </a>
             </li>
         </ul> --}}
-        <ul>
-            @if (auth()->user()?->role === 'admin')
-                <li>
-                    <a href="{{ route('admin.users.index') }}"
-                        class="menu-item group {{ request()->routeIs('admin.users.*') ? 'menu-item-active' : 'menu-item-inactive' }}"
-                        :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'xl:justify-center' : 'xl:justify-start'">
-                        <span class="{{ request()->routeIs('admin.users.*') ? 'menu-item-icon-active' : 'menu-item-icon-inactive' }}">
-                            <x-heroicon-o-users class="size-6" />
-                        </span>
-                        <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen" class="menu-item-text">Pengguna</span>
-                    </a>
-                </li>
-            @endif
-        </ul>
 
     </nav>
 </div>

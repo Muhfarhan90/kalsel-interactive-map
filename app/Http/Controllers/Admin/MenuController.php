@@ -18,12 +18,12 @@ class MenuController extends Controller
     {
         $menu = Menu::orderBy('sort_order')->orderBy('id')->get();
 
-        return view('pages.admin.menu.index', compact('menu'));
+        return view('pages.admin.menus.index', compact('menu'));
     }
 
     public function create(): View
     {
-        return view('pages.admin.menu.form', [
+        return view('pages.admin.menus.form', [
             'menu' => new Menu(),
             'iconOptions' => Menu::iconOptions(),
         ]);
@@ -50,13 +50,13 @@ class MenuController extends Controller
         ]));
 
         return redirect()
-            ->route('admin.menu.index')
+            ->route('admin.menus.index')
             ->with('success', 'Menu berhasil ditambahkan.');
     }
 
     public function edit(Menu $menu): View
     {
-        return view('pages.admin.menu.form', [
+        return view('pages.admin.menus.form', [
             'menu' => $menu,
             'iconOptions' => Menu::iconOptions(),
         ]);
@@ -97,7 +97,7 @@ class MenuController extends Controller
         }
 
         return redirect()
-            ->route('admin.menu.index')
+            ->route('admin.menus.index')
             ->with('success', 'Menu berhasil diperbarui.');
     }
 
@@ -143,11 +143,11 @@ class MenuController extends Controller
         }
 
         return redirect()
-            ->route('admin.menu.index')
+            ->route('admin.menus.index')
             ->with('success', 'Menu berhasil dihapus.');
     }
 
-    public function validatedData(Request $request): array
+    private function validatedData(Request $request): array
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],

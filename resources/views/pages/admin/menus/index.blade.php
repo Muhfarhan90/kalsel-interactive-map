@@ -10,14 +10,14 @@
                     urutannya.</p>
             </div>
             <div class="flex flex-wrap gap-2">
-                <form action="{{ route('admin.menu.reorder') }}" method="POST" data-category-sort-form hidden>
+                <form action="{{ route('admin.menus.reorder') }}" method="POST" data-category-sort-form hidden>
                     @csrf
                     <div data-order-inputs></div>
                     <button type="submit" disabled
                         class="inline-flex min-h-11 items-center justify-center rounded-lg border border-[#da251d] px-4 py-2.5 text-sm font-semibold text-[#da251d] hover:bg-red-50">Simpan
                         urutan</button>
                 </form>
-                <a href="{{ route('admin.menu.create') }}"
+                <a href="{{ route('admin.menus.create') }}"
                     class="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-[#da251d] px-4 py-2.5 text-sm font-semibold text-white shadow-theme-xs transition hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-100">
                     <span class="text-lg leading-none">+</span>
                     Tambah Menu
@@ -77,9 +77,9 @@
                         </td>
                         <td class="px-5 py-4">
                             <div class="flex justify-end gap-2">
-                                <a href="{{ route('admin.menu.edit', $m) }}"
+                                <a href="{{ route('admin.menus.edit', $m) }}"
                                     class="inline-flex min-h-10 items-center rounded-lg border border-gray-300 px-3 py-2 text-xs font-semibold text-gray-700 transition hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800">Edit</a>
-                                <form action="{{ route('admin.menu.destroy', $m) }}" method="POST"
+                                <form action="{{ route('admin.menus.destroy', $m) }}" method="POST"
                                     onsubmit="return confirm('Hapus menu ini?')">
                                     @csrf
                                     @method('DELETE')

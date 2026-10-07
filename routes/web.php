@@ -13,10 +13,12 @@ use App\Http\Controllers\Admin\TourismCategoryController;
 use App\Http\Controllers\Admin\TourismLocationController;
 use App\Http\Controllers\Admin\TourismMapController;
 use App\Http\Controllers\Admin\MenuController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CulinaryController;
 use App\Http\Controllers\HomepageController;
+use App\Http\Controllers\LocationController;
 use App\Http\Controllers\TransportationController;
 use App\Http\Controllers\TourismController;
 use App\Models\CulinaryMap;
@@ -38,8 +40,11 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::get('maps', [MapController::class, 'edit'])->name('maps.edit');
     Route::put('maps', [MapController::class, 'update'])->name('maps.update');
 
-    Route::resource('menu', MenuController::class)->except('show');
-    Route::post('menu/reorder', [MenuController::class, 'reorder'])->name('menu.reorder');
+    Route::resource('menus', MenuController::class)->except('show');
+    Route::post('menus/reorder', [MenuController::class, 'reorder'])->name('menus.reorder');
+    Route::resource('categories', CategoryController::class)->except('show');
+    Route::post('categories/reorder', [CategoryController::class, 'reorder'])->name('categories.reorder');
+    Route::resource('locations', LocationController::class)->except('show');
 
     // Route::get('tourism-map', [TourismMapController::class, 'edit'])->name('tourism-map.edit');
     // Route::put('tourism-map', [TourismMapController::class, 'update'])->name('tourism-map.update');
@@ -69,7 +74,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     // Route::resource('transportation-locations', TransportationLocationController::class)
     //     ->except('show')
     //     ->parameters(['transportation-locations' => 'location']);
-    
+
     Route::resource('users', UserController::class)->except('show');
 });
 
