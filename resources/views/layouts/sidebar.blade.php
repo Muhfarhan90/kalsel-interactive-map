@@ -73,7 +73,7 @@
                     x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen">Pengaturan</span>
             </h2>
             <ul class="flex flex-col gap-1">
-                <li>
+                {{-- <li>
                     <a href="{{ route('admin.headers.edit') }}"
                         class="menu-item group {{ request()->routeIs('admin.headers.*') ? 'menu-item-active' : 'menu-item-inactive' }}"
                         :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ?
@@ -85,7 +85,7 @@
                             x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen"
                             class="menu-item-text">Pengaturan header</span>
                     </a>
-                </li>
+                </li> --}}
                 <li>
                     <a href="{{ route('admin.homepage.edit') }}"
                         class="menu-item group {{ request()->routeIs('admin.homepage.*') ? 'menu-item-active' : 'menu-item-inactive' }}"
@@ -99,7 +99,7 @@
                         <span
                             x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen"
                             class="menu-item-text">
-                            Pengaturan homepage
+                            Pengaturan Homepage
                         </span>
                     </a>
                 </li>
@@ -201,7 +201,7 @@
                         class="ml-6 mt-1 flex flex-col gap-1 border-l border-gray-200 pl-2 dark:border-gray-700">
                         <li>
                             <a href="{{ route('admin.categories.index', ['menu' => $menu->slug]) }}"
-                                class="block rounded-lg px-3 py-2 text-sm {{ $categoryActive ? 'bg-red-50 font-semibold text-[#da251d]' : 'text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800' }}">
+                                class="block rounded-lg px-3 py-2 text-sm {{ $categoryActive ? 'menu-dropdown-item-active font-semibold' : 'text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800' }}">
                                 <i class="fa-solid fa-tag mr-2 text-xs" aria-hidden="true"></i>
                                 Kategori
                             </a>
@@ -209,7 +209,7 @@
 
                         <li>
                             <a href="{{ route('admin.locations.index', ['menu' => $menu->slug]) }}"
-                                class="block rounded-lg px-3 py-2 text-sm {{ $locationActive ? 'bg-red-50 font-semibold text-[#da251d]' : 'text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800' }}">
+                                class="block rounded-lg px-3 py-2 text-sm {{ $locationActive ? 'menu-dropdown-item-active font-semibold' : 'text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800' }}">
                                 <i class="fa-solid fa-map-location-dot mr-2 text-xs" aria-hidden="true"></i>
                                 Lokasi
                             </a>

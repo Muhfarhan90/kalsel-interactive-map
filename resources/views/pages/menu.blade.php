@@ -5,10 +5,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $menu?->title ?: 'Peta Wisata Kalimantan Selatan' }}</title>
-    @vite('resources/css/app.css')
+    @vite('resources/css/app.css', 'resources/js/app.js')
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
 </head>
 
-<body
+<body x-data="locationFullscreenModal()" @keydown.tab.window="trapFocus($event)"
     class="public-page m-0 h-screen overflow-hidden bg-gray-100 font-sans text-gray-800 max-[850px]:h-auto max-[850px]:min-h-screen max-[850px]:overflow-y-auto"
     style="--page-header-background: {{ $menu->color }}">
     <x-public-page-header :settings="$homepage" background-color="{{ $menu->color }}" />
@@ -74,12 +79,26 @@
                                     <h2 class="m-0 min-w-0 break-words text-2xl font-bold max-[520px]:text-xl"
                                         id="detailName"></h2>
                                 </div>
-                                <button
-                                    class="inline-flex min-h-10 shrink-0 cursor-pointer items-center whitespace-nowrap rounded-lg border-0 px-3 py-2 text-sm font-bold text-white shadow-sm focus:outline-none focus-visible:ring-4 focus-visible:ring-gray-300 max-[520px]:px-2 max-[520px]:text-xs"
-                                    style="background-color: var(--page-header-background)" id="backButton"
-                                    type="button">
-                                    Kembali ke daftar
-                                </button>
+                                <div class="ml-auto flex shrink-0 items-center gap-2">
+                                    <button
+                                        class="inline-flex min-h-10 cursor-pointer items-center gap-1.5 whitespace-nowrap rounded-lg border-0 px-3 py-2 text-sm font-bold text-white shadow-sm focus:outline-none focus-visible:ring-4 focus-visible:ring-gray-300 max-[520px]:px-2 max-[520px]:text-xs"
+                                        style="background-color: var(--page-header-background)" id="fullscreenButton"
+                                        type="button" @click="openModal()" aria-haspopup="dialog"
+                                        aria-controls="detailModal" :aria-expanded="fullscreenOpen">
+                                        <svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" aria-hidden="true">
+                                            <path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5" />
+                                        </svg>
+                                        Fullscreen
+                                    </button>
+                                    <button
+                                        class="inline-flex min-h-10 cursor-pointer items-center whitespace-nowrap rounded-lg border-0 px-3 py-2 text-sm font-bold text-white shadow-sm focus:outline-none focus-visible:ring-4 focus-visible:ring-gray-300 max-[520px]:px-2 max-[520px]:text-xs"
+                                        style="background-color: var(--page-header-background)" id="backButton"
+                                        type="button">
+                                        Kembali ke daftar
+                                    </button>
+                                </div>
                             </div>
                             <div class="inline-flex items-center gap-1.5 rounded-full px-2.5 text-lg font-semibold"
                                 id="detailCategory"></div>
@@ -111,6 +130,142 @@
             </aside>
         </section>
     </main>
+
+    <x-ui.modal id="detailModal" x-model="fullscreenOpen" aria-labelledby="fullscreenDetailName"
+        panelClass="max-w-5xl max-h-[calc(100dvh-2.5rem)] overflow-hidden p-0">
+        <article class="flex max-h-[calc(100dvh-2.5rem)] min-w-0 flex-col">
+            <header class="shrink-0 border-b border-gray-200 p-4 pr-14 sm:p-6 sm:pr-16">
+                <div class="flex min-w-0 items-start gap-3">
+                    <span id="fullscreenDetailNumber"
+                        class="grid size-10 shrink-0 place-items-center rounded-full text-lg font-bold text-white"></span>
+                    <div class="min-w-0">
+                        <h2 id="fullscreenDetailName" class="break-words text-2xl font-bold sm:text-3xl"></h2>
+                        <div id="fullscreenDetailCategory"
+                            class="mt-2 inline-flex items-center gap-1.5 text-base font-semibold"></div>
+                    </div>
+                </div>
+            </header>
+
+            <div id="fullscreenDetailContent" class="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6">
+                <div id="fullscreenDetailMedia"
+                    class="relative mb-5 grid aspect-video place-items-center overflow-hidden rounded-xl bg-black text-white">
+                </div>
+                <p class="mb-4 text-sm leading-6 text-gray-600">
+                    <strong class="text-gray-800">Sumber:</strong>
+                    <span id="fullscreenDetailSource"></span>
+                </p>
+                <p id="fullscreenDetailAddress" class="mb-5 text-base leading-7 font-semibold"></p>
+                <div id="fullscreenDetailDescription"
+                    class="break-words text-base leading-8 sm:text-lg [&_h1]:mb-3 [&_h1]:mt-6 [&_h1]:text-3xl [&_h1]:font-bold [&_h2]:mb-3 [&_h2]:mt-5 [&_h2]:text-2xl [&_h2]:font-bold [&_h3]:mb-2 [&_h3]:mt-5 [&_h3]:text-xl [&_h3]:font-semibold [&_h3:first-child]:mt-0 [&_p]:mb-4 [&_ol]:my-3 [&_ol]:list-decimal [&_ul]:my-3 [&_ul]:list-disc [&_li]:ml-6 [&_blockquote]:border-l-4 [&_blockquote]:border-gray-200 [&_blockquote]:pl-4">
+                </div>
+            </div>
+        </article>
+    </x-ui.modal>
+
+    <script>
+        function locationFullscreenModal() {
+            return {
+                fullscreenOpen: false,
+                panelVideo: null,
+                inertElements: [],
+
+                init() {
+                    this.$watch('fullscreenOpen', (open) => {
+                        if (!open) this.stopPlayback();
+                    });
+                },
+
+                openModal() {
+                    if (this.fullscreenOpen) return;
+
+                    ['Name', 'Number', 'Source', 'Address'].forEach((field) => {
+                        document.getElementById('fullscreenDetail' + field).textContent =
+                            document.getElementById('detail' + field).textContent;
+                    });
+                    document.getElementById('fullscreenDetailNumber').style.backgroundColor =
+                        document.getElementById('detailNumber').style.backgroundColor;
+                    const category = document.getElementById('detailCategory');
+                    document.getElementById('fullscreenDetailCategory').innerHTML = category.innerHTML;
+                    document.getElementById('fullscreenDetailCategory').style.color = category.style.color;
+                    document.getElementById('fullscreenDetailDescription').innerHTML = document.getElementById(
+                        'detailDescription').innerHTML;
+                    const panelMedia = document.getElementById('detailMedia');
+                    const modalMedia = document.getElementById('fullscreenDetailMedia');
+                    this.panelVideo = panelMedia.querySelector('video');
+                    const position = this.panelVideo?.currentTime ?? 0;
+                    const wasPlaying = this.panelVideo ? !this.panelVideo.paused : false;
+                    this.panelVideo?.pause();
+
+                    const media = panelMedia.cloneNode(true);
+                    media.querySelector('video')?.removeAttribute('autoplay');
+                    modalMedia.replaceChildren(...media.childNodes);
+                    this.inertElements = [...document.body.children]
+                        .filter((element) => ['HEADER', 'MAIN'].includes(element.tagName) && !element.inert);
+                    this.inertElements.forEach((element) => element.inert = true);
+                    this.fullscreenOpen = true;
+
+                    this.$nextTick(() => {
+                        if (!this.fullscreenOpen) return;
+                        document.getElementById('detailModal').querySelector('button').focus();
+                        document.getElementById('fullscreenDetailContent').scrollTop = 0;
+                        const video = modalMedia.querySelector('video');
+                        if (!video) return;
+
+                        video.volume = this.panelVideo.volume;
+                        video.muted = this.panelVideo.muted;
+                        video.playbackRate = this.panelVideo.playbackRate;
+                        const restorePlayback = () => {
+                            if (!this.fullscreenOpen || modalMedia.querySelector('video') !== video) return;
+                            video.currentTime = position;
+                            if (wasPlaying) video.play().catch(() => {});
+                        };
+                        if (video.readyState >= 1) restorePlayback();
+                        else video.addEventListener('loadedmetadata', restorePlayback, {
+                            once: true
+                        });
+                    });
+                },
+                stopPlayback() {
+                    const modalMedia = document.getElementById('fullscreenDetailMedia');
+                    const video = modalMedia.querySelector('video');
+                    video?.pause();
+                    if (this.panelVideo && video && this.panelVideo.readyState >= 1 && video.readyState >= 1) {
+                        this.panelVideo.currentTime = video.currentTime;
+                        this.panelVideo.volume = video.volume;
+                        this.panelVideo.muted = video.muted;
+                        this.panelVideo.playbackRate = video.playbackRate;
+                    }
+                    modalMedia.replaceChildren();
+                    this.panelVideo = null;
+                    this.inertElements.forEach((element) => element.inert = false);
+                    this.inertElements = [];
+                    this.$nextTick(() => document.getElementById('fullscreenButton').focus());
+                },
+
+                trapFocus(event) {
+                    if (!this.fullscreenOpen) return;
+                    const modal = document.getElementById('detailModal');
+                    const focusable = [...modal.querySelectorAll(
+                        'button, video[controls], a[href], input, select, textarea, [tabindex]'
+                    )].filter((element) => !element.disabled && element.tabIndex >= 0 && element.getClientRects()
+                        .length);
+                    const first = focusable[0];
+                    const last = focusable.at(-1);
+                    if (!first) return;
+
+                    if (event.shiftKey && (document.activeElement === first || !modal.contains(document.activeElement))) {
+                        event.preventDefault();
+                        last.focus();
+                    } else if (!event.shiftKey && (document.activeElement === last || !modal.contains(document
+                            .activeElement))) {
+                        event.preventDefault();
+                        first.focus();
+                    }
+                },
+            };
+        }
+    </script>
+
 
     <script>
         const locations = @json($locations);
@@ -251,7 +406,7 @@
                 detailMedia.innerHTML = '<span>Media belum tersedia</span>';
             } else if (isVideo) {
                 detailMedia.innerHTML =
-                    '<video class="absolute inset-0 block bg-black" style="width:100%;height:100%;object-fit:contain" autoplay controls playsinline preload="metadata" aria-label="Video ' +
+                    '<video class="absolute inset-0 block bg-black" style="width:100%;height:100%;object-fit:contain" autoplay controls controlslist="nodownload" playsinline preload="metadata" aria-label="Video ' +
                     escapeHtml(location.name) + '">' +
                     '<source src="' + escapeHtml(mediaUrl) + '">' +
                     'Browser tidak mendukung pemutaran video.' +
