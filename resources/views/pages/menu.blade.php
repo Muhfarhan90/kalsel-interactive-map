@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $menu?->title ?: 'Peta Wisata Kalimantan Selatan' }}</title>
-    @vite('resources/css/app.css', 'resources/js/app.js')
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         [x-cloak] {
             display: none !important;
@@ -132,7 +132,7 @@
     </main>
 
     <x-ui.modal id="detailModal" x-model="fullscreenOpen" aria-labelledby="fullscreenDetailName"
-        panelClass="max-w-5xl max-h-[calc(100dvh-2.5rem)] overflow-hidden p-0">
+        panelClass="max-w-7xl max-h-[calc(100dvh-2.5rem)] overflow-hidden p-0">
         <article class="flex max-h-[calc(100dvh-2.5rem)] min-w-0 flex-col">
             <header class="shrink-0 border-b border-gray-200 p-4 pr-14 sm:p-6 sm:pr-16">
                 <div class="flex min-w-0 items-start gap-3">
@@ -154,7 +154,13 @@
                     <strong class="text-gray-800">Sumber:</strong>
                     <span id="fullscreenDetailSource"></span>
                 </p>
-                <p id="fullscreenDetailAddress" class="mb-5 text-base leading-7 font-semibold"></p>
+                <div class="mb-4 flex items-start gap-2">
+                    <svg class="mt-0.5 size-[18px] shrink-0 fill-[#da251d]" viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                            d="M12 2a8 8 0 0 0-8 8c0 5.5 8 12 8 12s8-6.5 8-12a8 8 0 0 0-8-8Zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z" />
+                    </svg>
+                    <p class="m-0 text-sm leading-6 font-bold" id="fullscreenDetailAddress"></p>
+                </div>
                 <div id="fullscreenDetailDescription"
                     class="break-words text-base leading-8 sm:text-lg [&_h1]:mb-3 [&_h1]:mt-6 [&_h1]:text-3xl [&_h1]:font-bold [&_h2]:mb-3 [&_h2]:mt-5 [&_h2]:text-2xl [&_h2]:font-bold [&_h3]:mb-2 [&_h3]:mt-5 [&_h3]:text-xl [&_h3]:font-semibold [&_h3:first-child]:mt-0 [&_p]:mb-4 [&_ol]:my-3 [&_ol]:list-decimal [&_ul]:my-3 [&_ul]:list-disc [&_li]:ml-6 [&_blockquote]:border-l-4 [&_blockquote]:border-gray-200 [&_blockquote]:pl-4">
                 </div>
