@@ -54,8 +54,8 @@ class CategoryController extends Controller
         $data = $this->validatedData($request);
         $data['menu_id'] = $menu->id;
 
-        if ($request->hasFile('background_file')) {
-            $data['background'] = 'storage/' . $request->file('background_file')->store('menus/categories', 'public');
+        if ($request->hasFile('background')) {
+            $data['background'] = 'storage/' . $request->file('background')->store("menus/categories", 'public');
         }
 
         Category::create(array_merge($data, [
@@ -84,8 +84,8 @@ class CategoryController extends Controller
         $data = $this->validatedData($request);
         $previousBackground = $category->background;
 
-        if ($request->hasFile('background_file')) {
-            $data['background'] = 'storage/' . $request->file('background_file')->store('menus/categories', 'public');
+        if ($request->hasFile('background')) {
+            $data['background'] = 'storage/' . $request->file('background')->store("menus/categories", 'public');
         } elseif ($request->boolean('remove_background')) {
             $data['background'] = null;
         }
@@ -165,11 +165,11 @@ class CategoryController extends Controller
             'icon' => ['required', Rule::in(array_keys(Menu::iconOptions()))],
             'color' => ['required', 'regex:/^#[0-9a-fA-F]{6}$/'],
             'description' => ['required', 'string', 'max:1000'],
-            'background_file' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'background' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
             'remove_background' => ['nullable', 'boolean'],
         ]);
 
-        unset($data['background_file'], $data['remove_background']);
+        unset($data['background'], $data['remove_background']);
 
         return $data;
     }

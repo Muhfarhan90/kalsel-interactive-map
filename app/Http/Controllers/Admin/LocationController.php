@@ -59,8 +59,8 @@ class LocationController extends Controller
         $menu = $this->menuFromRequest($request);
         $data = $this->validatedData($request, $menu);
 
-        if ($request->hasFile('media_file')) {
-            $data['media'] = 'storage/'.$request->file('media_file')->store('menus/locations', 'public');
+        if ($request->hasFile('media')) {
+            $data['media'] = 'storage/'.$request->file('media')->store('menus/locations', 'public');
         }
 
         Location::create($data);
@@ -82,8 +82,8 @@ class LocationController extends Controller
         $data = $this->validatedData($request, $menu);
         $previousMedia = $location->media;
 
-        if ($request->hasFile('media_file')) {
-            $data['media'] = 'storage/'.$request->file('media_file')->store('menus/locations', 'public');
+        if ($request->hasFile('media')) {
+            $data['media'] = 'storage/'.$request->file('media')->store('menus/locations', 'public');
         } elseif ($request->boolean('remove_media')) {
             $data['media'] = null;
         }
@@ -145,16 +145,16 @@ class LocationController extends Controller
             'category_id' => ['required', 'integer', Rule::exists('categories', 'id')->where('menu_id', $menu->id)],
             'name' => ['required', 'string', 'max:150'],
             'address' => ['nullable', 'string', 'max:255'],
-            'description' => ['nullable', 'string', 'max:5000'],
+            'description' => ['nullable', 'string'],
             'x_location' => ['required', 'numeric', 'between:0,100'],
             'y_location' => ['required', 'numeric', 'between:0,100'],
             'source_media' => ['nullable', 'string', 'max:255'],
-            'media_file' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,mp4', 'max:71680'],
+            'media' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,mp4', 'max:71680'],
             'is_active' => ['nullable', 'boolean'],
             'remove_media' => ['nullable', 'boolean'],
         ]);
 
-        unset($data['media_file'], $data['remove_media']);
+        unset($data['media'], $data['remove_media']);
         $data['is_active'] = $request->boolean('is_active');
 
         if (! empty($data['description'])) {

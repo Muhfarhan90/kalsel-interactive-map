@@ -67,10 +67,10 @@ class HomepageController extends Controller
      */
     public function index()
     {
-        $pageHeader = PublicPageHeader::where('page_key', 'home')->firstOrFail();
+        // $pageHeader = PublicPageHeader::where('page_key', 'home')->firstOrFail();
         $homepage = Homepage::first();
-        $menus = Menu::with('categories')->orderBy('sort_order')->get();
-        return view('pages.home', compact('pageHeader', 'homepage', 'menus'));
+        $menus = Menu::with('categories')->where('is_active', true)->orderBy('sort_order')->get();
+        return view('pages.home', compact('homepage', 'menus'));
     }
 
     /**

@@ -34,6 +34,7 @@
                     <th class="px-5 py-3.5 text-left">Menu</th>
                     <th class="px-5 py-3.5 text-left">Warna marker</th>
                     <th class="px-5 py-3.5 text-left">Icon</th>
+                    <th class="px-5 py-3.5 text-left">Status</th>
                     <th class="px-5 py-3.5 text-right">Aksi</th>
                 </tr>
             </thead>
@@ -75,6 +76,20 @@
 
                             </div>
                         </td>
+                        <td class="px-5 py-4">
+                            @if ($m->is_active)
+                                <span
+                                    class="inline-flex items-center gap-1 rounded-full bg-green-50 px-3 py-1.5 text-xs font-medium text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                                    <x-heroicon-o-check-badge class="size-3" />
+                                    Aktif
+                                </span>
+                            @else
+                                <span
+                                    class="inline-flex items-center gap-1 rounded-full bg-red-50 px-3 py-1.5 text-xs font-medium text-red-700 dark:bg-red-900/30 dark:text-red-400">
+                                    <x-heroicon-o-x-circle class="size-3" />
+                                    Nonaktif
+                                </span>
+                            @endif
                         <td class="px-5 py-4">
                             <div class="flex justify-end gap-2">
                                 <a href="{{ route('admin.menus.edit', $m) }}"

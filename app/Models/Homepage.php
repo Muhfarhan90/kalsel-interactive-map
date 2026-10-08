@@ -11,6 +11,10 @@ class Homepage extends Model
         'label',
         'description',
         'image',
+        'header_title',
+        'header_logo',
+        'header_text',
+        'color',
     ];
 
 

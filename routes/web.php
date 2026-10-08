@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\CulinaryLocationController;
 use App\Http\Controllers\Admin\CulinaryMapController;
 use App\Http\Controllers\Admin\MapController;
 use App\Http\Controllers\Admin\PublicPageHeaderController;
+use App\Http\Controllers\Admin\AdminHomepageController;
 use App\Http\Controllers\Admin\TransportationCategoryController;
 use App\Http\Controllers\Admin\TransportationLocationController;
 use App\Http\Controllers\Admin\TransportationMapController;
@@ -37,6 +38,8 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::get('/', DashboardController::class)->name('dashboard');
     Route::get('headers', [PublicPageHeaderController::class, 'edit'])->name('headers.edit');
     Route::put('headers', [PublicPageHeaderController::class, 'update'])->name('headers.update');
+    Route::get('homepage', [AdminHomepageController::class, 'edit'])->name('homepage.edit');
+    Route::put('homepage', [AdminHomepageController::class, 'update'])->name('homepage.update');
     Route::get('maps', [MapController::class, 'edit'])->name('maps.edit');
     Route::put('maps', [MapController::class, 'update'])->name('maps.update');
 

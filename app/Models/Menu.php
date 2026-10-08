@@ -19,6 +19,7 @@ class Menu extends Model
         'banner',
         'color',
         'sort_order',
+        'is_active',
     ];
 
     public function categories(): HasMany

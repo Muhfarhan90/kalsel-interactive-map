@@ -133,7 +133,7 @@
                             </div>
                         @endif
 
-                        <x-form.form-elements.file-input-example label="Gambar latar kategori" name="background_file"
+                        <x-form.form-elements.file-input-example label="Gambar latar kategori" name="background"
                             accept="image/jpeg,image/png,image/webp" help="JPG, PNG, atau WebP; maksimal 5 MB." />
                     </div>
                 </div>

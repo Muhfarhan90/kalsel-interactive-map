@@ -74,14 +74,14 @@ class MenuController extends Controller
 
         if ($request->hasFile('logo')) {
             $data['logo'] = 'storage/' . $request->file('logo')
-                ->store('menus/logos', 'public');
+                ->store("menus/logos", 'public');
         } elseif ($request->boolean('remove_logo')) {
             $data['logo'] = null;
         }
 
         if ($request->hasFile('banner')) {
             $data['banner'] = 'storage/' . $request->file('banner')
-                ->store('menus/banners', 'public');
+                ->store("menus/banners", 'public');
         } elseif ($request->boolean('remove_banner')) {
             $data['banner'] = null;
         }
@@ -160,6 +160,7 @@ class MenuController extends Controller
             'color' => ['nullable', 'string', 'max:7'],
             'remove_logo' => ['nullable', 'boolean'],
             'remove_banner' => ['nullable', 'boolean'],
+            'is_active' => ['nullable', 'boolean'],
         ]);
 
         unset($data['logo'], $data['banner'], $data['remove_logo'], $data['remove_banner']);

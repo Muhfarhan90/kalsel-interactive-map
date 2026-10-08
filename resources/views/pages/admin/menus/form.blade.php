@@ -156,6 +156,10 @@
                             </div>
                         </div>
                     </div>
+                    <div class="md:col-span-2">
+                        <x-form.form-elements.checkbox-component label="Tampilkan pada homepage" name="is_active"
+                            :checked="$editing ? $menu->is_active : true" />
+                    </div>
                 </div>
 
                 <div

@@ -95,7 +95,7 @@
                             </p>
 
                             <div class="mb-4 flex items-start gap-2">
-                                <svg class="mt-0.5 size-[18px] shrink-0 fill[{{ $menu->color }}]" viewBox="0 0 24 24"
+                                <svg class="mt-0.5 size-[18px] shrink-0 fill-[#da251d]" viewBox="0 0 24 24"
                                     aria-hidden="true">
                                     <path
                                         d="M12 2a8 8 0 0 0-8 8c0 5.5 8 12 8 12s8-6.5 8-12a8 8 0 0 0-8-8Zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z" />
@@ -244,7 +244,7 @@
             document.getElementById('detailDescription').innerHTML = safeDescription(location.description);
 
             const detailMedia = document.getElementById('detailMedia');
-            const mediaUrl = location.media_url;
+            const mediaUrl = location.media;
             const isVideo = mediaUrl?.toLowerCase().endsWith('.mp4');
 
             if (!mediaUrl) {
