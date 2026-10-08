@@ -33,18 +33,21 @@ class AdminHomepageController extends Controller
 
         $homepage = Homepage::query()->firstOrFail();
         $previousImage = $homepage->image;
+        $previousHeaderLogo = $homepage->header_logo;
 
         if ($request->hasFile('image')) {
             $data['image'] = 'storage/' . $request->file('image')
                 ->store('homepages/backgrounds', 'public');
+        } else {
+            unset($data['image']);
         }
 
         if ($request->hasFile('header_logo')) {
             $data['header_logo'] = 'storage/' . $request->file('header_logo')
                 ->store('homepages/logos', 'public');
+        } else {
+            unset($data['header_logo']);
         }
-
-        unset($data['image'], $data['header_logo']);
 
         $homepage->update($data);
 
@@ -57,11 +60,11 @@ class AdminHomepageController extends Controller
         }
 
         if (
-            $previousImage !== $homepage->header_logo
-            && $previousImage
-            && str_starts_with($previousImage, 'storage/homepages/logos/')
+            $previousHeaderLogo !== $homepage->header_logo
+            && $previousHeaderLogo
+            && str_starts_with($previousHeaderLogo, 'storage/homepages/logos/')
         ) {
-            Storage::disk('public')->delete(substr($previousImage, 8));
+            Storage::disk('public')->delete(substr($previousHeaderLogo, 8));
         }
 
         return back()->with('success', 'Pengaturan homepage berhasil diperbarui.');

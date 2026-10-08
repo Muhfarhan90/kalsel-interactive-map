@@ -31,7 +31,7 @@
                     </label>
 
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Teks header
+                        Logo teks header
                         <input type="text" name="header_text" value="{{ old('header_text', $homepage->header_text) }}"
                             maxlength="255"
                             class="mt-1.5 min-h-11 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 dark:border-gray-700 dark:text-white">
@@ -40,18 +40,15 @@
                         @enderror
                     </label>
 
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Logo header
+                    <div>
+                        <x-form.form-elements.file-input-example label="Logo header" name="header_logo"
+                            accept="image/jpeg,image/png,image/webp" help="Kosongkan jika logo tidak berubah." />
+
                         @if ($homepage->header_logo)
                             <img src="{{ asset($homepage->header_logo) }}" alt="Logo header saat ini"
-                                class="mt-1.5 mb-3 h-20 max-w-full object-contain">
+                                class="mt-3 h-20 max-w-full object-contain">
                         @endif
-                        <input type="file" name="header_logo" accept="image/jpeg,image/png,image/webp"
-                            class="mt-1.5 min-h-11 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 dark:border-gray-700 dark:text-white">
-                        @error('header_logo')
-                            <span class="mt-1 block text-xs text-red-600">{{ $message }}</span>
-                        @enderror
-                    </label>
+                    </div>
 
                     <div>
                         <label for="homepage_color" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -72,61 +69,63 @@
                         @error('color')
                             <span class="mt-1 block text-xs text-red-600">{{ $message }}</span>
                         @enderror
+                    </div>
                 </div>
-    </div>
-    </x-common.component-card>
+            </x-common.component-card>
 
-    <x-common.component-card title="Konten homepage" desc="Teks yang tampil di halaman utama.">
-        <div class="grid gap-5 md:grid-cols-2">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Label
-                <input type="text" name="label" value="{{ old('label', $homepage->label) }}" maxlength="255" required
-                    class="mt-1.5 min-h-11 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 dark:border-gray-700 dark:text-white">
-                @error('label')
-                    <span class="mt-1 block text-xs text-red-600">{{ $message }}</span>
+            <x-common.component-card title="Konten homepage" desc="Teks yang tampil di halaman utama.">
+                <div class="grid gap-5 md:grid-cols-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Label
+                        <input type="text" name="label" value="{{ old('label', $homepage->label) }}" maxlength="255"
+                            required
+                            class="mt-1.5 min-h-11 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 dark:border-gray-700 dark:text-white">
+                        @error('label')
+                            <span class="mt-1 block text-xs text-red-600">{{ $message }}</span>
+                        @enderror
+                    </label>
+
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Judul
+                        <input type="text" name="title" value="{{ old('title', $homepage->title) }}" maxlength="255"
+                            required
+                            class="mt-1.5 min-h-11 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 dark:border-gray-700 dark:text-white">
+                        @error('title')
+                            <span class="mt-1 block text-xs text-red-600">{{ $message }}</span>
+                        @enderror
+                    </label>
+
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 md:col-span-2">
+                        Deskripsi
+                        <textarea name="description" rows="4" maxlength="255"
+                            class="mt-1.5 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 dark:border-gray-700 dark:text-white">{{ old('description', $homepage->description) }}</textarea>
+                        @error('description')
+                            <span class="mt-1 block text-xs text-red-600">{{ $message }}</span>
+                        @enderror
+                    </label>
+                </div>
+            </x-common.component-card>
+
+            <x-common.component-card title="Gambar latar" desc="Format JPG, PNG, atau WebP; maksimal 5 MB.">
+                @if ($homepage->image)
+                    <img src="{{ asset($homepage->image) }}" alt="Banner homepage"
+                        class="mb-4 h-auto w-full rounded-lg object-contain">
+                @endif
+
+                <x-form.form-elements.file-input-example label="Ganti gambar latar" name="image"
+                    accept="image/jpeg,image/png,image/webp" help="Kosongkan jika gambar tidak berubah." />
+
+                @error('image')
+                    <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
                 @enderror
-            </label>
+            </x-common.component-card>
 
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Judul
-                <input type="text" name="title" value="{{ old('title', $homepage->title) }}" maxlength="255" required
-                    class="mt-1.5 min-h-11 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 dark:border-gray-700 dark:text-white">
-                @error('title')
-                    <span class="mt-1 block text-xs text-red-600">{{ $message }}</span>
-                @enderror
-            </label>
-
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 md:col-span-2">
-                Deskripsi
-                <textarea name="description" rows="4" maxlength="255"
-                    class="mt-1.5 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 dark:border-gray-700 dark:text-white">{{ old('description', $homepage->description) }}</textarea>
-                @error('description')
-                    <span class="mt-1 block text-xs text-red-600">{{ $message }}</span>
-                @enderror
-            </label>
-        </div>
-    </x-common.component-card>
-
-    <x-common.component-card title="Gambar latar" desc="Format JPG, PNG, atau WebP; maksimal 5 MB.">
-        @if ($homepage->image)
-            <img src="{{ asset($homepage->image) }}" alt="Banner homepage"
-                class="mb-4 h-auto w-full rounded-lg object-contain">
-        @endif
-
-        <x-form.form-elements.file-input-example label="Ganti gambar latar" name="image"
-            accept="image/jpeg,image/png,image/webp" help="Kosongkan jika gambar tidak berubah." />
-
-        @error('image')
-            <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
-        @enderror
-    </x-common.component-card>
-
-    <div class="flex justify-end">
-        <button type="submit"
-            class="inline-flex min-h-11 items-center justify-center rounded-lg bg-[#da251d] px-5 py-2.5 text-sm font-semibold text-white hover:bg-red-700">
-            Simpan perubahan
-        </button>
-    </div>
-    </form>
+            <div class="flex justify-end">
+                <button type="submit"
+                    class="inline-flex min-h-11 items-center justify-center rounded-lg bg-[#da251d] px-5 py-2.5 text-sm font-semibold text-white hover:bg-red-700">
+                    Simpan perubahan
+                </button>
+            </div>
+        </form>
     </div>
 @endsection
