@@ -11,7 +11,7 @@
 <body
     class="public-page m-0 h-screen overflow-hidden bg-gray-100 font-sans text-gray-800 max-[850px]:h-auto max-[850px]:min-h-screen max-[850px]:overflow-y-auto"
     style="--page-header-background: {{ $menu->color }}">
-    <x-public-page-header :settings="$pageHeader" background-color="{{ $menu->color }}" />
+    <x-public-page-header :settings="$homepage" background-color="{{ $menu->color }}" />
 
     <main class="h-[calc(100vh-4rem)] w-full max-[850px]:h-auto">
         <section class="grid h-full grid-cols-12 rounded-lg bg-white max-[850px]:h-auto max-[850px]:grid-cols-1">

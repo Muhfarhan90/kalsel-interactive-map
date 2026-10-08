@@ -14,6 +14,8 @@ class HomepageController extends Controller
 {
     public function menu($slug)
     {
+        $homepage = Homepage::first();
+
         $map = Map::latest('id')->first();
 
         $menu = Menu::where('slug', $slug)->with('categories')->firstOrFail();
@@ -59,7 +61,7 @@ class HomepageController extends Controller
             'locations' => $locations,
             'map' => $map,
             'menu' => $menu,
-            'pageHeader' => PublicPageHeader::where('page_key', 'home')->firstOrFail(),
+            'homepage' => $homepage,
         ]);
     }
     /**
