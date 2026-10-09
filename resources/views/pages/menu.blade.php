@@ -62,7 +62,7 @@
                         <div class="pt-2.5 pr-1">
                             <div class="grid grid-cols-2 gap-2.5 max-[520px]:grid-cols-1" id="categoryGrid"></div>
                             @if ($menu?->banner)
-                                <x-map-background-banner :image="$menu->banner" :text="$menu->description " />
+                                <x-map-background-banner :image="$menu->banner" :text="$menu->description" />
                             @endif
                         </div>
                     </div>
@@ -132,7 +132,7 @@
     </main>
 
     <x-ui.modal id="detailModal" x-model="fullscreenOpen" aria-labelledby="fullscreenDetailName"
-        panelClass="max-w-[90rem] max-h-[calc(100dvh-2.5rem)] overflow-hidden p-0">
+        panelClass="max-w-7xl max-h-[calc(100dvh-2.5rem)] overflow-hidden p-0">
         <article class="flex max-h-[calc(100dvh-2.5rem)] min-w-0 flex-col">
             <header class="shrink-0 border-b border-gray-200 p-4 pr-14 sm:p-6 sm:pr-16">
                 <div class="flex min-w-0 items-start gap-3">
