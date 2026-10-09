@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $menu?->title ?: 'Peta Wisata Kalimantan Selatan' }}</title>
+    <link rel="icon" type="image/png" href="{{ asset($homepage->header_logo) }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         [x-cloak] {
@@ -19,7 +20,8 @@
     <x-public-page-header :settings="$homepage" background-color="{{ $menu->color }}" />
 
     <main class="h-[calc(100vh-4rem)] w-full">
-        <section class="grid h-full min-h-0 grid-cols-12 rounded-lg bg-white max-[850px]:h-auto max-[850px]:grid-cols-1">
+        <section
+            class="grid h-full min-h-0 grid-cols-12 rounded-lg bg-white max-[850px]:h-auto max-[850px]:grid-cols-1">
             <div class="col-span-7 min-w-0 max-[850px]-col=span-1"
                 style="background-color: color-mix(in srgb, var(--page-header-background) 14%, white)">
                 <div class="p-3">
@@ -59,7 +61,8 @@
                             </div>
                         </header>
 
-                        <div id="categoryScroll" tabindex="0" role="region" aria-label="Kategori dan banner" class="min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain pt-2.5 pr-1">
+                        <div id="categoryScroll" tabindex="0" role="region" aria-label="Kategori dan banner"
+                            class="min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain pt-2.5 pr-1">
                             <div class="grid grid-cols-2 gap-2.5 max-[520px]:grid-cols-1" id="categoryGrid"></div>
                             @if ($menu?->banner)
                                 <x-map-background-banner :image="$menu->banner" :text="$menu->description" />
@@ -91,7 +94,7 @@
                                             <path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5" />
                                         </svg>
                                         <span class="max-[520px]:hidden">
-                                        Perluas
+                                            Perluas
                                         </span>
                                     </button>
                                     <button

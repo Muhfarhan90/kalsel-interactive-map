@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#183832">
     <title>Jelajah Kalimantan Selatan</title>
+    <link rel="icon" type="image/png" href="{{ asset($homepage->header_logo) }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 

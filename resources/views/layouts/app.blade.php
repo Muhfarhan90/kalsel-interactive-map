@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="h-full bg-gray-50 dark:bg-gray-900">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}"
+    class="h-full bg-gray-50 dark:bg-gray-900">
 
 <head>
     <meta charset="utf-8">
@@ -7,7 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ $title ?? 'Dashboard' }} | Kalsel</title>
-
+    <link rel="icon" type="image/png" href="{{ asset($homepage->header_logo) }}">
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -33,7 +34,9 @@
                     this.theme = value;
                     localStorage.setItem('theme', value);
                     this.updateTheme();
-                    window.dispatchEvent(new CustomEvent('theme-changed', { detail: value }));
+                    window.dispatchEvent(new CustomEvent('theme-changed', {
+                        detail: value
+                    }));
                 },
                 toggle() {
                     this.set(this.resolvedTheme === 'dark' ? 'light' : 'dark');
@@ -80,7 +83,7 @@
                 handleResize() {
                     if (window.innerWidth < 1280) {
                         if (this.isMobileOpen) {
-                             this.isMobileOpen = false;
+                            this.isMobileOpen = false;
                         }
                     } else {
                         this.isMobileOpen = false;
@@ -92,7 +95,7 @@
                 toggleExpanded() {
                     this.isExpanded = !this.isExpanded;
                     this.isMobileOpen = false;
-                    
+
                     if (window.innerWidth >= 1280) {
                         localStorage.setItem('sidebarExpanded', this.isExpanded);
                     }
@@ -140,18 +143,20 @@
             }
         })();
     </script>
-    
+
 
 </head>
 
 <body>
 
-    <div class="min-h-screen xl:flex sidebar-expanded" x-data :class="{ 'sidebar-expanded': $store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen }">
+    <div class="min-h-screen xl:flex sidebar-expanded" x-data
+        :class="{ 'sidebar-expanded': $store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen }">
         @include('layouts.backdrop')
         @include('layouts.sidebar')
 
         {{-- transition-all duration-300 ease-in-out --}}
-        <div class="flex-1 ml-0 ltr:xl:ml-[90px] rtl:xl:ml-0 rtl:xl:mr-[90px] [.sidebar-expanded_&]:ltr:xl:ml-[290px] [.sidebar-expanded_&]:rtl:xl:ml-0 [.sidebar-expanded_&]:rtl:xl:mr-[290px] transition-all duration-300 ease-in-out">
+        <div
+            class="flex-1 ml-0 ltr:xl:ml-[90px] rtl:xl:ml-0 rtl:xl:mr-[90px] [.sidebar-expanded_&]:ltr:xl:ml-[290px] [.sidebar-expanded_&]:rtl:xl:ml-0 [.sidebar-expanded_&]:rtl:xl:mr-[290px] transition-all duration-300 ease-in-out">
             <!-- app header start -->
             @include('layouts.app-header')
             <!-- app header end -->

@@ -12,7 +12,7 @@
         :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'justify-center' :
         'justify-between'">
         <a href="/" class="flex items-center gap-3">
-            <img src="/images/logo/logo_kalsel.svg" alt="Logo Kalsel" class="size-10 shrink-0 object-contain" />
+            <img src="{{ asset($homepage->header_logo) }}" alt="Logo Kalsel" class="size-10 shrink-0 object-contain" />
             <span class="hidden text-2xl font-bold text-gray-900 [.sidebar-expanded_&]:block dark:text-white">Kalimantan
                 Selatan</span>
         </a>
