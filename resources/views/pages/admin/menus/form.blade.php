@@ -140,8 +140,8 @@
                             <div class="min-w-0 rounded-xl border border-gray-200 p-4 dark:border-gray-700">
                                 <p class="mb-3 text-sm font-medium text-gray-700 dark:text-gray-300">Banner menu</p>
 
-                                @if ($menu->menu_banner)
-                                    <img src="{{ asset($menu->menu_banner) }}" alt="Banner menu saat ini"
+                                @if ($menu->banner)
+                                    <img src="{{ asset($menu->banner) }}" alt="Banner menu saat ini"
                                         class="mb-3 h-24 w-40 rounded-lg object-cover">
 
                                     <label class="mb-3 flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
@@ -151,7 +151,7 @@
                                     </label>
                                 @endif
 
-                                <x-form.form-elements.file-input-example label="Upload banner menu" name="menu_banner"
+                                <x-form.form-elements.file-input-example label="Upload banner menu" name="banner"
                                     accept="image/jpeg,image/png,image/webp" help="JPG, PNG, atau WebP; maksimal 5 MB." />
                             </div>
                         </div>

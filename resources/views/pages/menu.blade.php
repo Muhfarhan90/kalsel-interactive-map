@@ -61,8 +61,8 @@
 
                         <div class="pt-2.5 pr-1">
                             <div class="grid grid-cols-2 gap-2.5 max-[520px]:grid-cols-1" id="categoryGrid"></div>
-                            @if ($map?->map_background_image)
-                                <x-map-background-banner :image="$map->map_background_image" :text="$map->map_background_text" />
+                            @if ($menu?->banner)
+                                <x-map-background-banner :image="$menu->banner" :text="$menu->description " />
                             @endif
                         </div>
                     </div>
