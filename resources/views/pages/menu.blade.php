@@ -90,7 +90,9 @@
                                             stroke-linejoin="round" aria-hidden="true">
                                             <path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5" />
                                         </svg>
+                                        <span class="max-[520px]:hidden">
                                         Fullscreen
+                                        </span>
                                     </button>
                                     <button
                                         class="inline-flex min-h-10 cursor-pointer items-center whitespace-nowrap rounded-lg border-0 px-3 py-2 text-sm font-bold text-white shadow-sm focus:outline-none focus-visible:ring-4 focus-visible:ring-gray-300 max-[520px]:px-2 max-[520px]:text-xs"

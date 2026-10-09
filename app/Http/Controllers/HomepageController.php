@@ -27,8 +27,7 @@ class HomepageController extends Controller
             // ->where('categories.is_active', true)
             ->select('locations.*')
             ->where('locations.is_active', true)
-            // ->orderBy('categories.sort_order')
-            ->orderBy('categories.id')
+            ->orderBy('categories.sort_order')
             ->orderBy('locations.name')
             ->get()
             ->map(function (Location $location): array {
