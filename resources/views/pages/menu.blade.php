@@ -365,8 +365,8 @@
                 '<div class="relative flex-1 px-2.5 py-1">' +
                 (group.background ?
                     '<img src="' + escapeHtml(group.background) +
-                    '" alt="" aria-hidden="true" loading="lazy" class="pointer-events-none absolute inset-y-0 right-0 h-full w-[55%] object-cover object-center">' +
-                    '<div class="pointer-events-none absolute inset-y-0 right-0 w-[60%] bg-gradient-to-r from-white via-white/85 to-transparent"></div>' :
+                    '" alt="" aria-hidden="true" loading="lazy" class="pointer-events-none absolute inset-y-0 right-0 h-full w-full object-cover object-center">' +
+                    '<div class="pointer-events-none absolute inset-y-0 right-0 w-full bg-gradient-to-r from-white via-white/85 to-transparent"></div>' :
                     '') +
                 '<div class="relative">' +
                 group.locations.map((location, index) =>
