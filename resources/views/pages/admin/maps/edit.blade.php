@@ -16,7 +16,7 @@
 
             <x-common.component-card title="Gambar peta" desc="Format JPG, PNG, atau WebP. Maksimal 10 MB.">
                 @if ($map->map_image)
-                    <div class="mb-4 grid aspect-square max-h-[32rem] place-items-center overflow-hidden border border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800">
+                    <div class="mb-4 grid aspect-square max-h-full place-items-center overflow-hidden border border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800">
                         <img src="{{ asset($map->map_image) }}" alt="Gambar peta saat ini" class="size-full object-contain">
                     </div>
                 @endif

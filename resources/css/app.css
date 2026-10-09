@@ -1321,6 +1321,17 @@ pre code,
   min-height: 10rem;
 }
 
+.public-page, 
+.public-page * {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.public-page img,
+.public-page video {
+  -webkit-user-drag:none
+}
+
 .category-list-text {
   text-shadow: 0 0 8px #fff, 0 0 18px #fff, 0 0 28px #fff;
 }

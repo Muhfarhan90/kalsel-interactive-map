@@ -14,16 +14,16 @@
 </head>
 
 <body x-data="locationFullscreenModal()" @keydown.tab.window="trapFocus($event)"
-    class="public-page m-0 h-screen overflow-hidden bg-gray-100 font-sans text-gray-800 max-[850px]:h-auto max-[850px]:min-h-screen max-[850px]:overflow-y-auto"
+    class="public-page m-0 h-[100dvh] overflow-hidden bg-gray-100 font-sans text-gray-800 max-[850px]:h-auto max-[850px]:min-h-screen max-[850px]:overflow-y-auto"
     style="--page-header-background: {{ $menu->color }}">
     <x-public-page-header :settings="$homepage" background-color="{{ $menu->color }}" />
 
-    <main class="h-[calc(100vh-4rem)] w-full max-[850px]:h-auto">
-        <section class="grid h-full grid-cols-12 rounded-lg bg-white max-[850px]:h-auto max-[850px]:grid-cols-1">
-            <div class="col-span-7 min-w-0"
+    <main class="h-[calc(100vh-4rem)] w-full">
+        <section class="grid h-full min-h-0 grid-cols-12 rounded-lg bg-white max-[850px]:h-auto max-[850px]:grid-cols-1">
+            <div class="col-span-7 min-w-0 max-[850px]-col=span-1"
                 style="background-color: color-mix(in srgb, var(--page-header-background) 14%, white)">
                 <div class="p-3">
-                    <div class="relative mx-auto aspect-square w-full max-w-[calc(100vh-6rem)] border-[6px] rounded-lg"
+                    <div class="relative mx-auto aspect-square w-full max-w-[calc(100vh-6rem)] border-[6px] rounded-lg max-[850px]:max-w-[35dvh]"
                         style="border-color: var(--page-header-background)" id="mapFrame">
                         <img class="block size-full rounded-sm"
                             src="{{ asset($map?->map_image ?: 'images/maps/peta_provinsi_kalsel.png') }}"
@@ -32,13 +32,13 @@
                 </div>
             </div>
 
-            <aside class="col-span-5 min-h-0 min-w-0 p-3">
-                <div id="listView" class="h-full overflow-y-auto">
-                    <div class="grid">
-                        <header class="border-b border-gray-200 pb-2">
+            <aside class="col-span-5 min-h-0 min-w-0 p-3 max-[850px]:col-span-1">
+                <div id="listView" class="h-full min-h-0 overflow-hidden">
+                    <div class="flex h-full min-h-0 flex-col">
+                        <header class="border-b border-gray-200 pb-2 shrink-0">
                             <div class="flex items-center justify-between gap-3 max-[520px]:items-start">
                                 <div class="flex min-w-0 items-center gap-2.5">
-                                    <img class="h-auto w-16 md:w-28 shrink-0 object-contain"
+                                    <img class="h-auto w-16 md:w-28 shrink-0 object-contain max-[850px]:max-h-16"
                                         src="{{ asset($menu?->logo ?: 'images/logo/logo_kalsel.svg') }}"
                                         alt="Logo {{ $menu?->title ?: 'Kalimantan Selatan' }}">
                                     <div class="min-w-0">
@@ -59,7 +59,7 @@
                             </div>
                         </header>
 
-                        <div class="pt-2.5 pr-1">
+                        <div id="categoryScroll" tabindex="0" role="region" aria-label="Kategori dan banner" class="min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain pt-2.5 pr-1">
                             <div class="grid grid-cols-2 gap-2.5 max-[520px]:grid-cols-1" id="categoryGrid"></div>
                             @if ($menu?->banner)
                                 <x-map-background-banner :image="$menu->banner" :text="$menu->description" />
@@ -91,7 +91,7 @@
                                             <path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5" />
                                         </svg>
                                         <span class="max-[520px]:hidden">
-                                        Fullscreen
+                                        Perluas
                                         </span>
                                     </button>
                                     <button
