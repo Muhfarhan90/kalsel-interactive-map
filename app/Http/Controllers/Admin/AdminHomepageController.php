@@ -22,7 +22,7 @@ class AdminHomepageController extends Controller
     {
         $data = $request->validate([
             'header_title' => ['required', 'string', 'max:255'],
-            'header_logo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'header_logo' => ['nullable', 'image:allow_svg', 'mimes:jpg,jpeg,png,webp,svg', 'max:5120'],
             'header_text' => ['nullable', 'string', 'max:255'],
             'color' => ['nullable', 'string', 'max:7', 'regex:/^#[0-9A-Fa-f]{6}$/'],
             'title' => ['required', 'string', 'max:255'],

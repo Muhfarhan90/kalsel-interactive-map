@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#183832">
     <title>Jelajah Kalimantan Selatan</title>
-    @vite('resources/css/app.css')
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 <body class="public-page h-[100svh] overflow-hidden bg-[#183832] font-outfit text-white antialiased">

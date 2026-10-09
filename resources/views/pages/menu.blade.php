@@ -119,7 +119,7 @@
                                     <path
                                         d="M12 2a8 8 0 0 0-8 8c0 5.5 8 12 8 12s8-6.5 8-12a8 8 0 0 0-8-8Zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z" />
                                 </svg>
-                                <p class="m-0 text-sm leading-6 font-bold" id="detailAddress"></p>
+                                <p class="m-0 text-base leading-6 font-bold" id="detailAddress"></p>
                             </div>
 
                             <div class="text-justify [&_h1]:mb-3 [&_h1]:mt-6 [&_h1]:text-3xl [&_h1]:font-bold [&_h2]:mb-3 [&_h2]:mt-5 [&_h2]:text-2xl [&_h2]:font-bold [&_h3]:mb-2 [&_h3]:mt-4 [&_h3]:text-xl [&_h3]:font-semibold [&_ol]:list-decimal [&_ul]:list-disc [&_li]:ml-5"
@@ -132,7 +132,7 @@
     </main>
 
     <x-ui.modal id="detailModal" x-model="fullscreenOpen" aria-labelledby="fullscreenDetailName"
-        panelClass="max-w-7xl max-h-[calc(100dvh-2.5rem)] overflow-hidden p-0">
+        panelClass="max-w-[90rem] max-h-[calc(100dvh-2.5rem)] overflow-hidden p-0">
         <article class="flex max-h-[calc(100dvh-2.5rem)] min-w-0 flex-col">
             <header class="shrink-0 border-b border-gray-200 p-4 pr-14 sm:p-6 sm:pr-16">
                 <div class="flex min-w-0 items-start gap-3">
@@ -159,7 +159,7 @@
                         <path
                             d="M12 2a8 8 0 0 0-8 8c0 5.5 8 12 8 12s8-6.5 8-12a8 8 0 0 0-8-8Zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z" />
                     </svg>
-                    <p class="m-0 text-sm leading-6 font-bold" id="fullscreenDetailAddress"></p>
+                    <p class="m-0 text-base leading-6 font-bold" id="fullscreenDetailAddress"></p>
                 </div>
                 <div id="fullscreenDetailDescription"
                     class="break-words text-base leading-8 sm:text-lg [&_h1]:mb-3 [&_h1]:mt-6 [&_h1]:text-3xl [&_h1]:font-bold [&_h2]:mb-3 [&_h2]:mt-5 [&_h2]:text-2xl [&_h2]:font-bold [&_h3]:mb-2 [&_h3]:mt-5 [&_h3]:text-xl [&_h3]:font-semibold [&_h3:first-child]:mt-0 [&_p]:mb-4 [&_ol]:my-3 [&_ol]:list-decimal [&_ul]:my-3 [&_ul]:list-disc [&_li]:ml-6 [&_blockquote]:border-l-4 [&_blockquote]:border-gray-200 [&_blockquote]:pl-4">

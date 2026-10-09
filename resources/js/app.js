@@ -12,4 +12,8 @@ window.Alpine = Alpine;
 window.createPopper = createPopper;
 window.flatpickr = flatpickr;
 
+document.addEventListener('contextmenu', (event) => {
+    event.preventDefault();
+});
+
 Alpine.start();

@@ -42,7 +42,7 @@
 
                     <div>
                         <x-form.form-elements.file-input-example label="Logo header" name="header_logo"
-                            accept="image/jpeg,image/png,image/webp" help="Kosongkan jika logo tidak berubah." />
+                            accept="image/jpeg,image/png,image/webp,image/svg+xml" help="Kosongkan jika logo tidak berubah." />
 
                         @if ($homepage->header_logo)
                             <img src="{{ asset($homepage->header_logo) }}" alt="Logo header saat ini"
