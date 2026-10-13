@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Homepage;
 use App\Models\Menu;
 use Illuminate\Support\ServiceProvider;
 
@@ -21,7 +22,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
+        $homepage = Homepage::first();
         $sidebarMenus = Menu::with('categories')->get();
-        view()->share('sidebarMenus', $sidebarMenus);
+        view()->share(
+            ['sidebarMenus' => $sidebarMenus, 'homepage' => $homepage]);
     }
 }
