@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CulinaryCategoryController;
 use App\Http\Controllers\Admin\CulinaryLocationController;
 use App\Http\Controllers\Admin\CulinaryMapController;
 use App\Http\Controllers\Admin\MapController;
+use App\Http\Controllers\Admin\RegencyController;
 use App\Http\Controllers\Admin\PublicPageHeaderController;
 use App\Http\Controllers\Admin\AdminHomepageController;
 use App\Http\Controllers\Admin\TransportationCategoryController;
@@ -42,6 +43,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::put('homepage', [AdminHomepageController::class, 'update'])->name('homepage.update');
     Route::get('maps', [MapController::class, 'edit'])->name('maps.edit');
     Route::put('maps', [MapController::class, 'update'])->name('maps.update');
+    Route::resource('regencies', RegencyController::class)->except('show');
 
     Route::resource('menus', MenuController::class)->except('show');
     Route::post('menus/reorder', [MenuController::class, 'reorder'])->name('menus.reorder');

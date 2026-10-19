@@ -117,6 +117,18 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ route('admin.regencies.index') }}"
+                        class="menu-item group {{ request()->routeIs('admin.regencies.*') ? 'menu-item-active' : 'menu-item-inactive' }}"
+                        :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ?
+                        'xl:justify-center' : 'xl:justify-start'">
+                        <span class="{{ request()->routeIs('admin.regencies.*') ? 'menu-item-icon-active' : 'menu-item-icon-inactive' }}">
+                            <x-heroicon-o-map class="size-6" />
+                        </span>
+                        <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen"
+                            class="menu-item-text">Wilayah</span>
+                    </a>
+                </li>
+                <li>
                     <a href="{{ route('admin.menus.index') }}"
                         class="menu-item group {{ request()->routeIs('admin.menus.*') ? 'menu-item-active' : 'menu-item-inactive' }}"
                         :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ?

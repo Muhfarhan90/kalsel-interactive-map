@@ -9,6 +9,7 @@ class Location extends Model
 {
     protected $fillable = [
         'category_id',
+        'regency_id',
         'name',
         'address',
         'description',
@@ -22,5 +23,10 @@ class Location extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function regency(): BelongsTo
+    {
+        return $this->belongsTo(Regency::class);
     }
 }
