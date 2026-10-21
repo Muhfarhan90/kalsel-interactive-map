@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Masuk Admin | Peta Wisata Kalimantan Selatan</title>
+    <link rel="icon" type="image/png" href="{{ asset($homepage->header_logo) }}">
     <script>
         if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
         document.addEventListener('alpine:init', () => {

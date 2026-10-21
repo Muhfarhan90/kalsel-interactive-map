@@ -16,9 +16,9 @@
 
         @include('components.common.flash-message')
 
-        <form action="{{ route('admin.locations.index') }}" method="GET" class="flex flex-col gap-3 rounded-xl border border-gray-200 bg-white p-4 sm:flex-row sm:items-end dark:border-gray-800 dark:bg-white/[0.03]">
+        <form action="{{ route('admin.locations.index') }}" method="GET" class="flex flex-wrap items-end gap-3 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/[0.03]">
             <input type="hidden" name="menu" value="{{ $menu->slug }}">
-            <label class="min-w-0 flex-1">
+            <label class="min-w-56 flex-1">
                 <span class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Cari lokasi</span>
                 <input type="search" name="search" value="{{ $search }}" placeholder="Nama atau alamat lokasi..." class="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 text-sm text-gray-800 outline-none focus:border-[#da251d] dark:border-gray-700 dark:text-white/90">
             </label>
@@ -30,8 +30,16 @@
                     @endforeach
                 </x-form.form-elements.select-inputs>
             </div>
+            <div class="min-w-48">
+                <x-form.form-elements.select-inputs label="Wilayah" name="regency_id">
+                    <option value="">Semua wilayah</option>
+                    @foreach ($regencies as $regency)
+                        <option value="{{ $regency->id }}" @selected((string) $regencyId === (string) $regency->id)>{{ $regency->name }}</option>
+                    @endforeach
+                </x-form.form-elements.select-inputs>
+            </div>
             <button type="submit" class="inline-flex h-11 items-center justify-center rounded-lg bg-[#da251d] px-4 text-sm font-semibold text-white hover:bg-red-700">Terapkan</button>
-            @if ($search !== '' || $categoryId !== null)
+            @if ($search !== '' || $categoryId !== null || $regencyId !== null)
                 <a href="{{ route('admin.locations.index', ['menu' => $menu->slug]) }}" class="inline-flex h-11 items-center justify-center rounded-lg border border-gray-300 px-4 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800">Reset</a>
             @endif
         </form>
@@ -41,6 +49,7 @@
                 <tr class="text-left text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
                     <th class="px-5 py-3.5">Lokasi</th>
                     <th class="px-5 py-3.5">Kategori</th>
+                    <th class="px-5 py-3.5">Wilayah</th>
                     <th class="px-5 py-3.5">Status</th>
                     <th class="px-5 py-3.5 text-right">Aksi</th>
                 </tr>
@@ -58,6 +67,7 @@
                                 {{ $location->category->name }}
                             </span>
                         </td>
+                        <td class="px-5 py-4 text-xs text-gray-600 dark:text-gray-400">{{ $location->regency?->name ?: 'Belum ditentukan' }}</td>
                         <td class="px-5 py-4">
                             <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $location->is_active ? 'bg-success-50 text-success-700 dark:bg-success-500/10 dark:text-success-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400' }}">
                                 {{ $location->is_active ? 'Aktif' : 'Nonaktif' }}
@@ -76,7 +86,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="4" class="px-5 py-14 text-center">
+                        <td colspan="5" class="px-5 py-14 text-center">
                             <p class="font-semibold text-gray-800 dark:text-white">Belum ada lokasi</p>
                             <p class="mt-1 text-sm text-gray-500">Tambahkan lokasi pertama untuk menu {{ $menu->name }}.</p>
                         </td>

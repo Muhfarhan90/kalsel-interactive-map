@@ -186,21 +186,37 @@
                 </x-common.component-card>
 
                 <x-common.component-card title="Posisi pada peta"
-                    desc="Klik pada peta atau geser bar koordinat untuk menentukan titik lokasi.">
+                    desc="Pilih wilayah, lalu klik pada petanya atau geser bar koordinat untuk menentukan titik lokasi.">
                     <div x-data="{
                         x: @js($coordinateX),
                         y: @js($coordinateY),
+                        selectedRegency: @js((string) old('regency_id', $location->regency_id)),
+                        mapImages: @js($regencies->mapWithKeys(fn ($regency) => [(string) $regency->id => $regency->map_image ? asset($regency->map_image) : null])->all()),
+                        provinceMap: @js(asset($map->map_image ?: 'images/maps/peta_provinsi_kalsel.png')),
                         pick(event) {
                             const bounds = event.currentTarget.getBoundingClientRect();
                             this.x = Number(((event.clientX - bounds.left) / bounds.width * 100).toFixed(2));
                             this.y = Number(((event.clientY - bounds.top) / bounds.height * 100).toFixed(2));
                         }
                     }">
+                        <label for="regency_id" class="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300">Wilayah</label>
+                        <select id="regency_id" name="regency_id" x-model="selectedRegency"
+                            class="mb-4 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white">
+                            <option value="">Belum ditentukan</option>
+                            @foreach ($regencies as $regency)
+                                <option value="{{ $regency->id }}">{{ $regency->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('regency_id') <p class="mb-3 text-sm text-red-600">{{ $message }}</p> @enderror
+                        <p class="mb-3 text-xs text-gray-500">Koordinat lokasi mengikuti peta wilayah yang dipilih. Atur ulang titik setelah mengganti wilayah.</p>
                         <div class="relative mx-auto aspect-square w-full max-w-lg overflow-hidden rounded-lg bg-gray-50"
                             @click="pick($event)">
-                            <img src="{{ asset($map->map_image ?: 'images/maps/peta_provinsi_kalsel.png') }}"
-                                alt="Peta Kalimantan Selatan"
+                            <img :src="selectedRegency ? mapImages[selectedRegency] : provinceMap"
+                                x-show="!selectedRegency || mapImages[selectedRegency]"
+                                alt="Peta untuk menentukan posisi lokasi"
                                 class="absolute inset-0 size-full cursor-crosshair object-fill">
+                            <span x-show="selectedRegency && !mapImages[selectedRegency]"
+                                class="absolute inset-0 grid place-items-center px-4 text-center text-sm text-gray-500">Peta wilayah belum diunggah.</span>
                             <span
                                 class="pointer-events-none absolute z-10 grid size-12 -translate-x-1/2 -translate-y-full place-items-end justify-items-center text-[#da251d]"
                                 :style="{ left: `${x}%`, top: `${y}%` }">

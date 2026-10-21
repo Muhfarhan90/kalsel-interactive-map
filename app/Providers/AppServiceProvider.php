@@ -23,7 +23,7 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         $homepage = Homepage::first();
-        $sidebarMenus = Menu::with('categories')->get();
+        $sidebarMenus = Menu::with('categories')->where('is_active', true)->get();
         view()->share(
             ['sidebarMenus' => $sidebarMenus, 'homepage' => $homepage]);
     }

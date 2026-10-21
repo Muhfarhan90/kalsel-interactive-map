@@ -24,7 +24,10 @@ class RegencySeeder extends Seeder
             'banjarbaru' => 'Kota Banjarbaru',
             'banjarmasin' => 'Kota Banjarmasin',
         ] as $slug => $name) {
-            Regency::firstOrCreate(['slug' => $slug], ['name' => $name]);
+            Regency::firstOrCreate(['slug' => $slug], [
+                'name' => $name,
+                'sort_order' => (int) Regency::max('sort_order') + 1,
+            ]);
         }
     }
 }

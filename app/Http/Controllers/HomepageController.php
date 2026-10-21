@@ -7,6 +7,7 @@ use App\Models\Location;
 use App\Models\Map;
 use App\Models\Menu;
 use App\Models\PublicPageHeader;
+use App\Models\Regency;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -14,16 +15,30 @@ class HomepageController extends Controller
 {
     public function menu($slug)
     {
+        $menu = Menu::where('slug', $slug)->firstOrFail();
+
+        return view('pages.province', [
+            'homepage' => Homepage::first(),
+            'map' => Map::latest('id')->first(),
+            'menu' => $menu,
+            'regencies' => Regency::orderBy('sort_order')->orderBy('id')->get(),
+        ]);
+    }
+
+    public function regencyMenu(Menu $menu, Regency $regency)
+    {
+        return $this->renderMenu($menu, $regency);
+    }
+
+    private function renderMenu(Menu $menu, Regency $regency)
+    {
         $homepage = Homepage::first();
 
-        $map = Map::latest('id')->first();
-
-        $menu = Menu::where('slug', $slug)->with('categories')->firstOrFail();
-        
         $locations = Location::with('category')
             ->join('categories', 'locations.category_id', '=', 'categories.id')
             ->join('menus', 'categories.menu_id', '=', 'menus.id')
             ->where('menus.id', $menu->id)
+            ->where('locations.regency_id', $regency->id)
             // ->where('categories.is_active', true)
             ->select('locations.*')
             ->where('locations.is_active', true)
@@ -58,9 +73,9 @@ class HomepageController extends Controller
 
         return view('pages.menu', [
             'locations' => $locations,
-            'map' => $map,
             'menu' => $menu,
             'homepage' => $homepage,
+            'regency' => $regency,
         ]);
     }
     /**

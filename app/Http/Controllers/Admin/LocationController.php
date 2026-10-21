@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Location;
 use App\Models\Map;
 use App\Models\Menu;
+use App\Models\Regency;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -23,19 +24,22 @@ class LocationController extends Controller
         $filters = $request->validate([
             'search' => ['nullable', 'string', 'max:255'],
             'category_id' => ['nullable', 'integer', Rule::exists('categories', 'id')->where('menu_id', $menu->id)],
+            'regency_id' => ['nullable', 'integer', Rule::exists('regencies', 'id')],
         ]);
 
         $search = trim($filters['search'] ?? '');
         $categoryId = $filters['category_id'] ?? null;
+        $regencyId = $filters['regency_id'] ?? null;
 
         $locations = Location::query()
-            ->with('category')
+            ->with(['category', 'regency'])
             ->whereHas('category', fn ($query) => $query->where('menu_id', $menu->id))
             ->when($search !== '', fn ($query) => $query->where(function ($query) use ($search) {
                 $query->where('name', 'like', "%{$search}%")
                     ->orWhere('address', 'like', "%{$search}%");
             }))
             ->when($categoryId !== null, fn ($query) => $query->where('category_id', $categoryId))
+            ->when($regencyId !== null, fn ($query) => $query->where('regency_id', $regencyId))
             ->latest('id')
             ->paginate(10)
             ->withQueryString();
@@ -44,8 +48,10 @@ class LocationController extends Controller
             'menu' => $menu,
             'locations' => $locations,
             'categories' => $menu->categories()->orderBy('sort_order')->orderBy('name')->get(),
+            'regencies' => Regency::orderBy('sort_order')->orderBy('id')->get(),
             'search' => $search,
             'categoryId' => $categoryId,
+            'regencyId' => $regencyId,
         ]);
     }
 
@@ -118,6 +124,7 @@ class LocationController extends Controller
             'location' => $location,
             'categories' => $menu->categories()->orderBy('sort_order')->orderBy('name')->get(),
             'map' => Map::shared(),
+            'regencies' => Regency::orderBy('sort_order')->orderBy('id')->get(),
         ]);
     }
 
@@ -143,6 +150,7 @@ class LocationController extends Controller
     {
         $data = $request->validate([
             'category_id' => ['required', 'integer', Rule::exists('categories', 'id')->where('menu_id', $menu->id)],
+            'regency_id' => ['nullable', 'integer', Rule::exists('regencies', 'id')],
             'name' => ['required', 'string', 'max:150'],
             'address' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string'],

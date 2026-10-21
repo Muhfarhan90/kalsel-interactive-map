@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $menu?->title ?: 'Peta Wisata Kalimantan Selatan' }}</title>
+    <title>{{ $regency->name }} - {{ $menu->title ?: $menu->name }}</title>
     <link rel="icon" type="image/png" href="{{ asset($homepage->header_logo) }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
@@ -22,14 +22,18 @@
     <main class="h-[calc(100vh-4rem)] w-full">
         <section
             class="grid h-full min-h-0 grid-cols-12 rounded-lg bg-white max-[850px]:h-auto max-[850px]:grid-cols-1">
-            <div class="col-span-7 min-w-0 max-[850px]-col=span-1"
+            <div class="col-span-7 min-w-0 max-[850px]:col-span-1"
                 style="background-color: color-mix(in srgb, var(--page-header-background) 14%, white)">
                 <div class="p-3">
                     <div class="relative mx-auto aspect-square w-full max-w-[calc(100vh-6rem)] border-[6px] rounded-lg max-[850px]:max-w-[35dvh]"
                         style="border-color: var(--page-header-background)" id="mapFrame">
-                        <img class="block size-full rounded-sm"
-                            src="{{ asset($map?->map_image ?: 'images/maps/peta_provinsi_kalsel.png') }}"
-                            alt="{{ $menu?->title ?: 'Peta Kalimantan Selatan' }}">
+                        @if (! $regency->map_image)
+                            <div class="grid size-full place-items-center rounded-sm bg-gray-100 px-5 text-center text-sm text-gray-500">Peta {{ $regency->name }} belum diunggah.</div>
+                        @else
+                            <img class="block size-full rounded-sm"
+                                src="{{ asset($regency->map_image) }}"
+                                alt="Peta {{ $regency->name }}">
+                        @endif
                     </div>
                 </div>
             </div>
@@ -46,16 +50,17 @@
                                     <div class="min-w-0">
                                         <h2 class="m-0 break-words text-2xl font-bold"
                                             style="color: {{ $menu->color }}">
-                                            {{ $menu?->title ?: 'Peta Wisata Kalimantan Selatan' }}</h2>
+                                            {{ $regency->name }}</h2>
+                                        <p class="text-sm text-gray-500">{{ $menu->name }}</p>
                                         @if ($menu?->sub_title)
                                             <p class="text-sm text-gray-500">{{ $menu->sub_title }}</p>
                                         @endif
                                     </div>
                                 </div>
-                                <a href="{{ route('home') }}" data-public-page-link
+                                <a href="{{ route('menu', $menu->slug) }}" data-public-page-link
                                     class="inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-bold text-white shadow-sm transition-opacity hover:opacity-90 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-red-200 max-[520px]:px-2 max-[520px]:text-xs"
                                     style="background-color: var(--page-header-background)"
-                                    aria-label="Kembali ke halaman utama">
+                                    aria-label="Kembali ke peta provinsi">
                                     Kembali
                                 </a>
                             </div>
@@ -280,6 +285,7 @@
 
     <script>
         const locations = @json($locations);
+        const hasRegencyMap = @js((bool) $regency?->map_image);
 
         const mapFrame = document.getElementById('mapFrame');
         const categoryGrid = document.getElementById('categoryGrid');
@@ -357,6 +363,10 @@
         }
 
         function renderList() {
+            if (!locations.length) {
+                categoryGrid.innerHTML = '<p class="col-span-2 rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm text-gray-500">Belum ada lokasi untuk wilayah dan menu ini.</p>';
+                return;
+            }
             categoryGrid.innerHTML = Object.entries(groupedLocations).map(([category, group]) =>
                 '<section class="flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">' +
                 '<h3 class="m-0 flex items-center gap-2 px-2.5 py-2.5 text-md font-bold" style="background-color: color-mix(in srgb, ' +
@@ -466,7 +476,7 @@
             });
         });
 
-        renderMarkers();
+        if (hasRegencyMap) renderMarkers();
         renderList();
     </script>
 </body>

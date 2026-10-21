@@ -43,6 +43,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::put('homepage', [AdminHomepageController::class, 'update'])->name('homepage.update');
     Route::get('maps', [MapController::class, 'edit'])->name('maps.edit');
     Route::put('maps', [MapController::class, 'update'])->name('maps.update');
+    Route::post('regencies/reorder', [RegencyController::class, 'reorder'])->name('regencies.reorder');
     Route::resource('regencies', RegencyController::class)->except('show');
 
     Route::resource('menus', MenuController::class)->except('show');
@@ -83,6 +84,11 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::resource('users', UserController::class)->except('show');
 });
 
+Route::redirect('/wilayah/{regency}/{menu}', '/{menu}/{regency}', 301);
+Route::get('/{menu:slug}/{regency:slug}', [HomepageController::class, 'regencyMenu'])
+    // Wilayah dipakai bersama semua menu, jadi binding wilayah tidak dibatasi oleh relasi menu.
+    ->withoutScopedBindings()
+    ->name('regencies.menu');
 Route::get('/{slug}', [HomepageController::class, 'menu'])->name('menu');
 
 Route::get('/', [HomepageController::class, 'index'])->name('home');
