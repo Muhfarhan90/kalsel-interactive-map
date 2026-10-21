@@ -6,7 +6,6 @@ use App\Models\Homepage;
 use App\Models\Location;
 use App\Models\Map;
 use App\Models\Menu;
-use App\Models\PublicPageHeader;
 use App\Models\Regency;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -34,14 +33,19 @@ class HomepageController extends Controller
     {
         $homepage = Homepage::first();
 
+        $isDestinasi = $menu->slug === 'destinasi-pariwisata';
+
         $locations = Location::with('category')
             ->join('categories', 'locations.category_id', '=', 'categories.id')
             ->join('menus', 'categories.menu_id', '=', 'menus.id')
-            ->where('menus.id', $menu->id)
             ->where('locations.regency_id', $regency->id)
-            // ->where('categories.is_active', true)
-            ->select('locations.*')
             ->where('locations.is_active', true)
+            ->where('menus.is_active', true)
+            ->when(! $isDestinasi, function ($query) use ($menu) {
+                $query->where('menus.id', $menu->id);
+            })
+            ->select('locations.*')
+            ->orderBy('menus.sort_order')
             ->orderBy('categories.sort_order')
             ->orderBy('locations.name')
             ->get()
@@ -54,6 +58,7 @@ class HomepageController extends Controller
 
                 return [
                     'id' => $location->id,
+                    'category_id' => $location->category_id,
                     'category' => $location->category->name,
                     'color' => $location->category->color,
                     'icon' => $location->category->icon,
@@ -70,7 +75,6 @@ class HomepageController extends Controller
                 ];
             });
 
-
         return view('pages.menu', [
             'locations' => $locations,
             'menu' => $menu,
@@ -78,14 +82,27 @@ class HomepageController extends Controller
             'regency' => $regency,
         ]);
     }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        // $pageHeader = PublicPageHeader::where('page_key', 'home')->firstOrFail();
         $homepage = Homepage::first();
-        $menus = Menu::with('categories')->where('is_active', true)->orderBy('sort_order')->get();
+        $menus = Menu::where('is_active', true)->where('slug', '!=', 'destinasi-wisata')
+            ->orderBy('sort_order')->get();
+
+        $destinasi = new Menu([
+            'name' => 'Destinasi Pariwisata',
+            'slug' => 'destinasi-pariwisata',
+            'title' => 'Destinasi Pariwisata',
+            'icon' => 'map-location-dot',
+            'description' => 'Jelajahi keajaiban alam, pesona budaya, dan ragam destinasi ikonik di Kalimantan Selatan',
+            'color' => '#da251d',
+        ]);
+
+        $menus->prepend($destinasi);
+
         return view('pages.home', compact('homepage', 'menus'));
     }
 

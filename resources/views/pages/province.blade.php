@@ -9,12 +9,14 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="public-page m-0 h-[100dvh] overflow-hidden bg-gray-100 font-sans text-gray-800 max-[850px]:h-auto max-[850px]:min-h-screen max-[850px]:overflow-y-auto"
+<body
+    class="public-page m-0 h-[100dvh] overflow-hidden bg-gray-100 font-sans text-gray-800 max-[850px]:h-auto max-[850px]:min-h-screen max-[850px]:overflow-y-auto"
     style="--page-header-background: {{ $menu->color }}">
     <x-public-page-header :settings="$homepage" background-color="{{ $menu->color }}" />
 
     <main class="h-[calc(100vh-4rem)] w-full">
-        <section class="grid h-full min-h-0 grid-cols-12 rounded-lg bg-white max-[850px]:h-auto max-[850px]:grid-cols-1">
+        <section
+            class="grid h-full min-h-0 grid-cols-12 rounded-lg bg-white max-[850px]:h-auto max-[850px]:grid-cols-1">
             <div class="col-span-7 min-w-0 max-[850px]:col-span-1"
                 style="background-color: color-mix(in srgb, var(--page-header-background) 14%, white)">
                 <div class="p-3">
@@ -27,13 +29,17 @@
                             @if ($regency->x_location !== null && $regency->y_location !== null)
                                 <a href="{{ route('regencies.menu', ['regency' => $regency->slug, 'menu' => $menu->slug]) }}"
                                     data-public-page-link
-                                    class="absolute z-10 grid size-12 -translate-x-1/2 -translate-y-full place-items-end justify-items-center text-[#da251d] drop-shadow-md focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-red-300"
+                                    class="pointer-events-none absolute z-10 inline-flex h-fit w-fit -translate-x-1/2 -translate-y-full text-[#da251d] drop-shadow-md focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-red-300"
                                     style="left: {{ $regency->x_location }}%; top: {{ $regency->y_location }}%"
-                                    title="{{ $loop->iteration }}. {{ $regency->name }}" aria-label="Buka peta {{ $regency->name }}, nomor {{ $loop->iteration }}">
-                                    <svg class="h-10 w-8 overflow-visible" viewBox="0 0 36 46" aria-hidden="true">
-                                        <path d="M18 1.5C9.2 1.5 2 8.4 2 16.9C2 29.1 18 44.5 18 44.5S34 29.1 34 16.9C34 8.4 26.8 1.5 18 1.5Z" fill="currentColor" stroke="white" stroke-width="2.5" />
-                                        <circle cx="18" cy="17" r="8" fill="white" />
-                                        <text x="18" y="20.5" text-anchor="middle" fill="currentColor" font-size="10" font-weight="700">{{ $loop->iteration }}</text>
+                                    title="{{ $loop->iteration }}. {{ $regency->name }}"
+                                    aria-label="Buka peta {{ $regency->name }}, nomor {{ $loop->iteration }}">
+                                    <svg class="pointer-events-none h-auto w-8 lg:w-10 2xl:w-12 overflow-visible" viewBox="0 0 36 46" aria-hidden="true">
+                                        <path
+                                            d="M18 1.5C9.2 1.5 2 8.4 2 16.9C2 29.1 18 44.5 18 44.5S34 29.1 34 16.9C34 8.4 26.8 1.5 18 1.5Z"
+                                            fill="currentColor" stroke="white" stroke-width="2.5" style="pointer-events:visiblePainted"/>
+                                        <circle cx="18" cy="17" r="8" fill="white" style="pointer-events:visiblePainted"/>
+                                        <text x="18" y="20.5" text-anchor="middle" fill="currentColor" font-size="10"
+                                            font-weight="700" style="pointer-events:visiblePainted">{{ $loop->iteration }}</text>
                                     </svg>
                                 </a>
                             @endif
@@ -62,7 +68,7 @@
                             class="inline-flex min-h-10 shrink-0 items-center rounded-lg px-3 py-2 text-sm font-bold text-white shadow-sm hover:opacity-90 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-red-200"
                             style="background-color: var(--page-header-background)">Kembali</a>
                     </div>
-                    <h2 class="mt-4 text-lg font-bold text-gray-800">Pilih kabupaten/kota</h2>
+                    <h2 class="mt-4 text-lg font-bold text-gray-800">Pilih Kabupaten/Kota</h2>
                 </header>
 
                 <nav aria-label="Daftar kabupaten dan kota"
@@ -72,11 +78,14 @@
                             <li>
                                 <a href="{{ route('regencies.menu', ['regency' => $regency->slug, 'menu' => $menu->slug]) }}"
                                     data-public-page-link
-                                    class="flex min-h-12 items-center gap-3 rounded-lg px-3 py-2 text-lg font-semibold text-gray-700 hover:bg-red-50 hover:text-[#da251d] focus-visible:outline-2 focus-visible:outline-red-500">
-                                    <span class="w-5 shrink-0 text-center font-bold text-[#da251d]" aria-hidden="true">{{ $loop->iteration }}</span>
-                                    <span class="min-w-0 flex-1">{{ $regency->name }}</span>
-                                    <span aria-hidden="true" class="text-gray-400">›</span>
-                                </a>
+                                    class="flex min-h-12 items-center gap-3 rounded-lg px-3 py-2 text-md lg:text-lg 2xl:text-xl font-semibold text-gray-700 hover:bg-[color-mix(in_srgb,var(--page-header-background)_10%,white)] hover:text-[var(--page-header-background)] focus-visible:outline-2 focus-visible:outline-[var(--page-header-background)]">
+                                    <span
+                                        class="w-5 shrink-0 text-center font-bold text-[var(--page-header-background)]"
+                                        aria-hidden="true">
+                                        {{ $loop->iteration }}
+                                    </span>
+                                    <span class="min-w-0 flex-1 uppercase">{{ $regency->name }}</span>
+                                    <i class="fas fa-chevron-right text-gray-400" aria-hidden="true"></i> </a>
                             </li>
                         @empty
                             <li class="p-4 text-sm text-gray-500">Belum ada kabupaten/kota yang tersedia.</li>

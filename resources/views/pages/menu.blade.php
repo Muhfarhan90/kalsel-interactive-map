@@ -27,11 +27,12 @@
                 <div class="p-3">
                     <div class="relative mx-auto aspect-square w-full max-w-[calc(100vh-6rem)] border-[6px] rounded-lg max-[850px]:max-w-[35dvh]"
                         style="border-color: var(--page-header-background)" id="mapFrame">
-                        @if (! $regency->map_image)
-                            <div class="grid size-full place-items-center rounded-sm bg-gray-100 px-5 text-center text-sm text-gray-500">Peta {{ $regency->name }} belum diunggah.</div>
+                        @if (!$regency->map_image)
+                            <div
+                                class="grid size-full place-items-center rounded-sm bg-gray-100 px-5 text-center text-sm text-gray-500">
+                                Peta {{ $regency->name }} belum diunggah.</div>
                         @else
-                            <img class="block size-full rounded-sm"
-                                src="{{ asset($regency->map_image) }}"
+                            <img class="block size-full rounded-sm" src="{{ asset($regency->map_image) }}"
                                 alt="Peta {{ $regency->name }}">
                         @endif
                     </div>
@@ -343,13 +344,13 @@
                 const marker = document.createElement('button');
                 marker.type = 'button';
                 marker.className =
-                    'pointer-events-none absolute z-10 grid size-12 origin-bottom -translate-x-1/2 -translate-y-full cursor-pointer place-items-end justify-items-center border-0 bg-transparent p-0 drop-shadow-md focus:outline-none focus-visible:ring-4 focus-visible:ring-red-200';
+                    'pointer-events-none absolute z-10 inline-flex h-fit w-fit origin-bottom -translate-x-1/2 -translate-y-full border-0 bg-transparent p-0 drop-shadow-md focus:outline-none focus-visible:ring-4 focus-visible:ring-red-200';
                 marker.dataset.locationId = location.id;
                 marker.style.left = location.x_location + '%';
                 marker.style.top = location.y_location + '%';
                 marker.style.color = location.color;
                 marker.innerHTML =
-                    '<svg class="h-10 w-8 overflow-visible" style="cursor:pointer" viewBox="0 0 36 46" aria-hidden="true">' +
+                    '<svg class="pointer-events-none h-auto w-8 lg:w-10 2xl:w-12 overflow-visible" style="cursor:pointer" viewBox="0 0 36 46" aria-hidden="true">' +
                     '<path d="M18 1.5C9.2 1.5 2 8.4 2 16.9C2 29.1 18 44.5 18 44.5S34 29.1 34 16.9C34 8.4 26.8 1.5 18 1.5Z" fill="currentColor" stroke="white" stroke-width="2.5" style="pointer-events:visiblePainted"/>' +
                     '<circle cx="18" cy="17" r="8" fill="white" style="pointer-events:visiblePainted"/>' +
                     '<text class="marker-number" x="18" y="20.5" text-anchor="middle" font-size="10" font-weight="700" fill="currentColor" style="pointer-events:visiblePainted">' +
@@ -364,7 +365,8 @@
 
         function renderList() {
             if (!locations.length) {
-                categoryGrid.innerHTML = '<p class="col-span-2 rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm text-gray-500">Belum ada lokasi untuk wilayah dan menu ini.</p>';
+                categoryGrid.innerHTML =
+                    '<p class="col-span-2 rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm text-gray-500">Belum ada lokasi untuk wilayah dan menu ini.</p>';
                 return;
             }
             categoryGrid.innerHTML = Object.entries(groupedLocations).map(([category, group]) =>
