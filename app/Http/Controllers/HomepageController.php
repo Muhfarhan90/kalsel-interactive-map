@@ -93,9 +93,9 @@ class HomepageController extends Controller
             ->orderBy('sort_order')->get();
 
         $destinasi = new Menu([
-            'name' => 'Destinasi Pariwisata',
+            'name' => 'Peta Kalimantan Selatan',
             'slug' => 'destinasi-pariwisata',
-            'title' => 'Destinasi Pariwisata',
+            'title' => 'Peta Kalimantan Selatan',
             'icon' => 'map-location-dot',
             'description' => 'Jelajahi keajaiban alam, pesona budaya, dan ragam destinasi ikonik di Kalimantan Selatan',
             'color' => '#da251d',

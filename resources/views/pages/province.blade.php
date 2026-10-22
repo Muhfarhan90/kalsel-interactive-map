@@ -20,30 +20,48 @@
             <div class="col-span-7 min-w-0 max-[850px]:col-span-1"
                 style="background-color: color-mix(in srgb, var(--page-header-background) 14%, white)">
                 <div class="p-3">
-                    <div class="relative mx-auto aspect-square w-full max-w-[calc(100vh-6rem)] rounded-lg border-[6px] max-[850px]:max-w-[35dvh]"
-                        style="border-color: var(--page-header-background)">
-                        <img class="block size-full rounded-sm"
-                            src="{{ asset($map?->map_image ?: 'images/maps/peta_provinsi_kalsel.png') }}"
-                            alt="Peta Provinsi Kalimantan Selatan">
-                        @foreach ($regencies as $regency)
-                            @if ($regency->x_location !== null && $regency->y_location !== null)
-                                <a href="{{ route('regencies.menu', ['regency' => $regency->slug, 'menu' => $menu->slug]) }}"
-                                    data-public-page-link
-                                    class="pointer-events-none absolute z-10 inline-flex h-fit w-fit -translate-x-1/2 -translate-y-full text-[#da251d] drop-shadow-md focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-red-300"
-                                    style="left: {{ $regency->x_location }}%; top: {{ $regency->y_location }}%"
-                                    title="{{ $loop->iteration }}. {{ $regency->name }}"
-                                    aria-label="Buka peta {{ $regency->name }}, nomor {{ $loop->iteration }}">
-                                    <svg class="pointer-events-none h-auto w-8 lg:w-10 2xl:w-12 overflow-visible" viewBox="0 0 36 46" aria-hidden="true">
-                                        <path
-                                            d="M18 1.5C9.2 1.5 2 8.4 2 16.9C2 29.1 18 44.5 18 44.5S34 29.1 34 16.9C34 8.4 26.8 1.5 18 1.5Z"
-                                            fill="currentColor" stroke="white" stroke-width="2.5" style="pointer-events:visiblePainted"/>
-                                        <circle cx="18" cy="17" r="8" fill="white" style="pointer-events:visiblePainted"/>
-                                        <text x="18" y="20.5" text-anchor="middle" fill="currentColor" font-size="10"
-                                            font-weight="700" style="pointer-events:visiblePainted">{{ $loop->iteration }}</text>
-                                    </svg>
-                                </a>
-                            @endif
-                        @endforeach
+                    <div class="relative mx-auto aspect-square w-full max-w-[calc(100vh-6rem)] overflow-hidden rounded-lg border-[6px] max-[850px]:max-w-[35dvh]"
+                        style="border-color: var(--page-header-background)" data-map-container>
+                        <div class="absolute inset-0 cursor-grab touch-none select-none active:cursor-grabbing"
+                            style="--map-scale: 1; --map-inverse-scale: 1; transform: translate3d(0, 0, 0) scale(1); transform-origin: center;"
+                            data-map-layer>
+                            <img class="block size-full rounded-sm pointer-events-none"
+                                src="{{ asset($map?->map_image ?: 'images/maps/peta_provinsi_kalsel.png') }}"
+                                alt="Peta Provinsi Kalimantan Selatan">
+                            @foreach ($regencies as $regency)
+                                @if ($regency->x_location !== null && $regency->y_location !== null)
+                                    <button type="button"
+                                        data-marker-url="{{ route('regencies.menu', ['regency' => $regency->slug, 'menu' => $menu->slug]) }}"
+                                        class="absolute z-10 inline-flex h-fit w-fit cursor-pointer -translate-x-1/2 -translate-y-full border-0 bg-transparent p-0 text-[#da251d] drop-shadow-md focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-red-300"
+                                        style="left: {{ $regency->x_location }}%; right: auto; top: {{ $regency->y_location }}%"
+                                        title="{{ $loop->iteration }}. {{ $regency->name }}"
+                                        aria-label="Buka peta {{ $regency->name }}, nomor {{ $loop->iteration }}">
+                                        <svg draggable="false"
+                                            class="pointer-events-none h-auto w-8 overflow-visible lg:w-10 2xl:w-12"
+                                            style="transform: scale(var(--map-inverse-scale)); transform-origin: center bottom"
+                                            viewBox="0 0 36 46" aria-hidden="true">
+                                            <path
+                                                d="M18 1.5C9.2 1.5 2 8.4 2 16.9C2 29.1 18 44.5 18 44.5S34 29.1 34 16.9C34 8.4 26.8 1.5 18 1.5Z"
+                                                fill="currentColor" stroke="white" stroke-width="2.5" />
+                                            <circle cx="18" cy="17" r="8" fill="white" />
+                                            <text x="18" y="20.5" text-anchor="middle" fill="currentColor"
+                                                font-size="10" font-weight="700">{{ $loop->iteration }}</text>
+                                        </svg>
+                                        </a>
+                                @endif
+                            @endforeach
+                        </div>
+                        <div class="absolute right-2 top-2 z-20 flex flex gap-1" aria-label="Kontrol zoom peta">
+                            <button type="button"
+                                class="size-8 rounded bg-white/90 text-lg font-bold shadow hover:bg-white"
+                                data-map-zoom="in" aria-label="Perbesar peta">+</button>
+                            <button type="button"
+                                class="size-8 rounded bg-white/90 text-lg font-bold shadow hover:bg-white"
+                                data-map-zoom="out" aria-label="Perkecil peta">−</button>
+                            <button type="button"
+                                class="size-8 rounded bg-white/90 text-sm font-bold shadow hover:bg-white"
+                                data-map-zoom="reset" aria-label="Atur ulang peta">↺</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -95,6 +113,145 @@
             </aside>
         </section>
     </main>
+    <script>
+        (() => {
+            const container = document.querySelector('[data-map-container]');
+            const layer = container?.querySelector('[data-map-layer]');
+            if (!container || !layer) return;
+            let scale = 1,
+                x = 0,
+                y = 0,
+                startX, startY,
+                dragging = false,
+                pinchStartDistance = 0,
+                pinchStartScale = 1;
+            const pointers = new Map();
+            container.querySelectorAll('[data-marker-url]').forEach(marker => {
+                marker.addEventListener('click', () => {
+                    window.location.href = marker.dataset.markerUrl;
+                });
+
+                marker.addEventListener('dragstart', event => {
+                    event.preventDefault();
+                });
+            });
+            const clampScale = value => Math.max(1, Math.min(4, value));
+            const pointerDistance = () => {
+                const [first, second] = [...pointers.values()];
+                return Math.hypot(second.clientX - first.clientX, second.clientY - first.clientY);
+            };
+            const limit = () => {
+                const maxX = container.clientWidth * (scale - 1) / 2;
+                const maxY = container.clientHeight * (scale - 1) / 2;
+                x = Math.max(-maxX, Math.min(maxX, x));
+                y = Math.max(-maxY, Math.min(maxY, y));
+            };
+            const render = () => {
+                limit();
+                layer.style.setProperty('--map-scale', scale);
+                layer.style.setProperty('--map-inverse-scale', 1 / scale);
+                layer.style.transform =
+                    `translate3d(${x}px, ${y}px, 0) scale(${scale})`;
+            };
+
+            const zoom = (amount, clientX = null, clientY = null) => {
+                const rect = container.getBoundingClientRect();
+                const oldScale = scale;
+                const nextScale = clampScale(scale + amount);
+
+                const pointerX = clientX === null ?
+                    rect.width / 2 :
+                    clientX - rect.left;
+
+                const pointerY = clientY === null ?
+                    rect.height / 2 :
+                    clientY - rect.top;
+
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const ratio = nextScale / oldScale;
+
+                // Menjaga posisi di bawah pointer tetap sama.
+                x = pointerX - centerX - (pointerX - centerX - x) * ratio;
+                y = pointerY - centerY - (pointerY - centerY - y) * ratio;
+
+                scale = nextScale;
+                render();
+            };
+
+            container.querySelectorAll('[data-map-zoom]').forEach(button =>
+                button.addEventListener('click', () => {
+                    const action = button.dataset.mapZoom;
+
+                    if (action === 'reset') {
+                        scale = 1;
+                        x = 0;
+                        y = 0;
+                        render();
+                    } else {
+                        zoom(action === 'in' ? .50 : -.50);
+                    }
+                })
+            );
+
+            container.addEventListener('wheel', event => {
+                event.preventDefault();
+                zoom(
+                    event.deltaY < 0 ? .2 : -.2,
+                    event.clientX,
+                    event.clientY
+                );
+            }, {
+                passive: false
+            });
+            container.addEventListener('pointerdown', event => {
+                if (event.target.closest('button, a')) return;
+                pointers.set(event.pointerId, event);
+                container.setPointerCapture(event.pointerId);
+                if (pointers.size === 1) {
+                    dragging = true;
+                    startX = event.clientX - x;
+                    startY = event.clientY - y;
+                } else if (pointers.size === 2) {
+                    dragging = false;
+                    pinchStartDistance = pointerDistance();
+                    pinchStartScale = scale;
+                }
+            });
+            container.addEventListener('pointermove', event => {
+                if (!pointers.has(event.pointerId)) return;
+                pointers.set(event.pointerId, event);
+                if (pointers.size >= 2) {
+                    const distance = pointerDistance();
+                    if (pinchStartDistance > 0) {
+                        scale = clampScale(pinchStartScale * distance / pinchStartDistance);
+                        render();
+                    }
+                } else if (dragging) {
+                    x = event.clientX - startX;
+                    y = event.clientY - startY;
+                    render();
+                }
+            });
+            const endPointer = event => {
+                pointers.delete(event.pointerId);
+                if (pointers.size === 1) {
+                    const remaining = [...pointers.values()][0];
+                    dragging = true;
+                    startX = remaining.clientX - x;
+                    startY = remaining.clientY - y;
+                } else {
+                    dragging = false;
+                    pinchStartDistance = 0;
+                }
+                if (container.hasPointerCapture(event.pointerId)) {
+                    container.releasePointerCapture(event.pointerId);
+                }
+            };
+            container.addEventListener('pointerup', endPointer);
+            container.addEventListener('pointercancel', endPointer);
+        })();
+    </script>
 </body>
 
 </html>

@@ -1,6 +1,8 @@
 import { createPopper } from '@popperjs/core';
 import './bootstrap';
 import Alpine from 'alpinejs';
+import Plyr from 'plyr';
+import 'plyr/dist/plyr.css';
 
 // flatpickr
 import flatpickr from 'flatpickr';
@@ -11,6 +13,7 @@ import './components/category-sort';
 window.Alpine = Alpine;
 window.createPopper = createPopper;
 window.flatpickr = flatpickr;
+window.Plyr = Plyr;
 
 document.addEventListener('contextmenu', (event) => {
     event.preventDefault();

@@ -1378,3 +1378,25 @@ pre code,
   animation: none;
   }
 }
+
+/* Custom styling for the video player in the detail view and fullscreen modal */
+#detailMedia > .plyr,
+#fullscreenDetailMedia > .plyr {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    --plyr-color-main: var(--page-header-background, #da251d);
+}
+
+#detailMedia .plyr__video-wrapper,
+#fullscreenDetailMedia .plyr__video-wrapper {
+    height: 100%;
+}
+
+#detailMedia .plyr video,
+#fullscreenDetailMedia .plyr video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}

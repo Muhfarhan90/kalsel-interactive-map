@@ -25,15 +25,31 @@
             <div class="col-span-7 min-w-0 max-[850px]:col-span-1"
                 style="background-color: color-mix(in srgb, var(--page-header-background) 14%, white)">
                 <div class="p-3">
-                    <div class="relative mx-auto aspect-square w-full max-w-[calc(100vh-6rem)] border-[6px] rounded-lg max-[850px]:max-w-[35dvh]"
+                    <div class="relative mx-auto aspect-square w-full max-w-[calc(100vh-6rem)] cursor-grab overflow-hidden rounded-lg border-[6px] touch-none select-none active:cursor-grabbing max-[850px]:max-w-[35dvh]"
                         style="border-color: var(--page-header-background)" id="mapFrame">
                         @if (!$regency->map_image)
                             <div
                                 class="grid size-full place-items-center rounded-sm bg-gray-100 px-5 text-center text-sm text-gray-500">
                                 Peta {{ $regency->name }} belum diunggah.</div>
                         @else
-                            <img class="block size-full rounded-sm" src="{{ asset($regency->map_image) }}"
-                                alt="Peta {{ $regency->name }}">
+                            <div id="mapViewport" class="relative size-full overflow-hidden rounded-sm">
+                                <img id="mapImage"
+                                    class="absolute left-0 top-0 block size-full origin-top-left rounded-sm"
+                                    src="{{ asset($regency->map_image) }}" alt="Peta {{ $regency->name }}">
+                                <div id="markerLayer" class="pointer-events-none absolute inset-0"></div>
+                                <div
+                                    class="absolute right-2 top-2 z-30 flex overflow-hidden rounded-lg bg-white/90 shadow-md">
+                                    <button type="button" id="zoomInButton"
+                                        class="grid size-9 cursor-pointer place-items-center border-0 bg-transparent text-xl font-bold text-gray-700 hover:bg-gray-100"
+                                        aria-label="Perbesar peta">+</button>
+                                    <button type="button" id="zoomOutButton"
+                                        class="grid size-9 cursor-pointer place-items-center border-0 border-t border-gray-200 bg-transparent text-xl font-bold text-gray-700 hover:bg-gray-100"
+                                        aria-label="Perkecil peta">−</button>
+                                    <button type="button" id="resetMapButton"
+                                        class="grid size-9 cursor-pointer place-items-center border-0 border-t border-gray-200 bg-transparent text-lg font-bold text-gray-700 hover:bg-gray-100"
+                                        aria-label="Reset peta">↺</button>
+                                </div>
+                            </div>
                         @endif
                     </div>
                 </div>
@@ -43,7 +59,7 @@
                 <div id="listView" class="h-full min-h-0 overflow-hidden">
                     <div class="flex h-full min-h-0 flex-col">
                         <header class="border-b border-gray-200 pb-2 shrink-0">
-                            <div class="flex items-center justify-between gap-3 max-[520px]:items-start">
+                            <div class="flex flex-wrap items-center justify-between gap-3 max-[520px]:items-start">
                                 <div class="flex min-w-0 items-center gap-2.5">
                                     <img class="h-auto w-16 md:w-28 shrink-0 object-contain max-[850px]:max-h-16"
                                         src="{{ asset($menu?->logo ?: 'images/logo/logo_kalsel.svg') }}"
@@ -58,12 +74,24 @@
                                         @endif
                                     </div>
                                 </div>
-                                <a href="{{ route('menu', $menu->slug) }}" data-public-page-link
-                                    class="inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-bold text-white shadow-sm transition-opacity hover:opacity-90 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-red-200 max-[520px]:px-2 max-[520px]:text-xs"
-                                    style="background-color: var(--page-header-background)"
-                                    aria-label="Kembali ke peta provinsi">
-                                    Kembali
-                                </a>
+                                <div class="flex shrink-0 items-center gap-2">
+                                    <div class="relative">
+                                        <i
+                                            class="fas fa-search pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400"></i>
+
+                                        <input type="search" id="searchLocation" placeholder="Cari lokasi..."
+                                            autocomplete="off" aria-label="Cari lokasi"
+                                            class="h-10 w-52 rounded-lg border border-gray-400 bg-white pl-9 pr-3 text-sm outline-none focus:border-[var(--page-header-background)] focus:ring-2 focus:ring-[var(--page-header-background)]/20 max-[520px]:w-28">
+                                    </div>
+
+                                    <a href="{{ route('menu', $menu->slug) }}" data-public-page-link
+                                        class="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-bold text-white shadow-sm transition-opacity hover:opacity-90 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-red-200 max-[520px]:px-2 max-[520px]:text-xs"
+                                        style="background-color: var(--page-header-background)"
+                                        aria-label="Kembali ke peta provinsi">
+                                        Kembali
+                                    </a>
+                                </div>
+
                             </div>
                         </header>
 
@@ -143,47 +171,50 @@
     </main>
 
     <x-ui.modal id="detailModal" x-model="fullscreenOpen" aria-labelledby="fullscreenDetailName"
-        panelClass="max-w-7xl max-h-[calc(100dvh-2.5rem)] overflow-hidden p-0">
-        <article class="flex max-h-[calc(100dvh-2.5rem)] min-w-0 flex-col">
-            <header class="shrink-0 border-b border-gray-200 p-4 pr-14 sm:p-6 sm:pr-16">
+        panelClass="h-[100dvh] max-h-[100dvh] w-screen max-w-none overflow-hidden p-0 mt-8">
+        <article class="flex h-full max-h-full min-w-0 flex-col">
+            <header class="shrink-0 border-b border-gray-200 p-4 pr-14 sm:p-6 sm:pb-2 sm:pr-16">
                 <div class="flex min-w-0 items-start gap-3">
                     <span id="fullscreenDetailNumber"
                         class="grid size-10 shrink-0 place-items-center rounded-full text-lg font-bold text-white"></span>
                     <div class="min-w-0">
-                        <h2 id="fullscreenDetailName" class="break-words text-2xl font-bold sm:text-3xl"></h2>
-                        <div id="fullscreenDetailCategory"
-                            class="mt-2 inline-flex items-center gap-1.5 text-base font-semibold"></div>
+                        <h2 id="fullscreenDetailName" class="break-words text-2xl font-bold lg:text-3xl"></h2>
                     </div>
                 </div>
             </header>
 
-            <div id="fullscreenDetailContent" class="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6">
+            <div id="fullscreenDetailContent" class="min-h-0 flex-1 overflow-y-auto p-0">
                 <div id="fullscreenDetailMedia"
-                    class="relative mb-5 grid aspect-video place-items-center overflow-hidden rounded-xl bg-black text-white">
+                    class="relative flex h-[calc(100dvh-6rem)] min-h-[60dvh] w-full shrink-0 items-center justify-center overflow-hidden bg-black text-white [&_img]:absolute [&_img]:inset-0 [&_img]:h-full [&_img]:w-full [&_img]:object-contain [&_video]:absolute [&_video]:inset-0 [&_video]:h-full [&_video]:w-full [&_video]:object-contain">
                 </div>
-                <p class="mb-4 text-sm leading-6 text-gray-600">
-                    <strong class="text-gray-800">Sumber:</strong>
-                    <span id="fullscreenDetailSource"></span>
-                </p>
-                <div class="mb-4 flex items-start gap-2">
-                    <svg class="mt-0.5 size-[18px] shrink-0 fill-[#da251d]" viewBox="0 0 24 24" aria-hidden="true">
-                        <path
-                            d="M12 2a8 8 0 0 0-8 8c0 5.5 8 12 8 12s8-6.5 8-12a8 8 0 0 0-8-8Zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z" />
-                    </svg>
-                    <p class="m-0 text-base leading-6 font-bold" id="fullscreenDetailAddress"></p>
-                </div>
-                <div id="fullscreenDetailDescription"
-                    class="break-words text-base leading-8 sm:text-lg [&_h1]:mb-3 [&_h1]:mt-6 [&_h1]:text-3xl [&_h1]:font-bold [&_h2]:mb-3 [&_h2]:mt-5 [&_h2]:text-2xl [&_h2]:font-bold [&_h3]:mb-2 [&_h3]:mt-5 [&_h3]:text-xl [&_h3]:font-semibold [&_h3:first-child]:mt-0 [&_p]:mb-4 [&_ol]:my-3 [&_ol]:list-decimal [&_ul]:my-3 [&_ul]:list-disc [&_li]:ml-6 [&_blockquote]:border-l-4 [&_blockquote]:border-gray-200 [&_blockquote]:pl-4">
+                <div class="p-4 md:p-6">
+                    <p class="mb-4 text-sm leading-6 text-gray-600">
+                        <strong class="text-gray-800">Sumber:</strong>
+                        <span id="fullscreenDetailSource"></span>
+                    </p>
+                    <div class="mb-4 flex items-start gap-2">
+                        <svg class="mt-0.5 size-[18px] shrink-0 fill-[#da251d]" viewBox="0 0 24 24"
+                            aria-hidden="true">
+                            <path
+                                d="M12 2a8 8 0 0 0-8 8c0 5.5 8 12 8 12s8-6.5 8-12a8 8 0 0 0-8-8Zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z" />
+                        </svg>
+                        <p class="m-0 text-base leading-6 font-bold" id="fullscreenDetailAddress"></p>
+                    </div>
+                    <div id="fullscreenDetailDescription"
+                        class="break-words text-base leading-8 sm:text-lg [&_h1]:mb-3 [&_h1]:mt-6 [&_h1]:text-3xl [&_h1]:font-bold [&_h2]:mb-3 [&_h2]:mt-5 [&_h2]:text-2xl [&_h2]:font-bold [&_h3]:mb-2 [&_h3]:mt-5 [&_h3]:text-xl [&_h3]:font-semibold [&_h3:first-child]:mt-0 [&_p]:mb-4 [&_ol]:my-3 [&_ol]:list-decimal [&_ul]:my-3 [&_ul]:list-disc [&_li]:ml-6 [&_blockquote]:border-l-4 [&_blockquote]:border-gray-200 [&_blockquote]:pl-4">
+                    </div>
                 </div>
             </div>
         </article>
     </x-ui.modal>
 
     <script>
+        // Modal detail lokasi: fokus keyboard dan sinkronisasi pemutaran media.
         function locationFullscreenModal() {
             return {
                 fullscreenOpen: false,
-                panelVideo: null,
+                videoMoved: false,
+                resumeVideo: false,
                 inertElements: [],
 
                 init() {
@@ -199,64 +230,73 @@
                         document.getElementById('fullscreenDetail' + field).textContent =
                             document.getElementById('detail' + field).textContent;
                     });
+
                     document.getElementById('fullscreenDetailNumber').style.backgroundColor =
                         document.getElementById('detailNumber').style.backgroundColor;
-                    const category = document.getElementById('detailCategory');
-                    document.getElementById('fullscreenDetailCategory').innerHTML = category.innerHTML;
-                    document.getElementById('fullscreenDetailCategory').style.color = category.style.color;
-                    document.getElementById('fullscreenDetailDescription').innerHTML = document.getElementById(
-                        'detailDescription').innerHTML;
+
+                    document.getElementById('fullscreenDetailDescription').innerHTML =
+                        document.getElementById('detailDescription').innerHTML;
+
                     const panelMedia = document.getElementById('detailMedia');
                     const modalMedia = document.getElementById('fullscreenDetailMedia');
-                    this.panelVideo = panelMedia.querySelector('video');
-                    const position = this.panelVideo?.currentTime ?? 0;
-                    const wasPlaying = this.panelVideo ? !this.panelVideo.paused : false;
-                    this.panelVideo?.pause();
+                    const playerElement = panelMedia.querySelector('.plyr');
 
-                    const media = panelMedia.cloneNode(true);
-                    media.querySelector('video')?.removeAttribute('autoplay');
-                    modalMedia.replaceChildren(...media.childNodes);
+                    this.videoMoved = !!playerElement;
+                    this.resumeVideo = !!(detailPlayer && !detailPlayer.paused);
+
+                    if (playerElement) {
+                        detailPlayer.pause();
+                        modalMedia.replaceChildren(playerElement);
+                    } else {
+                        const media = panelMedia.cloneNode(true);
+                        modalMedia.replaceChildren(...media.childNodes);
+                    }
+
                     this.inertElements = [...document.body.children]
                         .filter((element) => ['HEADER', 'MAIN'].includes(element.tagName) && !element.inert);
+
                     this.inertElements.forEach((element) => element.inert = true);
                     this.fullscreenOpen = true;
 
                     this.$nextTick(() => {
                         if (!this.fullscreenOpen) return;
-                        document.getElementById('detailModal').querySelector('button').focus();
-                        document.getElementById('fullscreenDetailContent').scrollTop = 0;
-                        const video = modalMedia.querySelector('video');
-                        if (!video) return;
 
-                        video.volume = this.panelVideo.volume;
-                        video.muted = this.panelVideo.muted;
-                        video.playbackRate = this.panelVideo.playbackRate;
-                        const restorePlayback = () => {
-                            if (!this.fullscreenOpen || modalMedia.querySelector('video') !== video) return;
-                            video.currentTime = position;
-                            if (wasPlaying) video.play().catch(() => {});
-                        };
-                        if (video.readyState >= 1) restorePlayback();
-                        else video.addEventListener('loadedmetadata', restorePlayback, {
-                            once: true
-                        });
+                        document.getElementById('detailModal')
+                            .querySelector('button')?.focus();
+
+                        document.getElementById('fullscreenDetailContent').scrollTop = 0;
+
+                        if (this.videoMoved && this.resumeVideo && detailPlayer) {
+                            Promise.resolve(detailPlayer.play()).catch(() => {});
+                        }
                     });
                 },
                 stopPlayback() {
+                    const panelMedia = document.getElementById('detailMedia');
                     const modalMedia = document.getElementById('fullscreenDetailMedia');
-                    const video = modalMedia.querySelector('video');
-                    video?.pause();
-                    if (this.panelVideo && video && this.panelVideo.readyState >= 1 && video.readyState >= 1) {
-                        this.panelVideo.currentTime = video.currentTime;
-                        this.panelVideo.volume = video.volume;
-                        this.panelVideo.muted = video.muted;
-                        this.panelVideo.playbackRate = video.playbackRate;
+
+                    if (this.videoMoved) {
+                        const playerElement = modalMedia.querySelector('.plyr');
+
+                        if (playerElement) {
+                            panelMedia.replaceChildren(playerElement);
+                        }
                     }
+
                     modalMedia.replaceChildren();
-                    this.panelVideo = null;
+
+                    this.videoMoved = false;
+                    this.resumeVideo = false;
+
                     this.inertElements.forEach((element) => element.inert = false);
                     this.inertElements = [];
-                    this.$nextTick(() => document.getElementById('fullscreenButton').focus());
+
+                    this.$nextTick(() => {
+                        document.getElementById('fullscreenButton')?.focus();
+                        if (wasPlaying && detailPlayer) {
+                            Promise.resolve(detailPlayer.play()).catch(() => {});
+                        }
+                    });
                 },
 
                 trapFocus(event) {
@@ -285,13 +325,19 @@
 
 
     <script>
+        // Data halaman dan referensi elemen utama.
         const locations = @json($locations);
         const hasRegencyMap = @js((bool) $regency?->map_image);
 
         const mapFrame = document.getElementById('mapFrame');
+        const mapViewport = document.getElementById('mapViewport');
+        const mapImage = document.getElementById('mapImage');
+        const markerLayer = document.getElementById('markerLayer');
         const categoryGrid = document.getElementById('categoryGrid');
         const listView = document.getElementById('listView');
         const detailView = document.getElementById('detailView');
+
+        // Sanitasi konten deskripsi sebelum dimasukkan ke halaman.
         const escapeHtml = (value) => String(value ?? '')
             .replaceAll('&', '&amp;')
             .replaceAll('<', '&lt;')
@@ -320,6 +366,7 @@
             return template.innerHTML;
         }
 
+        // Pengelompokan lokasi dan penomoran marker per kategori.
         const groupedLocations = locations.reduce((groups, location) => {
             if (!groups[location.category]) {
                 groups[location.category] = {
@@ -338,13 +385,162 @@
             locations.filter((item) => item.category === location.category)
             .findIndex((item) => item.id === location.id) + 1;
 
+        // State navigasi peta: zoom, posisi geser, dan status gesture marker.
+        const mapState = {
+            zoom: 1,
+            x: 0,
+            y: 0,
+            dragging: false,
+            startX: 0,
+            startY: 0,
+            originX: 0,
+            originY: 0,
+            moved: false,
+            markerGesture: false,
+            suppressMarkerClick: false
+        };
+
+        const MAP_MIN_ZOOM = 1;
+        const MAP_MAX_ZOOM = 4;
+        const MAP_ZOOM_STEP = 0.5;
+
+        // Rendering peta: batasi posisi, terapkan transform, dan posisikan marker.
+        function limitMapPosition() {
+            if (!mapViewport) return;
+            const maxX = mapViewport.clientWidth * (mapState.zoom - 1);
+            const maxY = mapViewport.clientHeight * (mapState.zoom - 1);
+            mapState.x = Math.min(0, Math.max(-maxX, mapState.x));
+            mapState.y = Math.min(0, Math.max(-maxY, mapState.y));
+        }
+
+        function updateMap() {
+            if (!mapViewport) return;
+            limitMapPosition();
+            mapImage.style.transform = `translate(${mapState.x}px, ${mapState.y}px) scale(${mapState.zoom})`;
+            document.querySelectorAll('#markerLayer [data-location-id]').forEach((marker) => {
+                const location = locations.find((item) => item.id === Number(marker.dataset.locationId));
+                if (!location) return;
+                // Markers stay at their geographic position while keeping their original pixel size.
+                marker.style.left =
+                    `${location.x_location * mapViewport.clientWidth / 100 * mapState.zoom + mapState.x}px`;
+                marker.style.top =
+                    `${location.y_location * mapViewport.clientHeight / 100 * mapState.zoom + mapState.y}px`;
+                marker.style.right = 'auto';
+            });
+        }
+
+        // Kontrol zoom dan reset dengan titik fokus tertentu.
+        function setMapZoom(zoom, focusX = mapViewport?.clientWidth / 2, focusY = mapViewport?.clientHeight / 2) {
+            if (!mapViewport) return;
+            const nextZoom = Math.min(MAP_MAX_ZOOM, Math.max(MAP_MIN_ZOOM, zoom));
+            const ratio = nextZoom / mapState.zoom;
+            mapState.x = focusX - (focusX - mapState.x) * ratio;
+            mapState.y = focusY - (focusY - mapState.y) * ratio;
+            mapState.zoom = nextZoom;
+            updateMap();
+        }
+
+        function resetMap() {
+            mapState.zoom = MAP_MIN_ZOOM;
+            mapState.x = 0;
+            mapState.y = 0;
+            updateMap();
+        }
+
+        // Pinch zoom pada perangkat sentuh.
+        const mapPointers = new Map();
+        let pinchStartDistance = 0;
+        let pinchStartZoom = 1;
+        let pinchFocusX = 0;
+        let pinchFocusY = 0;
+
+        function getPointerDistance() {
+            const points = [...mapPointers.values()];
+            if (points.length < 2) return 0;
+
+            return Math.hypot(
+                points[1].clientX - points[0].clientX,
+                points[1].clientY - points[0].clientY
+            );
+        }
+
+        function getPinchCenter() {
+            const points = [...mapPointers.values()];
+
+            return {
+                x: (points[0].clientX + points[1].clientX) / 2 - mapViewport.getBoundingClientRect().left,
+                y: (points[0].clientY + points[1].clientY) / 2 - mapViewport.getBoundingClientRect().top
+            };
+        }
+
+        function updatePinchZoom() {
+            if (mapPointers.size < 2 || !pinchStartDistance) return;
+
+            const distance = getPointerDistance();
+            const nextZoom = Math.min(
+                MAP_MAX_ZOOM,
+                Math.max(MAP_MIN_ZOOM, pinchStartZoom * distance / pinchStartDistance)
+            );
+
+            const ratio = nextZoom / mapState.zoom;
+
+            mapState.x = pinchFocusX - (pinchFocusX - mapState.x) * ratio;
+            mapState.y = pinchFocusY - (pinchFocusY - mapState.y) * ratio;
+            mapState.zoom = nextZoom;
+
+            updateMap();
+        }
+
+        mapFrame?.addEventListener('pointerdown', (event) => {
+            if (event.target.closest('button, a')) return;
+
+            mapPointers.set(event.pointerId, event);
+            mapFrame.setPointerCapture(event.pointerId);
+
+            if (mapPointers.size === 2) {
+                const center = getPinchCenter();
+
+                pinchStartDistance = getPointerDistance();
+                pinchStartZoom = mapState.zoom;
+                pinchFocusX = center.x;
+                pinchFocusY = center.y;
+                mapState.dragging = false;
+            }
+        });
+
+        mapFrame?.addEventListener('pointermove', (event) => {
+            if (!mapPointers.has(event.pointerId)) return;
+
+            mapPointers.set(event.pointerId, event);
+
+            if (mapPointers.size >= 2) {
+                updatePinchZoom();
+            }
+        });
+
+        function finishMapPointer(event) {
+            mapPointers.delete(event.pointerId);
+
+            if (mapPointers.size < 2) {
+                pinchStartDistance = 0;
+            }
+
+            if (mapFrame.hasPointerCapture(event.pointerId)) {
+                mapFrame.releasePointerCapture(event.pointerId);
+            }
+        }
+
+        mapFrame?.addEventListener('pointerup', finishMapPointer);
+        mapFrame?.addEventListener('pointercancel', finishMapPointer);
+
+        // Marker lokasi pada peta dan interaksi menuju detail lokasi.
         function renderMarkers() {
             locations.forEach((location) => {
                 const categoryNumber = getCategoryNumber(location);
                 const marker = document.createElement('button');
                 marker.type = 'button';
                 marker.className =
-                    'pointer-events-none absolute z-10 inline-flex h-fit w-fit origin-bottom -translate-x-1/2 -translate-y-full border-0 bg-transparent p-0 drop-shadow-md focus:outline-none focus-visible:ring-4 focus-visible:ring-red-200';
+                    'pointer-events-auto absolute z-10 inline-flex h-fit w-fit origin-bottom -translate-x-1/2 -translate-y-full border-0 bg-transparent p-0 drop-shadow-md focus:outline-none focus-visible:ring-4 focus-visible:ring-red-200';
                 marker.dataset.locationId = location.id;
                 marker.style.left = location.x_location + '%';
                 marker.style.top = location.y_location + '%';
@@ -358,18 +554,43 @@
                     '</svg>';
                 marker.title = location.name;
                 marker.setAttribute('aria-label', 'Lihat detail ' + location.name);
-                marker.addEventListener('click', () => showDetail(location.id));
-                mapFrame.appendChild(marker);
+                marker.addEventListener('pointerdown', (event) => event.stopPropagation());
+                marker.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    showDetail(location.id);
+                });
+                markerLayer.appendChild(marker);
             });
+            updateMap();
         }
 
-        function renderList() {
+        // Daftar lokasi: render kategori dan filter berdasarkan pencarian.
+        function renderList(search = '') {
+            const keyword = search.toLowerCase().trim();
+
             if (!locations.length) {
                 categoryGrid.innerHTML =
                     '<p class="col-span-2 rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm text-gray-500">Belum ada lokasi untuk wilayah dan menu ini.</p>';
                 return;
             }
-            categoryGrid.innerHTML = Object.entries(groupedLocations).map(([category, group]) =>
+
+            const filteredGroups = Object.entries(groupedLocations)
+                .map(([category, group]) => [
+                    category,
+                    {
+                        ...group,
+                        locations: group.locations.filter((location) => [location.name, location.address, location
+                                .category
+                            ]
+                            .some((value) =>
+                                String(value ?? '').toLowerCase().includes(keyword)
+                            )
+                        )
+                    }
+                ])
+                .filter(([, group]) => group.locations.length);
+
+            categoryGrid.innerHTML = filteredGroups.map(([category, group]) =>
                 '<section class="flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">' +
                 '<h3 class="m-0 flex items-center gap-2 px-2.5 py-2.5 text-md font-bold" style="background-color: color-mix(in srgb, ' +
                 escapeHtml(group.color) + ' 14%, white)">' +
@@ -389,7 +610,7 @@
                     location.id + '">' +
                     '<span class="grid size-[22px] shrink-0 place-items-center rounded-full text-[10px] font-bold text-white" style="background-color: ' +
                     escapeHtml(location.color) + '">' +
-                    (index + 1) +
+                    getCategoryNumber(location) +
                     '</span>' +
                     '<span class="category-list-text">' + escapeHtml(location.name) + '</span>' +
                     '</button>'
@@ -397,12 +618,48 @@
                 '</div></div></section>'
             ).join('');
 
+            if (!filteredGroups.length) {
+                categoryGrid.innerHTML =
+                    '<p class="col-span-full py-10 text-center text-sm text-gray-500">' +
+                    'Lokasi tidak ditemukan.' +
+                    '</p>';
+                return;
+            }
+
             if (categoryGrid.children.length % 2) categoryGrid.lastElementChild.style.gridColumn = '1 / -1';
 
             categoryGrid.querySelectorAll('[data-location-id]').forEach((button) => {
                 button.addEventListener('click', () => showDetail(Number(button.dataset.locationId)));
             });
         }
+
+        // Sinkronkan hasil pencarian antara daftar lokasi dan marker peta.
+        function filterLocations(search = '') {
+            const keyword = search.toLowerCase().trim();
+
+            renderList(keyword);
+
+            mapFrame.querySelectorAll('[data-location-id]').forEach((marker) => {
+                const location = locations.find(
+                    (item) => item.id === Number(marker.dataset.locationId)
+                );
+
+                if (!location) return;
+
+                const matches = [
+                    location.name,
+                    location.address,
+                    location.category
+                ].some((value) =>
+                    String(value ?? '').toLowerCase().includes(keyword)
+                );
+
+                marker.style.display = matches ? '' : 'none';
+            });
+        }
+
+        // Panel detail lokasi dan media pendukungnya.
+        let detailPlayer = null;
 
         function showDetail(locationId) {
             const location = locations.find((item) => item.id === locationId);
@@ -425,16 +682,44 @@
             const mediaUrl = location.media;
             const isVideo = mediaUrl?.toLowerCase().endsWith('.mp4');
 
+            detailPlayer?.destroy();
+            detailPlayer = null;
+
             if (!mediaUrl) {
                 detailMedia.innerHTML = '<span>Media belum tersedia</span>';
             } else if (isVideo) {
                 detailMedia.innerHTML =
-                    '<video class="absolute inset-0 block bg-black" style="width:100%;height:100%;object-fit:contain" autoplay controls controlslist="nodownload" playsinline preload="metadata" aria-label="Video ' +
+                    '<video class="block h-full w-full" controls playsinline preload="metadata" aria-label="Video ' +
                     escapeHtml(location.name) + '">' +
-                    '<source src="' + escapeHtml(mediaUrl) + '">' +
-                    'Browser tidak mendukung pemutaran video.' +
+                    '<source src="' + escapeHtml(mediaUrl) + '" type="video/mp4">' +
                     '</video>';
-                detailMedia.querySelector('video').play().catch(() => {});
+
+                detailPlayer = new window.Plyr(detailMedia.querySelector('video'), {
+                    controls: [
+                        'play-large',
+                        'restart',
+                        'rewind',
+                        'play',
+                        'fast-forward',
+                        'progress',
+                        'current-time',
+                        'duration',
+                        'mute',
+                        'volume',
+                        'settings',
+                        'pip',
+                        'fullscreen'
+                    ],
+                    settings: ['speed'],
+                    seekTime: 10,
+                    fullscreen: {
+                        enabled: true,
+                        fallback: true,
+                        iosNative: false
+                    }
+                });
+
+                Promise.resolve(detailPlayer.play()).catch(() => {});
             } else {
                 detailMedia.innerHTML =
                     '<img class="absolute inset-0 block" style="width:100%;height:100%;object-fit:contain" src="' +
@@ -464,8 +749,9 @@
             document.getElementById('detailContent').scrollTop = 0;
         }
 
+        // Navigasi kembali dari detail ke daftar lokasi.
         document.getElementById('backButton').addEventListener('click', () => {
-            detailView.querySelector('video')?.pause();
+            detailPlayer?.pause();
             detailView.hidden = true;
             listView.hidden = false;
 
@@ -478,7 +764,58 @@
             });
         });
 
-        if (hasRegencyMap) renderMarkers();
+        // Inisialisasi interaksi peta: wheel zoom, drag, tombol zoom, dan resize.
+        if (hasRegencyMap) {
+            renderMarkers();
+            mapFrame.addEventListener('wheel', (event) => {
+                event.preventDefault();
+                const rect = mapViewport.getBoundingClientRect();
+                setMapZoom(mapState.zoom + (event.deltaY < 0 ? MAP_ZOOM_STEP : -MAP_ZOOM_STEP), event.clientX - rect
+                    .left, event
+                    .clientY - rect.top);
+            }, {
+                passive: false
+            });
+            mapFrame.addEventListener('pointerdown', (event) => {
+                if (event.target.closest('#zoomInButton, #zoomOutButton, #resetMapButton')) return;
+                mapState.dragging = true;
+                mapState.moved = false;
+                mapState.markerGesture = Boolean(event.target.closest('[data-location-id]'));
+                mapState.startX = event.clientX;
+                mapState.startY = event.clientY;
+                mapState.originX = mapState.x;
+                mapState.originY = mapState.y;
+                mapFrame.setPointerCapture(event.pointerId);
+            });
+            mapFrame.addEventListener('pointermove', (event) => {
+                if (!mapState.dragging) return;
+                const deltaX = event.clientX - mapState.startX;
+                const deltaY = event.clientY - mapState.startY;
+                if (Math.hypot(deltaX, deltaY) > 6) mapState.moved = true;
+                event.preventDefault();
+                mapState.x = mapState.originX + deltaX;
+                mapState.y = mapState.originY + deltaY;
+                updateMap();
+            });
+            ['pointerup', 'pointercancel'].forEach((type) => mapFrame.addEventListener(type, () => {
+                if (mapState.markerGesture && mapState.moved) mapState.suppressMarkerClick = true;
+                mapState.dragging = false;
+                mapState.markerGesture = false;
+            }));
+            document.getElementById('zoomInButton').addEventListener('click', () => setMapZoom(mapState.zoom +
+                MAP_ZOOM_STEP));
+            document.getElementById('zoomOutButton').addEventListener('click', () => setMapZoom(mapState.zoom -
+                MAP_ZOOM_STEP));
+            document.getElementById('resetMapButton').addEventListener('click', resetMap);
+            new ResizeObserver(updateMap).observe(mapViewport);
+        }
+        // Inisialisasi pencarian lokasi dan render awal.
+        const searchLocation = document.getElementById('searchLocation');
+
+        searchLocation.addEventListener('input', (event) => {
+            filterLocations(event.target.value);
+        });
+
         renderList();
     </script>
 </body>
