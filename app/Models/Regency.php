@@ -14,11 +14,13 @@ class Regency extends Model
         'x_location',
         'y_location',
         'sort_order',
+        'latitude',
+        'longitude',
     ];
 
     protected function casts(): array
     {
-        return ['x_location' => 'float', 'y_location' => 'float', 'sort_order' => 'integer'];
+        return ['x_location' => 'float', 'y_location' => 'float', 'sort_order' => 'integer', 'latitude' => 'float', 'longitude' => 'float'];
     }
 
     public function locations(): HasMany

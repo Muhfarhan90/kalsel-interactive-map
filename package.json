@@ -22,6 +22,7 @@
         "flatpickr": "^4.6.13",
         "fullcalendar": "^7.1.0",
         "jsvectormap": "^1.7.0",
+        "leaflet": "^1.9.4",
         "plyr": "^3.8.5",
         "prismjs": "^1.30.0",
         "quill": "^2.0.3",

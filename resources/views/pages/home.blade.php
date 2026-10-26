@@ -36,7 +36,8 @@
             <nav aria-label="Menu utama"
                 class="relative isolate mt-6 w-full max-w-[90rem] flex flex-wrap justify-center overflow-hidden rounded-[1.65rem] border-2 border-white/85 shadow-[0_22px_50px_rgba(12,38,30,0.4)] sm:mt-9 sm:rounded-[2.5rem] sm:border-[3px]">
                 @foreach ($menus as $menu)
-                    <a href="{{ route('menu', $menu->slug) }}" data-public-page-link
+                    <a href="{{ $menu->slug === 'destinasi-pariwisata' ? route('map.all') : route('menu', $menu->slug) }}"
+                        data-public-page-link
                         class="relative z-10 flex min-h-[9rem] min-w-0 flex-col items-center gap-2.5 px-1.5 py-4 text-center text-white sm:min-h-[14.5rem] sm:gap-0 sm:px-6 sm:py-6 lg:p-8 basis-1/2 sm:basis-1/3 lg:basis-[16.666%] grow shrink-0">
                         <div style="background-color: {{ $menu->color }}; opacity: 0.7;"
                             class="absolute inset-0 z-0 transition-opacity duration-300 hover:opacity-100"

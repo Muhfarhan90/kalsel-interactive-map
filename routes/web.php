@@ -85,6 +85,9 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
 });
 
 Route::redirect('/wilayah/{regency}/{menu}', '/{menu}/{regency}', 301);
+Route::get('/destinasi-pariwisata', [
+    HomepageController::class, 'allLocations'
+])->name('map.all');
 Route::get('/{menu:slug}/{regency:slug}', [HomepageController::class, 'regencyMenu'])
     // Wilayah dipakai bersama semua menu, jadi binding wilayah tidak dibatasi oleh relasi menu.
     ->withoutScopedBindings()

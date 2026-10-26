@@ -8,7 +8,7 @@
 @endphp
 
 @section('content')
-    <div class="mx-auto max-w-6xl space-y-6">
+    <div class="mx-auto w-full space-y-6">
         <div>
             <a href="{{ $indexUrl }}" class="text-sm font-semibold text-[#da251d] hover:underline">← Kembali ke lokasi</a>
             <h1 class="mt-3 text-2xl font-bold text-gray-900 dark:text-white">
@@ -127,8 +127,7 @@
                         </div>
 
                         <div class="md:col-span-2">
-                            <x-form.form-elements.rich-text-editor label="Deskripsi" name="description"
-                                :value="$location->description" />
+                            <x-form.form-elements.rich-text-editor label="Deskripsi" name="description" :value="$location->description" />
                         </div>
 
                         <div class="md:col-span-2">
@@ -185,68 +184,114 @@
                     </div>
                 </x-common.component-card>
 
-                <x-common.component-card title="Posisi pada peta"
-                    desc="Pilih wilayah, lalu klik pada petanya atau geser bar koordinat untuk menentukan titik lokasi.">
-                    <div x-data="{
-                        x: @js($coordinateX),
-                        y: @js($coordinateY),
-                        selectedRegency: @js((string) old('regency_id', $location->regency_id)),
-                        mapImages: @js($regencies->mapWithKeys(fn ($regency) => [(string) $regency->id => $regency->map_image ? asset($regency->map_image) : null])->all()),
-                        provinceMap: @js(asset($map->map_image ?: 'images/maps/peta_provinsi_kalsel.png')),
-                        pick(event) {
-                            const bounds = event.currentTarget.getBoundingClientRect();
-                            this.x = Number(((event.clientX - bounds.left) / bounds.width * 100).toFixed(2));
-                            this.y = Number(((event.clientY - bounds.top) / bounds.height * 100).toFixed(2));
-                        }
-                    }">
-                        <label for="regency_id" class="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300">Wilayah</label>
-                        <select id="regency_id" name="regency_id" x-model="selectedRegency"
-                            class="mb-4 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white">
-                            <option value="">Belum ditentukan</option>
-                            @foreach ($regencies as $regency)
-                                <option value="{{ $regency->id }}">{{ $regency->name }}</option>
-                            @endforeach
-                        </select>
-                        @error('regency_id') <p class="mb-3 text-sm text-red-600">{{ $message }}</p> @enderror
-                        <p class="mb-3 text-xs text-gray-500">Koordinat lokasi mengikuti peta wilayah yang dipilih. Atur ulang titik setelah mengganti wilayah.</p>
-                        <div class="relative mx-auto aspect-square w-full max-w-lg overflow-hidden rounded-lg bg-gray-50"
-                            @click="pick($event)">
-                            <img :src="selectedRegency ? mapImages[selectedRegency] : provinceMap"
-                                x-show="!selectedRegency || mapImages[selectedRegency]"
-                                alt="Peta untuk menentukan posisi lokasi"
-                                class="absolute inset-0 size-full cursor-crosshair object-fill">
-                            <span x-show="selectedRegency && !mapImages[selectedRegency]"
-                                class="absolute inset-0 grid place-items-center px-4 text-center text-sm text-gray-500">Peta wilayah belum diunggah.</span>
-                            <span
-                                class="pointer-events-none absolute z-10 grid size-12 -translate-x-1/2 -translate-y-full place-items-end justify-items-center text-[#da251d]"
-                                :style="{ left: `${x}%`, top: `${y}%` }">
-                                <svg class="h-10 w-8 drop-shadow" viewBox="0 0 36 46" aria-hidden="true">
-                                    <path
-                                        d="M18 1.5C9.2 1.5 2 8.4 2 16.9C2 29.1 18 44.5 18 44.5S34 29.1 34 16.9C34 8.4 26.8 1.5 18 1.5Z"
-                                        fill="currentColor" stroke="white" stroke-width="2.5" />
-                                    <circle cx="18" cy="17" r="6" fill="white" />
-                                </svg>
-                            </span>
+
+                <x-common.component-card title="Koordinat lokasi"
+                    desc="Pilih kabupaten/kota, kemudian cari lokasi atau tentukan titik langsung pada peta.">
+
+                    <div data-geo-picker data-geojson-url="{{ asset('geojson/regency_kalsel.geojson') }}"
+                        class="space-y-4">
+                        {{-- Pilih Kabupaten/Kota --}}
+                        <div>
+                            <label for="regency_id"
+                                class="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                                Kabupaten/Kota
+                            </label>
+
+                            <select id="regency_id" name="regency_id"
+                                class="h-11 w-full rounded-lg border border-gray-300 bg-white px-4 text-sm dark:border-gray-700 dark:bg-gray-900 dark:text-white">
+
+                                <option value="">Pilih wilayah</option>
+
+                                @foreach ($regencies as $regency)
+                                    <option value="{{ $regency->id }}" data-latitude="{{ $regency->latitude }}"
+                                        data-longitude="{{ $regency->longitude }}" @selected(old('regency_id', $location->regency_id) == $regency->id)>
+                                        {{ $regency->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            @error('regency_id')
+                                <p class="mt-1 text-sm text-red-600">
+                                    {{ $message }}
+                                </p>
+                            @enderror
                         </div>
 
-                        <div class="mt-4 space-y-5">
-                            @foreach (['x_location' => ['Koordinat X', 'x'], 'y_location' => ['Koordinat Y', 'y']] as $name => [$label, $model])
-                                <label for="{{ $name }}" class="block">
-                                    <span
-                                        class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-400">{{ $label }}</span>
-                                    <input id="{{ $name }}" name="{{ $name }}" type="range"
-                                        min="0" max="100" step="0.01"
-                                        value="{{ $name === 'x_location' ? $coordinateX : $coordinateY }}"
-                                        x-model.number="{{ $model }}" required aria-label="{{ $label }}"
-                                        class="h-2 w-full cursor-pointer accent-[#da251d]">
-                                    @error($name)
-                                        <span class="mt-1 block text-xs text-error-500">{{ $message }}</span>
-                                    @enderror
-                                </label>
-                            @endforeach
+                        {{-- Pencarian dan Peta --}}
+                        <div class="mx-auto w-full max-w-3xl space-y-3">
+                            <div class="flex flex-wrap gap-2">
+                                <input type="search" data-geo-search placeholder="Cari lokasi..." autocomplete="off"
+                                    class="h-11 min-w-0 flex-1 rounded-lg border border-gray-300 bg-white px-3 text-sm text-gray-800 outline-none focus:border-[#da251d]">
+
+                                <button type="button" data-geo-search-button
+                                    class="h-11 rounded-lg bg-[#da251d] px-4 text-sm font-semibold text-white hover:bg-red-700">
+                                    Cari
+                                </button>
+
+                                <x-geo-search-dialog />
+                            </div>
+
+                            {{-- Hasil Pencarian --}}
+                            <select data-geo-search-results size="5" aria-label="Pilih hasil pencarian lokasi"
+                                class="hidden w-full cursor-pointer rounded-lg border border-gray-300 bg-white p-2 text-sm text-gray-800 shadow-sm">
+                            </select>
+
+                            <p data-geo-search-message class="hidden text-sm text-gray-500 dark:text-gray-400">
+                            </p>
+
+                            <p data-geo-map-status role="status" class="hidden text-xs text-gray-500 dark:text-gray-400">
+                            </p>
+
+                            {{-- Peta Leaflet --}}
+                            {{-- Peta Leaflet --}}
+                            <div data-geo-map
+                                class="relative z-0 aspect-square w-full overflow-hidden rounded-lg border border-gray-300 dark:border-gray-700">
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                            Cari lokasi, klik pada peta, atau geser marker untuk
+                            menentukan koordinat.
+                        </p>
+
+                        {{-- Koordinat --}}
+                        <div class="grid gap-4 sm:grid-cols-2">
+                            <label>
+                                <span class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Latitude
+                                </span>
+
+                                <input type="number" name="latitude" value="{{ old('latitude', $location->latitude) }}"
+                                    step="any" min="-90" max="90" placeholder="-3.1234567"
+                                    class="h-11 w-full rounded-lg border border-gray-300 px-3 dark:border-gray-700 dark:bg-gray-900 dark:text-white">
+
+                                @error('latitude')
+                                    <span class="text-xs text-red-600">
+                                        {{ $message }}
+                                    </span>
+                                @enderror
+                            </label>
+
+                            <label>
+                                <span class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Longitude
+                                </span>
+
+                                <input type="number" name="longitude"
+                                    value="{{ old('longitude', $location->longitude) }}" step="any" min="-180"
+                                    max="180" placeholder="114.1234567"
+                                    class="h-11 w-full rounded-lg border border-gray-300 px-3 dark:border-gray-700 dark:bg-gray-900 dark:text-white">
+
+                                @error('longitude')
+                                    <span class="text-xs text-red-600">
+                                        {{ $message }}
+                                    </span>
+                                @enderror
+                            </label>
                         </div>
                     </div>
                 </x-common.component-card>
+
             </div>
 
             <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">

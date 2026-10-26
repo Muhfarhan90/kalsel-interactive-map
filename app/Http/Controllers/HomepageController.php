@@ -72,6 +72,8 @@ class HomepageController extends Controller
                     'source_media' => $location->source_media,
                     'x_location' => $location->x_location,
                     'y_location' => $location->y_location,
+                    'longitude' => $location->longitude,
+                    'latitude' => $location->latitude,
                 ];
             });
 
@@ -80,6 +82,65 @@ class HomepageController extends Controller
             'menu' => $menu,
             'homepage' => $homepage,
             'regency' => $regency,
+        ]);
+    }
+
+    public function allLocations()
+    {
+        $menu = new Menu([
+            'name' => 'Peta Kalimantan Selatan',
+            'slug' => 'destinasi-pariwisata',
+            'title' => 'Peta Kalimantan Selatan',
+            'icon' => 'map-location-dot',
+            'description' => 'Jelajahi lokasi di seluruh Kalimantan Selatan',
+            'color' => '#da251d',
+            'logo' => 'images/logo/logo-wonderful-kalsel.png',
+        ]);
+
+        $locations = Location::query()
+            ->with(['category.menu', 'regency'])
+            ->join('categories', 'locations.category_id', '=', 'categories.id')
+            ->join('menus', 'categories.menu_id', '=', 'menus.id')
+            ->where('locations.is_active', true)
+            ->where('menus.is_active', true)
+            ->select('locations.*')
+            ->orderBy('menus.sort_order')
+            ->orderBy('categories.sort_order')
+            ->orderBy('locations.name')
+            ->get()
+            ->map(function (Location $location): array {
+                $media = $location->media;
+
+                if ($media && ! Str::startsWith($media, ['http://', 'https://'])) {
+                    $media = asset(ltrim($media, '/'));
+                }
+
+                return [
+                    'id' => $location->id,
+                    'menu_id' => $location->category->menu_id,
+                    'menu' => $location->category->menu->name,
+                    'category_id' => $location->category_id,
+                    'category' => $location->category->name,
+                    'color' => $location->category->color,
+                    'icon' => $location->category->icon,
+                    'background' => $location->category->background
+                        ? asset(ltrim($location->category->background, '/'))
+                        : null,
+                    'regency' => $location->regency?->name,
+                    'name' => $location->name,
+                    'address' => $location->address,
+                    'description' => str_replace("\u{00A0}", ' ', $location->description ?? ''),
+                    'media' => $media,
+                    'source_media' => $location->source_media,
+                    'latitude' => $location->latitude,
+                    'longitude' => $location->longitude,
+                ];
+            });
+
+        return view('pages.all-locations', [
+            'locations' => $locations,
+            'menu' => $menu,
+            'homepage' => Homepage::first(),
         ]);
     }
 

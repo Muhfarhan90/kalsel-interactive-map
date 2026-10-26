@@ -18,7 +18,14 @@ class Location extends Model
         'media',
         'is_active',
         'source_media',
+        'latitude',
+        'longitude',
     ];
+
+    protected function casts(): array
+    {
+        return ['category_id' => 'integer', 'regency_id' => 'integer', 'x_location' => 'float', 'y_location' => 'float', 'is_active' => 'boolean', 'latitude' => 'float', 'longitude' => 'float'];
+    }
 
     public function category(): BelongsTo
     {

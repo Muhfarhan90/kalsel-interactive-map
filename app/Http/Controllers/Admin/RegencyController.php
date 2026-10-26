@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Regency;
 use App\Models\Map;
-use Illuminate\Http\UploadedFile;
+use App\Models\Regency;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -37,6 +37,8 @@ class RegencyController extends Controller
             'x_location' => $data['x_location'] ?? null,
             'y_location' => $data['y_location'] ?? null,
             'sort_order' => (int) Regency::max('sort_order') + 1,
+            'latitude' => $data['latitude'] ?? null,
+            'longitude' => $data['longitude'] ?? null,
         ]);
 
         if ($request->hasFile('map_image_file')) {
@@ -58,8 +60,8 @@ class RegencyController extends Controller
         $data = $this->validatedData($request, $regency);
         $previousMap = $regency->map_image;
         $regency->name = $data['name'];
-        $regency->x_location = $data['x_location'] ?? null;
-        $regency->y_location = $data['y_location'] ?? null;
+        $regency->latitude = $data['latitude'] ?? null;
+        $regency->longitude = $data['longitude'] ?? null;
 
         if ($request->hasFile('map_image_file')) {
             $regency->map_image = $this->storeMap($request->file('map_image_file'), $regency);
@@ -124,6 +126,8 @@ class RegencyController extends Controller
             'x_location' => ['nullable', 'required_with:y_location', 'numeric', 'between:0,100'],
             'y_location' => ['nullable', 'required_with:x_location', 'numeric', 'between:0,100'],
             'map_image_file' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:10240'],
+            'latitude' => ['nullable', 'required_with:longitude', 'numeric', 'between:-90,90'],
+            'longitude' => ['nullable', 'required_with:latitude', 'numeric', 'between:-180,180'],
         ]);
     }
 

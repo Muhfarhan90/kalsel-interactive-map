@@ -154,19 +154,21 @@ class LocationController extends Controller
             'name' => ['required', 'string', 'max:150'],
             'address' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
-            'x_location' => ['required', 'numeric', 'between:0,100'],
-            'y_location' => ['required', 'numeric', 'between:0,100'],
+            'x_location' => ['nullable', 'numeric', 'between:0,100'],
+            'y_location' => ['nullable', 'numeric', 'between:0,100'],
             'source_media' => ['nullable', 'string', 'max:255'],
             'media' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,mp4', 'max:71680'],
             'is_active' => ['nullable', 'boolean'],
             'remove_media' => ['nullable', 'boolean'],
+            'longitude' => ['nullable', 'numeric', 'between:-180,180'],
+            'latitude' => ['nullable', 'numeric', 'between:-90,90'],
         ]);
 
         unset($data['media'], $data['remove_media']);
         $data['is_active'] = $request->boolean('is_active');
 
         if (! empty($data['description'])) {
-            $config = new HtmlSanitizerConfig();
+            $config = new HtmlSanitizerConfig;
 
             foreach (['p', 'h1', 'h2', 'h3', 'br', 'strong', 'b', 'em', 'i', 'u', 'ul', 'ol', 'li', 'blockquote'] as $tag) {
                 $config = $config->allowElement($tag, []);
