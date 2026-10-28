@@ -202,8 +202,16 @@
                                 <span id="detailSource"></span>
                             </p>
 
-                            <p id="detailAddress" class="mb-4 text-base font-bold leading-6">
-                            </p>
+                            <div class="mb-4 flex items-start gap-2">
+                                <svg class="mt-0.5 size-5 shrink-0 fill-[#da251d]" viewBox="0 0 24 24"
+                                    aria-hidden="true">
+                                    <path
+                                        d="M12 2a8 8 0 0 0-8 8c0 5.5 8 12 8 12s8-6.5 8-12a8 8 0 0 0-8-8Zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z" />
+                                </svg>
+
+                                <p id="detailAddress" class="m-0 text-base font-bold leading-6">
+                                </p>
+                            </div>
 
                             <div id="detailDescription"
                                 class="text-justify leading-7 [&_h1]:mb-3 [&_h1]:text-3xl [&_h1]:font-bold [&_h2]:mb-3 [&_h2]:text-2xl [&_h2]:font-bold [&_h3]:mb-2 [&_h3]:text-xl [&_h3]:font-semibold [&_ul]:list-disc [&_ol]:list-decimal [&_li]:ml-5">
@@ -567,6 +575,17 @@
                 el?.querySelector('.marker-number')
                     ?.classList.toggle('hidden', active);
 
+                // Merah hanya ketika marker aktif.
+                const svg = el?.querySelector('svg');
+
+                if (svg) {
+                    const location = locationById.get(id);
+
+                    svg.style.color = active ?
+                        '#da251d' :
+                        markerColor(location);
+                }
+
                 marker.setZIndexOffset(active ? 1000 : 0);
             });
         }
@@ -639,7 +658,7 @@
                             color: '#78350f',
 
                             // Ketebalan garis polygon
-                            weight: 2.5,
+                            weight: 1,
 
                             // Garis terlihat penuh
                             opacity: 1,
@@ -803,36 +822,36 @@
 
                             <div class="relative flex-1 px-2.5 py-1">
                                 ${group.background ? `
-                                            <img
-                                                src="${escapeHtml(group.background)}"
-                                                alt=""
-                                                class="pointer-events-none absolute inset-0 size-full object-cover">
+                                                                <img
+                                                                    src="${escapeHtml(group.background)}"
+                                                                    alt=""
+                                                                    class="pointer-events-none absolute inset-0 size-full object-cover">
 
-                                            <div
-                                                class="pointer-events-none absolute inset-0 bg-gradient-to-r from-white via-white/85 to-transparent">
-                                            </div>
-                                        ` : ''}
+                                                                <div
+                                                                    class="pointer-events-none absolute inset-0 bg-gradient-to-r from-white via-white/85 to-transparent">
+                                                                </div>
+                                                            ` : ''}
 
                                 <div class="relative">
                                     ${filtered.map(location => `
-                                                <button
-                                                    type="button"
-                                                    data-location-id="${Number(location.id)}"
-                                                    class="flex w-full cursor-pointer items-center gap-2 border-0 bg-transparent py-2 text-left text-sm text-gray-800">
+                                                                    <button
+                                                                        type="button"
+                                                                        data-location-id="${Number(location.id)}"
+                                                                        class="flex w-full cursor-pointer items-center gap-2 border-0 bg-transparent py-2 text-left text-sm text-gray-800">
 
-                                                    <span
-                                                        class="grid size-[22px] shrink-0 place-items-center rounded-full text-[10px] font-bold text-white"
-                                                        style="background-color:${markerColor(location)}">
-                                                        ${getCategoryNumber(location)}
-                                                    </span>
+                                                                        <span
+                                                                            class="grid size-[22px] shrink-0 place-items-center rounded-full text-[10px] font-bold text-white"
+                                                                            style="background-color:${markerColor(location)}">
+                                                                            ${getCategoryNumber(location)}
+                                                                        </span>
 
-                                                    <span class="min-w-0 flex-1">
-                                                        <span class="block break-words">
-                                                            ${escapeHtml(location.name)}
-                                                        </span>
-                                                    </span>
-                                                </button>
-                                            `).join('')}
+                                                                        <span class="min-w-0 flex-1">
+                                                                            <span class="block break-words">
+                                                                                ${escapeHtml(location.name)}
+                                                                            </span>
+                                                                        </span>
+                                                                    </button>
+                                                                `).join('')}
                                 </div>
                             </div>
                         </section>
@@ -914,57 +933,12 @@
             document.getElementById('detailSource')
                 .textContent = location.source_media || 'Sumber belum tersedia';
 
-            const mediaElement = document.getElementById('detailMedia');
-            const mediaUrl = location.media;
-
-            detailPlayer?.destroy?.();
-            detailPlayer = null;
-
-            if (!mediaUrl) {
-                mediaElement.innerHTML =
-                    '<span>Media belum tersedia</span>';
-
-            } else if (/\.mp4(?:\?.*)?$/i.test(mediaUrl)) {
-                mediaElement.innerHTML = `
-                    <video
-                        class="block h-full w-full"
-                        controls
-                        playsinline
-                        preload="metadata">
-                        <source
-                            src="${escapeHtml(mediaUrl)}"
-                            type="video/mp4">
-                    </video>
-                `;
-
-                const video = mediaElement.querySelector('video');
-
-                detailPlayer = window.Plyr ?
-                    new window.Plyr(video, {
-                        controls: [
-                            'play-large', 'restart', 'rewind', 'play',
-                            'fast-forward', 'progress', 'current-time',
-                            'duration', 'mute', 'volume', 'settings',
-                            'pip', 'fullscreen'
-                        ],
-                        seekTime: 10,
-                        settings: ['speed']
-                    }) :
-                    video;
-
-            } else {
-                mediaElement.innerHTML = `
-                    <img
-                        src="${escapeHtml(mediaUrl)}"
-                        alt="Media ${escapeHtml(location.name)}"
-                        class="absolute inset-0 size-full object-contain">
-                `;
-            }
-
             setActiveMarker(Number(locationId));
 
             listView.hidden = true;
             detailView.hidden = false;
+            // Render seluruh foto/video dan inisialisasi Plyr.
+            renderMediaGallery(location);
 
             document.getElementById('detailContent').scrollTop = 0;
         }
@@ -995,7 +969,7 @@
             once: true
         });
     </script>
-
+    @include('components.location-gallery')
 </body>
 
 </html>

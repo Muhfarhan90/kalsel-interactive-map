@@ -19,12 +19,16 @@ const DEFAULT_ZOOM = 8;
 const GEOJSON_URL = "/geojson/regency_kalsel.geojson";
 
 function normalizeRegion(name) {
-    return String(name ?? "")
+    const normalized = String(name ?? "")
         .normalize("NFKD")
         .replace(/[\u0300-\u036f]/g, "")
         .toLowerCase()
+        .trim()
+        .replace(/[-_]+/g, " ")
         .replace(/^(kabupaten|kab\.?|kota)\s+/, "")
         .replace(/[^a-z0-9]/g, "");
+
+    return normalized === "baru" ? "kotabaru" : normalized;
 }
 
 function parseGoogleMapsUrl(value) {
@@ -179,6 +183,8 @@ function initializeCoordinatePickers() {
                 : selectedRegencyCoordinates()
                   ? 11
                   : DEFAULT_ZOOM,
+            zoomSnap: 0.25,
+            zoomDelta: 0.5,
             maxBoundsViscosity: 1.0,
             bounceAtZoomLimits: false,
             zoomControl: true,
@@ -219,86 +225,109 @@ function initializeCoordinatePickers() {
         // Jalankan saat pertama kali peta ditampilkan.
         updateMapDragging();
 
-        // Menghitung zoom minimum sesuai ukuran container.
-        function updateMinimumZoom() {
-            if (!provinceBounds?.isValid()) return;
-
-            const minZoom = map.getBoundsZoom(provinceBounds);
-
-            map.setMinZoom(minZoom);
-
-            if (map.getZoom() < minZoom) {
-                map.setZoom(minZoom);
-            }
-        }
-
-        updateMinimumZoom();
-
         // Hitung ulang apabila ukuran peta berubah.
-        map.on("resize", updateMinimumZoom);
-
+        map.on("resize", () => {
+            focusSelectedRegion();
+        });
         // Fokus ke wilayah yang dipilih, jika ada.
+
         function focusSelectedRegion() {
+            if (!regionLayer || !provinceBounds?.isValid()) return;
+
             const selectedOption = regencySelect?.selectedOptions?.[0];
 
-            const selectedName = normalizeRegion(
-                selectedOption?.textContent ?? "",
-            );
-
-            const point = selectedRegencyCoordinates();
+            // Gunakan slug dari dropdown Laravel.
+            const selectedSlug = regencySelect?.value
+                ? normalizeRegion(selectedOption?.dataset.slug ?? "")
+                : "";
 
             let selectedBounds = null;
 
-            // Cari polygon sesuai kabupaten/kota yang dipilih.
-            if (regionLayer && selectedName) {
-                regionLayer.eachLayer((layer) => {
-                    const shapeName = normalizeRegion(
-                        layer.feature?.properties?.shapeName ?? "",
-                    );
+            regionLayer.eachLayer((layer) => {
+                const feature = layer.feature;
+                const properties = feature?.properties ?? {};
 
-                    if (shapeName === selectedName) {
-                        const bounds = layer.getBounds();
+                const shapeName = normalizeRegion(properties.shapeName ?? "");
 
+                const isSelected = selectedSlug && shapeName === selectedSlug;
+
+                if (isSelected) {
+                    // Tampilkan hanya garis batas wilayah terpilih.
+                    layer.setStyle({
+                        color: "#111",
+                        weight: Math.max(
+                            1,
+                            Number(properties["stroke-width"]) || 1,
+                        ),
+                        opacity: 1,
+                        fill: false,
+                    });
+
+                    // Ambil seluruh batas polygon wilayah terpilih.
+                    const bounds = layer.getBounds();
+
+                    if (bounds.isValid()) {
                         selectedBounds = selectedBounds
                             ? selectedBounds.extend(bounds)
                             : bounds;
                     }
-                });
+                } else {
+                    // Sembunyikan garis batas wilayah lainnya.
+                    layer.setStyle({
+                        color: "transparent",
+                        weight: 0,
+                        opacity: 0,
+                        fill: false,
+                    });
+                }
+            });
+
+            // Jika wilayah dipilih tetapi tidak ada polygon cocok.
+            if (regencySelect?.value && !selectedBounds) {
+                console.warn(
+                    "Polygon tidak ditemukan:",
+                    selectedOption?.dataset.slug,
+                );
+
+                showMapStatus(
+                    "Polygon kabupaten/kota tidak ditemukan di GeoJSON.",
+                );
+
+                return;
             }
 
+            showMapStatus("");
+
+            // Jika belum memilih wilayah, tampilkan area provinsi.
+            const bounds = selectedBounds ?? provinceBounds;
+
+            // Hapus batas dari wilayah sebelumnya.
             map.stop();
-            map.invalidateSize();
+            map.setMaxBounds(null);
+            map.setMinZoom(0);
 
-            // Jika polygon ditemukan, tampilkan seluruh wilayah.
-            if (selectedBounds?.isValid()) {
-                map.fitBounds(selectedBounds, {
-                    padding: [40, 40],
-                    animate: false,
-                });
+            // Zoom otomatis mengikuti seluruh polygon terpilih.
+            map.fitBounds(bounds, {
+                padding: [20, 20],
+                animate: false,
+            });
 
-                return;
-            }
+            // Simpan zoom minimum berdasarkan polygon.
+            const resetZoom = map.getZoom();
 
-            // Fallback jika polygon belum tersedia atau tidak cocok.
-            if (point) {
-                map.setView(point, 11, {
-                    animate: false,
-                });
+            map.setMinZoom(resetZoom);
 
-                return;
-            }
+            // Batasi pergerakan sesuai tampilan awal.
+            map.setMaxBounds(map.getBounds());
 
-            // Jika belum memilih wilayah, tampilkan Kalimantan Selatan.
-            if (provinceBounds?.isValid()) {
-                map.fitBounds(provinceBounds, {
-                    padding: [20, 20],
-                    animate: false,
-                });
-            } else {
-                map.setView(DEFAULT_CENTER, 8, {
-                    animate: false,
-                });
-            }
+            updateMapDragging();
+
+            console.log("Wilayah aktif:", {
+                nama: selectedOption?.textContent?.trim(),
+                slug: selectedSlug,
+                polygonDitemukan: Boolean(selectedBounds),
+                zoom: resetZoom,
+            });
         }
 
         // Memuat GeoJSON kabupaten/kota Kalimantan Selatan.
@@ -315,7 +344,7 @@ function initializeCoordinatePickers() {
                     interactive: false,
 
                     style: (feature) => ({
-                        color: "#a16207",
+                        color: "#111",
                         weight: 1.5,
                         fillColor: feature.properties?.fill || "#d6b98b",
                         fillOpacity: 0.05,
@@ -328,13 +357,8 @@ function initializeCoordinatePickers() {
                     throw new Error("Polygon GeoJSON tidak valid.");
                 }
 
-                // Batasi pergeseran berdasarkan cakupan GeoJSON.
-                map.setMaxBounds(provinceBounds.pad(0.25));
-
-                updateMinimumZoom();
-
                 // Ketika edit lokasi, jangan mengubah zoom marker tersimpan.
-                focusSelectedRegion(!initialPoint);
+                focusSelectedRegion();
 
                 updateMapDragging();
             })

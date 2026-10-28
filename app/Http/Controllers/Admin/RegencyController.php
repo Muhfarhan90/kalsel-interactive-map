@@ -25,7 +25,7 @@ class RegencyController extends Controller
 
     public function create(): View
     {
-        return view('pages.admin.regencies.form', ['regency' => new Regency(), 'map' => Map::latest('id')->first()]);
+        return view('pages.admin.regencies.form', ['regency' => new Regency, 'map' => Map::latest('id')->first()]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -133,7 +133,7 @@ class RegencyController extends Controller
 
     private function uniqueSlug(string $name): string
     {
-        $base = Str::slug($name) ?: 'wilayah';
+        $base = preg_replace('/^(kabupaten|kota)-/', '', Str::slug($name)) ?: 'wilayah';
         $slug = $base;
         $number = 2;
 

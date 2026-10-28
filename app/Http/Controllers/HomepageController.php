@@ -7,7 +7,6 @@ use App\Models\Location;
 use App\Models\Map;
 use App\Models\Menu;
 use App\Models\Regency;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class HomepageController extends Controller
@@ -69,6 +68,7 @@ class HomepageController extends Controller
                     'address' => $location->address,
                     'description' => str_replace("\u{00A0}", ' ', $location->description ?? ''),
                     'media' => $media,
+                    'medias' => $this->publicGallery($location),
                     'source_media' => $location->source_media,
                     'x_location' => $location->x_location,
                     'y_location' => $location->y_location,
@@ -131,6 +131,7 @@ class HomepageController extends Controller
                     'address' => $location->address,
                     'description' => str_replace("\u{00A0}", ' ', $location->description ?? ''),
                     'media' => $media,
+                    'medias' => $this->publicGallery($location),
                     'source_media' => $location->source_media,
                     'latitude' => $location->latitude,
                     'longitude' => $location->longitude,
@@ -167,51 +168,19 @@ class HomepageController extends Controller
         return view('pages.home', compact('homepage', 'menus'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    private function publicGallery(Location $location): array
     {
-        //
-    }
+        $gallery = $location->media_gallery ?: (
+            $location->media ? [$location->media] : []
+        );
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Homepage $homepage)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Homepage $homepage)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Homepage $homepage)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Homepage $homepage)
-    {
-        //
+        return collect($gallery)
+            ->filter(fn ($path) => is_string($path) && $path !== '')
+            ->unique()
+            ->map(fn ($path) => Str::startsWith(
+                $path, ['http://', 'https://']
+            ) ? $path : asset(ltrim($path, '/')))
+            ->values()
+            ->all();
     }
 }

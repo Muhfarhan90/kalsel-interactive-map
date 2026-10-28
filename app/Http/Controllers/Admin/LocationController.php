@@ -12,6 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
@@ -57,19 +58,29 @@ class LocationController extends Controller
 
     public function create(Request $request): View
     {
-        return $this->formView(new Location(), $this->menuFromRequest($request));
+        return $this->formView(new Location, $this->menuFromRequest($request));
     }
 
     public function store(Request $request): RedirectResponse|JsonResponse
     {
         $menu = $this->menuFromRequest($request);
         $data = $this->validatedData($request, $menu);
+        $uploaded = [];
 
-        if ($request->hasFile('media')) {
-            $data['media'] = 'storage/'.$request->file('media')->store('menus/locations', 'public');
+        try {
+            $gallery = $this->uploadGallery(
+                $request->file('gallery_files', []),
+                $uploaded
+            );
+
+            $data['media_gallery'] = $gallery;
+            $data['media'] = $gallery[0] ?? null;
+
+            Location::create($data);
+        } catch (\Throwable $e) {
+            Storage::disk('public')->delete($uploaded);
+            throw $e;
         }
-
-        Location::create($data);
 
         return $this->savedResponse($request, $menu, 'Lokasi berhasil ditambahkan.');
     }
@@ -84,33 +95,116 @@ class LocationController extends Controller
     public function update(Request $request, Location $location): RedirectResponse|JsonResponse
     {
         $location->loadMissing('category.menu');
+
         $menu = $location->category->menu;
         $data = $this->validatedData($request, $menu);
-        $previousMedia = $location->media;
 
-        if ($request->hasFile('media')) {
-            $data['media'] = 'storage/'.$request->file('media')->store('menus/locations', 'public');
-        } elseif ($request->boolean('remove_media')) {
-            $data['media'] = null;
+        $gallery = $this->currentGallery($location);
+        $remove = $request->input('gallery_remove', []);
+
+        // Memastikan path yang dihapus itu milik lokasi ini.
+        if (array_diff($remove, $gallery)) {
+            throw ValidationException::withMessages(['gallery_remove' => 'Media yang dihapus tidak valid.']);
         }
 
-        $location->update($data);
+        $deleted = array_values(array_intersect($gallery, $remove));
+        $remaining = array_values(array_diff($gallery, $deleted));
 
-        if ($previousMedia !== $location->media) {
-            $this->deleteStoredMedia($previousMedia);
+        // Mengurutkan media berdasarkan posisi card di form.
+        if ($request->has('gallery_order')) {
+            $order = $request->input('gallery_order', []);
+
+            // Memastikan semua path memang milik lokasi ini.
+            if (
+                count($order) !== count($gallery) ||
+                array_diff($order, $gallery) ||
+                array_diff($gallery, $order)
+            ) {
+                throw ValidationException::withMessages([
+                    'gallery_order' => 'Urutan media tidak valid.',
+                ]);
+            }
+
+            // Mempertahankan urutan baru, kecuali media yang dihapus.
+            $remaining = array_values(array_intersect($order, $remaining));
+        }
+
+        $uploaded = [];
+
+        try {
+            $newMedia = $this->uploadGallery(
+                $request->file('gallery_files', []),
+                $uploaded
+            );
+
+            $gallery = array_values(array_unique([
+                ...$remaining,
+                ...$newMedia,
+            ]));
+
+            $data['media_gallery'] = $gallery;
+            $data['media'] = $gallery[0] ?? null;
+
+            $location->update($data);
+        } catch (\Throwable $e) {
+            Storage::disk('public')->delete($uploaded);
+            throw $e;
+        }
+
+        foreach ($deleted as $path) {
+            $this->deleteStoredMedia($path);
         }
 
         return $this->savedResponse($request, $menu, 'Lokasi berhasil diperbarui.');
     }
 
+    public function reorderGallery(Request $request, Location $location): JsonResponse
+    {
+        $data = $request->validate([
+            'order' => ['required', 'array', 'min:1'],
+            'order.*' => ['required', 'string', 'distinct'],
+        ]);
+
+        $gallery = $this->currentGallery($location);
+        $order = $data['order'];
+
+        // Pastikan jumlah dan seluruh path sesuai media milik lokasi.
+        if (
+            count($order) !== count($gallery) ||
+            array_diff($order, $gallery) ||
+            array_diff($gallery, $order)
+        ) {
+            throw ValidationException::withMessages([
+                'order' => 'Urutan media tidak valid.',
+            ]);
+        }
+
+        $location->update([
+            'media_gallery' => $order,
+            'media' => $order[0] ?? null,
+        ]);
+
+        return response()->json([
+            'message' => 'Urutan media berhasil disimpan.',
+        ]);
+    }
+
     public function destroy(Location $location): RedirectResponse
     {
         $location->loadMissing('category.menu');
+
         $menu = $location->category->menu;
-        $media = $location->media;
+
+        $paths = array_unique([
+            ...$this->currentGallery($location),
+            ...array_filter([$location->media]),
+        ]);
 
         $location->delete();
-        $this->deleteStoredMedia($media);
+
+        foreach ($paths as $media) {
+            $this->deleteStoredMedia($media);
+        }
 
         return redirect()
             ->route('admin.locations.index', ['menu' => $menu->slug])
@@ -157,18 +251,24 @@ class LocationController extends Controller
             'x_location' => ['nullable', 'numeric', 'between:0,100'],
             'y_location' => ['nullable', 'numeric', 'between:0,100'],
             'source_media' => ['nullable', 'string', 'max:255'],
-            'media' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,mp4', 'max:71680'],
+            'gallery_files' => ['nullable', 'array'],
+            'gallery_files.*' => [
+                'required', 'file', 'mimes:jpg,jpeg,png,webp,mp4', 'max:71680',
+            ],
+            'gallery_remove' => ['nullable', 'array'],
+            'gallery_remove.*' => ['required', 'string', 'distinct', 'max:2048'],
+            'gallery_order' => ['sometimes', 'array'],
+            'gallery_order.*' => ['required', 'string', 'distinct'],
             'is_active' => ['nullable', 'boolean'],
-            'remove_media' => ['nullable', 'boolean'],
             'longitude' => ['nullable', 'numeric', 'between:-180,180'],
             'latitude' => ['nullable', 'numeric', 'between:-90,90'],
         ]);
 
-        unset($data['media'], $data['remove_media']);
+        unset($data['gallery_files'], $data['gallery_remove'], $data['gallery_order']);
         $data['is_active'] = $request->boolean('is_active');
 
         if (! empty($data['description'])) {
-            $config = new HtmlSanitizerConfig;
+            $config = new HtmlSanitizerConfig();
 
             foreach (['p', 'h1', 'h2', 'h3', 'br', 'strong', 'b', 'em', 'i', 'u', 'ul', 'ol', 'li', 'blockquote'] as $tag) {
                 $config = $config->allowElement($tag, []);
@@ -185,5 +285,36 @@ class LocationController extends Controller
         if ($path && str_starts_with($path, 'storage/menus/locations/')) {
             Storage::disk('public')->delete(substr($path, strlen('storage/')));
         }
+    }
+
+    private function currentGallery(Location $location): array
+    {
+        $gallery = $location->media_gallery ?: (
+            $location->media ? [$location->media] : []
+        );
+
+        return collect($gallery)
+            ->filter(fn ($path) => is_string($path) && $path !== '')
+            ->unique()
+            ->values()
+            ->all();
+    }
+
+    private function uploadGallery(array $files, array $uploaded): array
+    {
+        $gallery = [];
+
+        foreach ($files as $file) {
+            $path = $file->store('menus/locations', 'public');
+
+            if (! $path) {
+                throw new \RuntimeException('Gagal menyimpan media');
+            }
+
+            $uploaded[] = $path;
+            $gallery[] = 'storage/'.$path;
+        }
+
+        return $gallery;
     }
 }

@@ -16,6 +16,7 @@ class Location extends Model
         'x_location',
         'y_location',
         'media',
+        'media_gallery',
         'is_active',
         'source_media',
         'latitude',
@@ -24,7 +25,7 @@ class Location extends Model
 
     protected function casts(): array
     {
-        return ['category_id' => 'integer', 'regency_id' => 'integer', 'x_location' => 'float', 'y_location' => 'float', 'is_active' => 'boolean', 'latitude' => 'float', 'longitude' => 'float'];
+        return ['category_id' => 'integer', 'regency_id' => 'integer', 'x_location' => 'float', 'y_location' => 'float', 'is_active' => 'boolean', 'latitude' => 'float', 'longitude' => 'float', 'media_gallery' => 'array'];
     }
 
     public function category(): BelongsTo

@@ -42,17 +42,21 @@
                 submitForm(form) {
                     if (this.isSubmitting) return;
             
-                    const file = form.querySelector('input[name=media]')?.files[0];
+                    const files = Array.from(
+                        form.querySelector('#gallery_files')?.files ?? []
+                    );
                     this.uploadError = '';
                     this.uploadErrors = [];
             
-                    if (file && file.size > 70 * 1024 * 1024) {
-                        this.uploadError = 'Ukuran media maksimal 70 MB.';
+                    if (files.some(file => file.size > 70 * 1024 * 1024)) {
+                        this.uploadError = 'Setiap file maksimal 70 MB.';
                         return;
                     }
             
                     this.isSubmitting = true;
-                    if (!file) {
+            
+                    // Jika tidak ada file baru, submit seperti biasa.
+                    if (files.length === 0) {
                         form.submit();
                         return;
                     }
@@ -131,26 +135,124 @@
                         </div>
 
                         <div class="md:col-span-2">
-                            @if ($location->media)
-                                <div class="mb-3 space-y-3">
-                                    @if (str_ends_with(strtolower($location->media), '.mp4'))
-                                        <video src="{{ asset($location->media) }}" controls
-                                            class="aspect-video w-full max-w-md rounded-lg bg-black object-contain"></video>
-                                    @else
-                                        <img src="{{ asset($location->media) }}" alt="Media {{ $location->name }}"
-                                            class="aspect-video w-full max-w-md rounded-lg object-cover">
-                                    @endif
-                                    <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-                                        <input type="checkbox" name="remove_media" value="1"
-                                            @checked(old('remove_media'))
-                                            class="size-4 rounded border-gray-300 text-[#da251d]">
-                                        Hapus media saat ini
-                                    </label>
+                            <x-form.form-elements.default-inputs label="Sumber media" name="source_media" :value="$location->source_media"
+                                maxlength="255" placeholder="Nama kreator atau sumber foto/video" />
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <x-form.form-elements.checkbox-component label="Tampilkan pada peta" name="is_active"
+                                :checked="$editing ? $location->is_active : true" help="Lokasi nonaktif tetap tersimpan di admin." />
+                        </div>
+
+                        <div class="md:col-span-2 space-y-4">
+                            <div>
+                                <label for="gallery_files" class="mb-2 block text-sm font-semibold">
+                                    Tambah Foto atau Video
+                                </label>
+
+                                <input id="gallery_files" type="file" name="gallery_files[]" multiple
+                                    accept="image/jpeg,image/png,image/webp,video/mp4"
+                                    class="w-full rounded-lg border border-gray-300 p-3 text-sm dark:border-gray-700">
+
+                                <p class="mt-2 text-xs text-gray-500">
+                                    JPG, PNG, WebP, atau MP4. Maksimal 70 MB per file.
+                                </p>
+
+                                @error('gallery_files')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+
+                                @error('gallery_remove')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            @php
+                                $gallery = $location->media_gallery ?: ($location->media ? [$location->media] : []);
+                            @endphp
+
+                            @if ($editing && count($gallery))
+                                <div class="mb-3 flex items-center justify-between gap-3">
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                                        Atur urutan foto dan video lokasi.
+                                    </p>
+
+                                    <button type="button" data-location-gallery-toggle
+                                        data-location-gallery-save-url="{{ route('admin.locations.gallery.reorder', $location) }}"
+                                        aria-pressed="false"
+                                        class="inline-flex items-center gap-2 rounded-lg
+                                            border border-gray-300 bg-white px-3 py-2
+                                            text-sm font-medium text-gray-700
+                                            hover:bg-gray-50 dark:border-gray-700
+                                            dark:bg-gray-800 dark:text-gray-200">
+
+                                        <i class="fas fa-arrow-down-up-across-line"></i>
+                                        <span data-location-gallery-toggle-text>Ubah Urutan</span>
+                                    </button>
+                                </div>
+
+                                <div data-location-gallery-status role="status" aria-live="polite"
+                                    class="hidden rounded-lg border px-4 py-3 text-sm font-medium shadow-sm">
+                                </div>
+
+                                <div data-location-gallery-sort class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+
+                                    @foreach ($gallery as $index => $path)
+                                        @php
+                                            $url = \Illuminate\Support\Str::startsWith($path, ['http://', 'https://'])
+                                                ? $path
+                                                : asset(ltrim($path, '/'));
+
+                                            $isVideo = (bool) preg_match('/\.mp4(?:\?.*)?$/i', $path);
+                                        @endphp
+
+                                        <div data-location-gallery-item
+                                            class="relative overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700">
+
+                                            {{-- Area drag, hanya aktif ketika mode urut dinyalakan --}}
+                                            <div data-location-gallery-overlay
+                                                class="absolute inset-0 z-30 hidden cursor-grab
+                                                    touch-none bg-black/10 active:cursor-grabbing">
+
+                                                <span
+                                                    class="pointer-events-none absolute left-1/2 top-1/2
+                                                        -translate-x-1/2 -translate-y-1/2
+                                                        whitespace-nowrap rounded-lg bg-gray-900/85
+                                                        px-3 py-2 text-sm font-medium text-white">
+
+                                                    <i class="fas fa-arrows-up-down-left-right mr-1"></i>
+                                                    Geser Media
+                                                </span>
+                                            </div>
+
+                                            {{-- Media --}}
+                                            <div class="relative aspect-video bg-gray-100">
+                                                <span data-location-gallery-number
+                                                    class="absolute left-2 top-2 z-10 rounded bg-black/70 px-2 py-1 text-xs text-white">
+                                                    {{ $index + 1 }}
+                                                </span>
+
+                                                @if ($isVideo)
+                                                    <video src="{{ $url }}" controls
+                                                        class="size-full object-contain"></video>
+                                                @else
+                                                    <img src="{{ $url }}" alt="Media {{ $index + 1 }}"
+                                                        class="size-full object-cover">
+                                                @endif
+                                            </div>
+
+                                            {{-- Menyimpan path media sesuai urutan card --}}
+                                            <input type="hidden" name="gallery_order[]" value="{{ $path }}">
+
+                                            {{-- Checkbox untuk menghapus media --}}
+                                            <label class="flex items-center gap-2 p-3 text-sm text-red-600">
+                                                <input type="checkbox" name="gallery_remove[]" value="{{ $path }}"
+                                                    @checked(in_array($path, old('gallery_remove', []), true))>
+                                                Hapus media
+                                            </label>
+                                        </div>
+                                    @endforeach
                                 </div>
                             @endif
-                            <x-form.form-elements.file-input-example label="Foto atau video lokasi" name="media"
-                                accept="image/jpeg,image/png,image/webp,video/mp4"
-                                help="JPG, PNG, WebP, atau MP4; maksimal 70 MB. Kosongkan saat edit jika tidak ingin mengganti." />
                         </div>
 
                         <div x-cloak x-show="uploadError"
@@ -170,16 +272,6 @@
                             <div class="h-2 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
                                 <div class="h-full bg-[#da251d] transition-all" :style="{ width: progress + '%' }"></div>
                             </div>
-                        </div>
-
-                        <div class="md:col-span-2">
-                            <x-form.form-elements.default-inputs label="Sumber media" name="source_media" :value="$location->source_media"
-                                maxlength="255" placeholder="Nama kreator atau sumber foto/video" />
-                        </div>
-
-                        <div class="md:col-span-2">
-                            <x-form.form-elements.checkbox-component label="Tampilkan pada peta" name="is_active"
-                                :checked="$editing ? $location->is_active : true" help="Lokasi nonaktif tetap tersimpan di admin." />
                         </div>
                     </div>
                 </x-common.component-card>
@@ -204,7 +296,8 @@
 
                                 @foreach ($regencies as $regency)
                                     <option value="{{ $regency->id }}" data-latitude="{{ $regency->latitude }}"
-                                        data-longitude="{{ $regency->longitude }}" @selected(old('regency_id', $location->regency_id) == $regency->id)>
+                                        data-longitude="{{ $regency->longitude }}" data-slug="{{ $regency->slug }}"
+                                        @selected(old('regency_id', $location->regency_id) == $regency->id)>
                                         {{ $regency->name }}
                                     </option>
                                 @endforeach

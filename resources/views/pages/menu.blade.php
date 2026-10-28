@@ -8,7 +8,9 @@
     <link rel="icon" type="image/png" href="{{ asset($homepage->header_logo) }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
-        [x-cloak] {}
+        [x-cloak] {
+            display: none !important;
+        }
 
         .kalsel-location-marker {
             background: transparent;
@@ -227,18 +229,14 @@
 
                     const panelMedia = document.getElementById('detailMedia');
                     const modalMedia = document.getElementById('fullscreenDetailMedia');
-                    const playerElement = panelMedia.querySelector('.plyr');
 
-                    this.videoMoved = !!playerElement;
-                    this.resumeVideo = !!(detailPlayer && !detailPlayer.paused);
+                    this.videoMoved = true;
+                    this.resumeVideo = Boolean(detailPlayer && !detailPlayer.paused);
 
-                    if (playerElement) {
-                        detailPlayer.pause();
-                        modalMedia.replaceChildren(playerElement);
-                    } else {
-                        const media = panelMedia.cloneNode(true);
-                        modalMedia.replaceChildren(...media.childNodes);
-                    }
+                    detailPlayer?.pause?.();
+
+                    // Pindahkan seluruh galeri ke fullscreen.
+                    modalMedia.replaceChildren(...panelMedia.childNodes);
 
                     this.inertElements = [...document.body.children]
                         .filter((element) => ['HEADER', 'MAIN'].includes(element.tagName) && !element.inert);
@@ -260,14 +258,14 @@
                     const panelMedia = document.getElementById('detailMedia');
                     const modalMedia = document.getElementById('fullscreenDetailMedia');
 
-                    const wasPlaying = this.resumeVideo;
+                    const wasPlaying = Boolean(
+                        detailPlayer && !detailPlayer.paused
+                    );
+
+                    detailPlayer?.pause?.();
 
                     if (this.videoMoved) {
-                        const playerElement = modalMedia.querySelector('.plyr');
-
-                        if (playerElement) {
-                            panelMedia.replaceChildren(playerElement);
-                        }
+                        panelMedia.replaceChildren(...modalMedia.childNodes);
                     }
 
                     modalMedia.replaceChildren();
@@ -837,57 +835,14 @@
             document.getElementById('detailName').textContent = location.name;
             document.getElementById('detailAddress').textContent = location.address;
             document.getElementById('detailDescription').innerHTML = safeDescription(location.description);
-            const detailMedia = document.getElementById('detailMedia');
-            const mediaUrl = location.media;
-            const isVideo = mediaUrl?.toLowerCase().endsWith('.mp4');
-            detailPlayer?.destroy();
-            detailPlayer = null;
-            if (!mediaUrl) {
-                detailMedia.innerHTML = '<span>Media belum tersedia</span>';
-            } else if (isVideo) {
-                detailMedia.innerHTML =
-                    '<video class="block h-full w-full" controls playsinline preload="metadata" aria-label="Video ' +
-                    escapeHtml(location.name) + '">' +
-                    '<source src="' + escapeHtml(mediaUrl) + '" type="video/mp4">' +
-                    '</video>';
-                detailPlayer = new window.Plyr(detailMedia.querySelector('video'), {
-                    controls: [
-                        'play-large',
-                        'restart',
-                        'rewind',
-                        'play',
-                        'fast-forward',
-                        'progress',
-                        'current-time',
-                        'duration',
-                        'mute',
-                        'volume',
-                        'settings',
-                        'pip',
-                        'fullscreen'
-                    ],
-                    settings: ['speed'],
-                    seekTime: 10,
-                    fullscreen: {
-                        enabled: true,
-                        fallback: true,
-                        iosNative: false
-                    }
-                });
-                Promise.resolve(detailPlayer.play()).catch(() => {});
-            } else {
-                detailMedia.innerHTML =
-                    '<img class="absolute inset-0 block" style="width:100%;height:100%;object-fit:contain" src="' +
-                    escapeHtml(mediaUrl) + '" alt="Media ' +
-                    escapeHtml(
-                        location.name) + '">';
-            }
-
-            const source = document.getElementById('detailSource');
-            source.textContent = location.source_media || 'Sumber belum tersedia';
             setActiveMarker(locationId);
+
             listView.hidden = true;
             detailView.hidden = false;
+
+            // Inisialisasi galeri setelah panel detail ditampilkan
+            renderMediaGallery(location);
+
             document.getElementById('detailContent').scrollTop = 0;
         }
 
@@ -919,7 +874,7 @@
 
         renderList();
     </script>
-
+    @include('components.location-gallery')
 </body>
 
 </html>
