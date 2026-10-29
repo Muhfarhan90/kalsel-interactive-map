@@ -14,16 +14,6 @@
             @csrf
             @method('PUT')
 
-            <x-common.component-card title="Gambar peta" desc="Format JPG, PNG, atau WebP. Maksimal 10 MB.">
-                @if ($map->map_image)
-                    <div class="mb-4 grid aspect-square max-h-full place-items-center overflow-hidden border border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800">
-                        <img src="{{ asset($map->map_image) }}" alt="Gambar peta saat ini" class="size-full object-contain">
-                    </div>
-                @endif
-                <x-form.form-elements.file-input-example label="Ganti gambar peta" name="map_image_file" accept="image/jpeg,image/png,image/webp" help="Gambar peta ini menjadi dasar posisi marker wisata dan kuliner." />
-                @error('map_image_file') <p class="mt-2 text-xs text-error-500">{{ $message }}</p> @enderror
-            </x-common.component-card>
-
             <x-common.component-card title="Deskripsi peta" desc="Keterangan umum untuk peta dasar Kalimantan Selatan.">
                 <x-form.form-elements.text-area-inputs label="Deskripsi" name="map_description" :value="$map->map_description" rows="4" maxlength="2000" />
             </x-common.component-card>

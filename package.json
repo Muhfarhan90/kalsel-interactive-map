@@ -25,6 +25,7 @@
         "leaflet": "^1.9.4",
         "plyr": "^3.8.5",
         "prismjs": "^1.30.0",
+        "protomaps-leaflet": "^5.1.0",
         "quill": "^2.0.3",
         "sortablejs": "^1.15.7",
         "swiper": "^14.2.0",

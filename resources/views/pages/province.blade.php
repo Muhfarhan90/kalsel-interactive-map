@@ -264,10 +264,14 @@
                     attributionControl: false,
                 });
 
+                // Map online
                 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 19,
                     attribution: '&copy; OpenStreetMap contributors'
                 }).addTo(map);
+
+                // Map offline
+                // window.createOfflineBaseMap().addTo(map);
 
                 const byName = new Map();
                 regencies.forEach(regency => {

@@ -559,6 +559,9 @@
                 attribution: '&copy; OpenStreetMap contributors'
             }).addTo(leafletMap);
 
+            // Map offline
+            // window.createOfflineBaseMap().addTo(leafletMap);
+
             // Fallback jika GeoJSON gagal dimuat: fokus sekitar titik pusat
             // regency dan lokasi yang memiliki koordinat. Ini bukan batas resmi.
             let regionBounds = hasRegencyCenter ?

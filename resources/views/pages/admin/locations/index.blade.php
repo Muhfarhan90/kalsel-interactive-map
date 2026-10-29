@@ -51,6 +51,7 @@
                     <th class="px-5 py-3.5">Kategori</th>
                     <th class="px-5 py-3.5">Wilayah</th>
                     <th class="px-5 py-3.5">Status</th>
+                    <th class="px-5 py-3.5">Titik Lokasi</th>
                     <th class="px-5 py-3.5 text-right">Aksi</th>
                 </tr>
             </thead>
@@ -72,6 +73,13 @@
                             <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $location->is_active ? 'bg-success-50 text-success-700 dark:bg-success-500/10 dark:text-success-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400' }}">
                                 {{ $location->is_active ? 'Aktif' : 'Nonaktif' }}
                             </span>
+                        </td>
+                        <td class="px-5 py-4 text-xs text-gray-600 dark:text-gray-400">
+                            @if ($location->latitude && $location->longitude)
+                                {{ $location->latitude }}, {{ $location->longitude }}
+                            @else
+                                <span class="text-gray-400">Belum ditentukan</span>
+                            @endif
                         </td>
                         <td class="px-5 py-4">
                             <div class="flex justify-end gap-2">

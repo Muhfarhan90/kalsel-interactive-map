@@ -6,7 +6,8 @@ import 'plyr/dist/plyr.css';
 // leaflet
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-
+// protomaps-leaflet
+import { leafletLayer } from 'protomaps-leaflet';
 // flatpickr
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -20,6 +21,15 @@ window.flatpickr = flatpickr;
 window.Plyr = Plyr;
 // leaflet
 window.L = L;
+
+// Map offline
+// window.createOfflineBaseMap = () => {
+//     return leafletLayer({
+//         url: '/offline-map/kalsel.pmtiles',
+//         flavor: 'light',
+//         lang: 'id',
+//     });
+// };
 
 document.addEventListener('contextmenu', (event) => {
     event.preventDefault();

@@ -2,21 +2,12 @@
 
 use App\Http\Controllers\Admin\AdminHomepageController;
 use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\CulinaryCategoryController;
-use App\Http\Controllers\Admin\CulinaryLocationController;
-use App\Http\Controllers\Admin\CulinaryMapController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\MapController;
 use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\PublicPageHeaderController;
 use App\Http\Controllers\Admin\RegencyController;
-use App\Http\Controllers\Admin\TourismCategoryController;
-use App\Http\Controllers\Admin\TourismLocationController;
-use App\Http\Controllers\Admin\TourismMapController;
-use App\Http\Controllers\Admin\TransportationCategoryController;
-use App\Http\Controllers\Admin\TransportationLocationController;
-use App\Http\Controllers\Admin\TransportationMapController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\HomepageController;
@@ -50,8 +41,18 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
 
 Route::redirect('/wilayah/{regency}/{menu}', '/{menu}/{regency}', 301);
 Route::get('/destinasi-pariwisata', [
-    HomepageController::class, 'allLocations'
+    HomepageController::class, 'allLocations',
 ])->name('map.all');
+// Route untuk 
+Route::get('/offline-map/kalsel.pmtiles', function () {
+    $path = storage_path('app/maps/kalsel.pmtiles');
+
+    abort_unless(is_file($path), 404);
+
+    return response()->file($path, [
+        'Content-Type' => 'application/octet-stream',
+    ]);
+});
 Route::get('/{menu:slug}/{regency:slug}', [HomepageController::class, 'regencyMenu'])
     // Wilayah dipakai bersama semua menu, jadi binding wilayah tidak dibatasi oleh relasi menu.
     ->withoutScopedBindings()
@@ -59,3 +60,5 @@ Route::get('/{menu:slug}/{regency:slug}', [HomepageController::class, 'regencyMe
 Route::get('/{slug}', [HomepageController::class, 'menu'])->name('menu');
 
 Route::get('/', [HomepageController::class, 'index'])->name('home');
+
+

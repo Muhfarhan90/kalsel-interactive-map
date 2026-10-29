@@ -629,6 +629,9 @@
                 }
             ).addTo(leafletMap);
 
+            // Map offline
+            // window.createOfflineBaseMap().addTo(leafletMap);
+
             // POLYGON SEMUA KABUPATEN/KOTA
             try {
                 const response = await fetch(geoJsonUrl);

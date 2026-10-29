@@ -28,8 +28,6 @@
                     <th class="py-3.5 pl-5 pr-1"><span class="sr-only">Seret wilayah</span></th>
                     <th class="px-5 py-3.5">Wilayah</th>
                     <th class="px-5 py-3.5">Slug</th>
-                    <th class="px-5 py-3.5">Peta</th>
-                    <th class="px-5 py-3.5">Posisi pin</th>
                     <th class="px-5 py-3.5 text-right">Aksi</th>
                 </tr>
             </thead>
@@ -45,17 +43,6 @@
                         </td>
                         <td class="px-5 py-4 font-semibold text-gray-900 dark:text-white">{{ $regency->name }}</td>
                         <td class="px-5 py-4 font-mono text-xs">{{ $regency->slug }}</td>
-                        <td class="px-5 py-4">
-                            @if ($regency->map_image)
-                                <img src="{{ asset($regency->map_image) }}?v={{ $regency->updated_at?->timestamp }}" alt="Peta {{ $regency->name }}"
-                                    class="size-14 rounded-lg border border-gray-200 bg-gray-50 object-contain">
-                            @else
-                                <span class="text-xs text-gray-500">Belum diunggah</span>
-                            @endif
-                        </td>
-                        <td class="px-5 py-4 text-xs">
-                            {{ $regency->x_location !== null && $regency->y_location !== null ? $regency->x_location.', '.$regency->y_location : 'Belum diatur' }}
-                        </td>
                         <td class="px-5 py-4">
                             <div class="flex justify-end gap-2">
                                 <a href="{{ route('admin.regencies.edit', $regency) }}"
