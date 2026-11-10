@@ -619,13 +619,17 @@
                 bounceAtZoomLimits: false,
                 scrollWheelZoom: true,
                 touchZoom: true,
-                attributionControl: false
+                attributionControl: false,
             });
+
+            L.control.attribution({
+                prefix: false
+            }).addTo(leafletMap);
 
             L.tileLayer(
                 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 19,
-                    attribution: '© OpenStreetMap contributors'
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors'
                 }
             ).addTo(leafletMap);
 
@@ -825,36 +829,36 @@
 
                             <div class="relative flex-1 px-2.5 py-1">
                                 ${group.background ? `
-                                                                <img
-                                                                    src="${escapeHtml(group.background)}"
-                                                                    alt=""
-                                                                    class="pointer-events-none absolute inset-0 size-full object-cover">
+                                                                    <img
+                                                                        src="${escapeHtml(group.background)}"
+                                                                        alt=""
+                                                                        class="pointer-events-none absolute inset-0 size-full object-cover">
 
-                                                                <div
-                                                                    class="pointer-events-none absolute inset-0 bg-gradient-to-r from-white via-white/85 to-transparent">
-                                                                </div>
-                                                            ` : ''}
+                                                                    <div
+                                                                        class="pointer-events-none absolute inset-0 bg-gradient-to-r from-white via-white/85 to-transparent">
+                                                                    </div>
+                                                                ` : ''}
 
                                 <div class="relative">
                                     ${filtered.map(location => `
-                                                                    <button
-                                                                        type="button"
-                                                                        data-location-id="${Number(location.id)}"
-                                                                        class="flex w-full cursor-pointer items-center gap-2 border-0 bg-transparent py-2 text-left text-sm text-gray-800">
+                                                                        <button
+                                                                            type="button"
+                                                                            data-location-id="${Number(location.id)}"
+                                                                            class="flex w-full cursor-pointer items-center gap-2 border-0 bg-transparent py-2 text-left text-sm text-gray-800">
 
-                                                                        <span
-                                                                            class="grid size-[22px] shrink-0 place-items-center rounded-full text-[10px] font-bold text-white"
-                                                                            style="background-color:${markerColor(location)}">
-                                                                            ${getCategoryNumber(location)}
-                                                                        </span>
-
-                                                                        <span class="min-w-0 flex-1">
-                                                                            <span class="block break-words">
-                                                                                ${escapeHtml(location.name)}
+                                                                            <span
+                                                                                class="grid size-[22px] shrink-0 place-items-center rounded-full text-[10px] font-bold text-white"
+                                                                                style="background-color:${markerColor(location)}">
+                                                                                ${getCategoryNumber(location)}
                                                                             </span>
-                                                                        </span>
-                                                                    </button>
-                                                                `).join('')}
+
+                                                                            <span class="min-w-0 flex-1">
+                                                                                <span class="block break-words">
+                                                                                    ${escapeHtml(location.name)}
+                                                                                </span>
+                                                                            </span>
+                                                                        </button>
+                                                                    `).join('')}
                                 </div>
                             </div>
                         </section>

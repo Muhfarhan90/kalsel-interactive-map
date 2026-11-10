@@ -551,12 +551,16 @@
                 bounceAtZoomLimits: false,
                 scrollWheelZoom: true,
                 touchZoom: true,
-                attributionControl: false
+                attributionControl: false,
             });
+
+            L.control.attribution({
+                prefix: false
+            }).addTo(leafletMap);
 
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
-                attribution: '&copy; OpenStreetMap contributors'
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors'
             }).addTo(leafletMap);
 
             // Map offline
